@@ -1,0 +1,16 @@
+using UnityEngine;
+
+/// <summary>
+/// TODO: XML-Doc
+/// <para>Class description</para>
+/// </summary>
+public sealed class #SCRIPTNAME# : MonoBehaviour
+{
+    private void Start()
+    {
+    }
+
+    private void Update()
+    {
+    }
+}
