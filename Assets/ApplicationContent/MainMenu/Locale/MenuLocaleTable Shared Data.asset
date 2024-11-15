@@ -1,0 +1,296 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: MenuLocaleTable Shared Data
+  m_EditorClassIdentifier: 
+  m_TableCollectionName: MenuLocaleTable
+  m_TableCollectionNameGuidString: cf18f3787113ff74caf440a25e20a443
+  m_Entries:
+  - m_Id: 2623094788096
+    m_Key: MainMenu.button.auth
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3394481819648
+    m_Key: MainMenu.button.leaveMetaverse
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2746218582016
+    m_Key: MainMenu.button.registration
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73087979520
+    m_Key: MainMenu.label.login
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1607909642240
+    m_Key: MainMenu.label.loginKey
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2213382590464
+    m_Key: MainMenu.label.loginKeyTip
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5150959865856
+    m_Key: MainMenu.label.loginTip
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4123648987136
+    m_Key: MainMenu.label.nickname
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1275410386944
+    m_Key: MainMenu.label.password
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4039607717888
+    m_Key: MainMenu.label.passwordRepeat
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4402343710720
+    m_Key: MainMenu.label.registrationKey
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2898027220992
+    m_Key: MainMenu.label.registrationTip
+    m_Metadata:
+      m_Items: []
+  - m_Id: 360045481984
+    m_Key: MainMenu.placeholder.login
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1934696255488
+    m_Key: MainMenu.placeholder.loginKey
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1368372940800
+    m_Key: MainMenu.placeholder.password
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3891527815168
+    m_Key: MainMenu.placeholder.passwordRepeat
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4682481274880
+    m_Key: MainMenu.placeholder.registrationKey
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5323077324800
+    m_Key: MainMenu.label.version
+    m_Metadata:
+      m_Items: []
+  - m_Id: 13110356348928
+    m_Key: MainMenu.placeholder.nickname
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15443299536896
+    m_Key: MainMenu.button.language
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25499248234496
+    m_Key: MainMenu.label.avatar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25923619524608
+    m_Key: MainMenu.label.enableMicrophone
+    m_Metadata:
+      m_Items: []
+  - m_Id: 26502022434816
+    m_Key: MainMenu.button.connect
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27283836506112
+    m_Key: MainMenu.label.loading
+    m_Metadata:
+      m_Items: []
+  - m_Id: 45844931940352
+    m_Key: MainMenu.button.adminMenu
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4357464235712512
+    m_Key: MainMenu.button.Back
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4664598357876736
+    m_Key: MainMenu.button.loginkey
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4665109312184320
+    m_Key: MainMenu.button.registrationkey
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4665522333687808
+    m_Key: MainMenu.button.sceneAssets
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4665897145081856
+    m_Key: MainMenu.button.avatarAssets
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4666617244164096
+    m_Key: MainMenu.button.roles
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4697056335896576
+    m_Key: New Entry
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4697918340866048
+    m_Key: MainMenu.label.createLoginKey
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4698794346422272
+    m_Key: MainMenu.placeholder.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4700324457881600
+    m_Key: MainMenu.label.dateFrom
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4704774501179392
+    m_Key: MainMenu.DatePicker.enterDate
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4707287648444416
+    m_Key: MainMenu.label.dateTo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4708345858760704
+    m_Key: MainMenu.button.createKey
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4721239027621888
+    m_Key: MainMenu.button.deleteKeys
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4733881289023488
+    m_Key: MainMenu.exceptions.emptyDate
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4756636294193152
+    m_Key: MainMenu.label.createRegistrationKey
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4757799076896768
+    m_Key: MainMenu.label.organisation
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4757970439380992
+    m_Key: MainMenu.placeholder.organisation
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4758373226782720
+    m_Key: MainMenu.label.fileServerRole
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4758828447178752
+    m_Key: MainMenu.label.role
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7179512364408832
+    m_Key: MainMenu.button.refreshRoles
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7180392492965888
+    m_Key: MainMenu.label.roleName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7181097236701184
+    m_Key: MainMenu.label.permission
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7181424472104960
+    m_Key: MainMenu.button.refreshPermission
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7183905524555776
+    m_Key: MainMenu.label.roleTip
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7188135303979008
+    m_Key: MainMenu.button.deleteRole
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7272998270935040
+    m_Key: MainMenu.label.scene.assets
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7273482918567936
+    m_Key: MainMenu.button.upload.scene.assets
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7647847417913344
+    m_Key: MainMenu.text.local
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7948312970010624
+    m_Key: MainMenu.button.remove.scene.assets
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7948913216856064
+    m_Key: MainMenu.label.scene.upload.assets
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7951784943558656
+    m_Key: MainMenu.label.device
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7978578128150528
+    m_Key: MainMenu.text.choose.image
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7982966074777600
+    m_Key: MainMenu.placeholder.enterDisplayName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7984432755777536
+    m_Key: MainMenu.placeholder.sortIndex
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7985503481896960
+    m_Key: MainMenu.button.image
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8277080603369472
+    m_Key: MainMenu.text.server
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8643583613870080
+    m_Key: MainMenu.label.grayNameTip
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8643900405456896
+    m_Key: MainMenu.label.sceneBundleTip
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8644745125699584
+    m_Key: MainMenu.label.avatarBundleTip
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8645375168880640
+    m_Key: MainMenu.label.avatar.assets
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8672958216413184
+    m_Key: MainMenu.button.development
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 5997839329578975256
+  references:
+    version: 2
+    RefIds:
+    - rid: 5997839329578975256
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1730720291339
