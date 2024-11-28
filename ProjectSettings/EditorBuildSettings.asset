@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 1
+    path: Assets/ApplicationContent/MainMenu/Scene/01_AuthMenu.unity
+    guid: 914f1259c17d7034e90d07acea6d6015
+  - enabled: 1
+    path: Assets/ApplicationContent/MainMenu/Scene/04_MenuLoading.unity
+    guid: f0e34981f6ecc90449c1a55b196899e8
+  - enabled: 1
+    path: Assets/ApplicationContent/MainMenu/Scene/02_AdministratorMenu.unity
+    guid: 7e6106be7971d5a488de8b76cefe4523
+  - enabled: 1
+    path: Assets/ApplicationContent/MainMenu/Scene/03_AvatarSelectMenu.unity
+    guid: d683dbb1d4d3931498bcbedd2ec2520a
+  - enabled: 1
+    path: Assets/ApplicationContent/OfflineScene/Void.unity
+    guid: 8bfc293629ea8cd43b9737fecbb2b768
+  - enabled: 0
+    path: Assets/ApplicationContent/EmbeddedScenes/Adam/Adam.unity
+    guid: 888bbdaf2319edd4fa2514157f57c6b3
+  m_configObjects:
+    com.unity.addressableassets: {fileID: 11400000, guid: b9766b2c92f3b104aa57830321f27792, type: 2}
+    com.unity.localization.settings: {fileID: 11400000, guid: 83927ad7eb0cb8846b0b19fe6bb1dcd1, type: 2}
