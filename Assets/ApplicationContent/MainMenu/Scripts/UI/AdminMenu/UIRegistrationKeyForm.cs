@@ -4,11 +4,11 @@ using Localization;
 using MainMenu.Containers;
 using NetworkCore.MirrorNetworking;
 using NetworkCore.ServerInteraction.API;
-using RoleSystem.Core;
-using RoleSystem.Types;
 using TMPro;
 using UI.Dates;
 using UnityEngine;
+using UserSystem.RoleSystem.Core;
+using UserSystem.RoleSystem.Types;
 
 namespace MainMenu.UI.AdminMenu
 {
@@ -38,7 +38,7 @@ namespace MainMenu.UI.AdminMenu
         {
             if (serverAPI == null)
             {
-                return MVNetworkManager.singleton.FileServer;
+                return MVNetworkManager.singleton.NetworkStore.FileServer;
             }
 
             return serverAPI;

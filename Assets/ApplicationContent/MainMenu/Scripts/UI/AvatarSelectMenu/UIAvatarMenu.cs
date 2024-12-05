@@ -1,14 +1,14 @@
-using System.Collections.Generic;
 using Global.UI;
 using Global.UI.LoadingForm;
 using MainMenu.Containers;
 using NetworkCore.MirrorNetworking;
+using NetworkCore.MirrorNetworking.Containers;
 using NetworkCore.ServerInteraction.API;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace MainMenu.UI.AvatarMenu
+namespace MainMenu.UI.AvatarSelectMenu
 {
     /// <summary>
     /// <para>Скрипт, управляющий меню выбора аватара на UI.</para>
@@ -21,11 +21,12 @@ namespace MainMenu.UI.AvatarMenu
         [SerializeField] private UILoadingForm _loadingForm;
 
         private APIContainer serverAPI;
-        private IList<AvatarInfo> avatars = new List<AvatarInfo>();
+        private AvatarStore avatarStore;
 
         private void OnEnable()
         {
             serverAPI = EnsureServerAPI();
+            avatarStore = EnsureAvatarStore();
             RefreshAvatarAssetList();
         }
 
@@ -33,21 +34,30 @@ namespace MainMenu.UI.AvatarMenu
         {
             if (serverAPI == null)
             {
-                return MVNetworkManager.singleton.FileServer;
+                return MVNetworkManager.singleton.NetworkStore.FileServer;
             }
 
             return serverAPI;
         }
 
-        private async void RefreshAvatarAssetList()
+        private AvatarStore EnsureAvatarStore()
         {
-            await _loadingForm.EnableLoading();
-            
-            _avatarDropdown.ClearOptions();
-            avatars.Clear();
+            if (avatarStore == null)
+            {
+                return MVNetworkManager.singleton.NetworkStore.Avatars;
+            }
 
-            avatars = serverAPI.Avatar.GetAllAvatarsInfo();
-            foreach (AvatarInfo avatar in avatars)
+            return avatarStore;
+        }
+
+        private void RefreshAvatarAssetList()
+        {
+            _avatarDropdown.ClearOptions();
+
+            // Здесь мог бы быть запрос на сервер с получением информации об аватарах
+            // Но мы предполагаем, что данный запрос был сделан в сцене загрузки ассетов
+
+            foreach (AvatarInfo avatar in avatarStore.AvatarInfos)
             {
                 TMP_Dropdown.OptionData option = new TMP_Dropdown.OptionData();
                 option.text = avatar.DisplayName;
@@ -56,8 +66,15 @@ namespace MainMenu.UI.AvatarMenu
             }
 
             _avatarDropdown.Reset();
-            
-            _loadingForm.gameObject.SetActive(false);
+        }
+
+        /// <summary>
+        /// <para>Получить аватар выбранный в данный момент.</para>
+        /// </summary>
+        /// <returns>аватар выбранный в данный момент</returns>
+        public AvatarInfo GetSelectedAvatar()
+        {
+            return avatarStore.AvatarInfos[_avatarDropdown.value];
         }
     }
 }

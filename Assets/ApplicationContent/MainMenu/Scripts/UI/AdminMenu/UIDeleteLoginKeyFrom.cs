@@ -30,7 +30,7 @@ namespace MainMenu.UI.AdminMenu
         {
             if (serverAPI == null)
             {
-                return MVNetworkManager.singleton.FileServer;
+                return MVNetworkManager.singleton.NetworkStore.FileServer;
             }
 
             return serverAPI;

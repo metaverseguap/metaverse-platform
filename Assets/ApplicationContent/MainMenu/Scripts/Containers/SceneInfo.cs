@@ -1,4 +1,5 @@
-﻿using NetworkCore.ServerInteraction.Type.Devices;
+﻿using MainMenu.Containers.Interfaces;
+using NetworkCore.MirrorNetworking.Types.Devices;
 using UnityEngine;
 
 namespace MainMenu.Containers
@@ -6,7 +7,7 @@ namespace MainMenu.Containers
     /// <summary>
     /// <para>Контейнер для информации о сцене.</para>
     /// </summary>
-    public class SceneInfo
+    public class SceneInfo : INamedContainer, IContainerWithImage
     {
         /// <summary>
         /// Имя файла сцены.

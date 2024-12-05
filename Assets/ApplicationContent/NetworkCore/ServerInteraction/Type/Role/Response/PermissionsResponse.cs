@@ -13,6 +13,6 @@ namespace NetworkCore.ServerInteraction.Type.Role.Response
         /// <summary>
         /// Права (разрешения).
         /// </summary>
-        public List<PermissionRO> permissions { get; set; }
+        public List<PermissionDTO> permissions { get; set; }
     }
 }

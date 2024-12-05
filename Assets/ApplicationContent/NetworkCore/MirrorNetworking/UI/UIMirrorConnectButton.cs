@@ -1,3 +1,5 @@
+using MainMenu.Containers;
+using MainMenu.UI.AvatarSelectMenu;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,6 +11,8 @@ namespace NetworkCore.MirrorNetworking.UI
     [RequireComponent(typeof(Button))]
     public sealed class UIMirrorConnectButton : MonoBehaviour
     {
+        [SerializeField] private UIAvatarMenu _avatarMenu;
+        
         private Button button;
         private MVNetworkManager connection;
 
@@ -51,6 +55,9 @@ namespace NetworkCore.MirrorNetworking.UI
             {
                 return;
             }
+
+            AvatarInfo avatarInfo = _avatarMenu.GetSelectedAvatar();
+            connection.NetworkStore.Player.AvatarName = avatarInfo.Name;
 
             connection.StartHost();
             connection.ServerChangeScene(connection.offlineScene);

@@ -12,6 +12,34 @@ namespace Global.Files
     public static class FileUtils
     {
         /// <summary>
+        /// <para>Если файл не существует, то создать пустой файл.</para>
+        /// </summary>
+        /// <param name="path">путь к файлу</param>
+        /// <param name="emptyFileContent">данные записываемые в файл при создании</param>
+        /// <param name="createDirectory">если директории, в которой должен находиться файл не существует, нужно ли создавать эту директорию</param>
+        public static void EnsureFileExists(string path, string emptyFileContent = "", bool createDirectory = false)
+        {
+            string directory = Path.GetDirectoryName(path);
+            if (createDirectory)
+            {
+                EnsureDirectoryExists(directory);
+            }
+            else
+            {
+                if (!Directory.Exists(directory))
+                {
+                    AppLogger.Error($"Directory {directory} does not exist.");
+                    return;
+                }
+            }
+
+            if (!File.Exists(path))
+            {
+                File.WriteAllText(path, emptyFileContent);
+            }
+        }
+
+        /// <summary>
         /// <para>Если директория не существует, то создать директорию.</para>
         /// </summary>
         /// <param name="path">путь к директории</param>

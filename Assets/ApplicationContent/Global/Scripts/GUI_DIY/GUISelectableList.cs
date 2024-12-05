@@ -14,6 +14,7 @@ namespace Global.GUI_DIY
         public const int NO_ITEM_SELECTED = -1;
 
         private string title;
+        private string subtitle;
         private string[] items;
         private int selectedItemIndex = NO_ITEM_SELECTED;
 
@@ -56,6 +57,15 @@ namespace Global.GUI_DIY
         {
             get => title;
             set => title = value;
+        }
+
+        /// <summary>
+        /// Подзаголовок списка.
+        /// </summary>
+        public string Subtitle
+        {
+            get => subtitle;
+            set => subtitle = value;
         }
 
         /// <summary>
@@ -123,15 +133,22 @@ namespace Global.GUI_DIY
                 labelHeight = size.y;
                 GUI.Label(new Rect(coordinates.x, coordinates.y, size.x, size.y), title);
             }
+
+            if (!string.IsNullOrEmpty(subtitle))
+            {
+                Vector2 size = style.CalcSize(new GUIContent(subtitle));
+                labelHeight = size.y;
+                GUI.Label(new Rect(coordinates.x, coordinates.y + labelHeight + menuItemSpace, size.x, size.y), subtitle);
+            }
         }
 
         private void ScrolledList(Vector2 coordinates)
         {
-            float yStart = coordinates.y + labelHeight;
+            float yStart = coordinates.y + labelHeight * 2 + menuItemSpace;
             Rect viewRect = new Rect(coordinates.x, yStart, listWidth, listHeight);
 
             float contentHeight = labelHeight + Items.Length * (menuItemHeight + menuItemSpace);
-            Rect contentRect = new Rect(coordinates.x, yStart, listWidth, contentHeight);
+            Rect contentRect = new Rect(coordinates.x, yStart, listWidth - 20, contentHeight);
 
             scrollPosition = GUI.BeginScrollView(viewRect, scrollPosition, contentRect);
 
@@ -156,8 +173,8 @@ namespace Global.GUI_DIY
                 GUI.backgroundColor = Color.black;
             }
 
-            float y = index * (menuItemHeight + menuItemSpace) + labelHeight + menuItemSpace;
-            if (GUI.Button(new Rect(0, y, listWidth, menuItemHeight), Items[index], style))
+            float y = index * (menuItemHeight + menuItemSpace) + labelHeight * 2 + menuItemSpace * 2;
+            if (GUI.Button(new Rect(10, y, listWidth - 30, menuItemHeight), Items[index], style))
             {
                 if (selectedItemIndex == index)
                 {

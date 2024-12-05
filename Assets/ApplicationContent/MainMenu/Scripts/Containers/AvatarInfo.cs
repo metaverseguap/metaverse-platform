@@ -1,11 +1,13 @@
-﻿using UnityEngine;
+﻿using AppAvatars.Types;
+using MainMenu.Containers.Interfaces;
+using UnityEngine;
 
 namespace MainMenu.Containers
 {
     /// <summary>
     /// <para>Контейнер для информации об аватаре.</para>
     /// </summary>
-    public class AvatarInfo
+    public class AvatarInfo : INamedContainer, IContainerWithImage
     {
         /// <summary>
         /// Имя файла аватара.
@@ -16,6 +18,11 @@ namespace MainMenu.Containers
         /// Отображаемое имя аватара.
         /// </summary>
         public string DisplayName { get; set; }
+        
+        /// <summary>
+        /// Пол аватара.
+        /// </summary>
+        public Gender AvatarGender { get; set; }
 
         /// <summary>
         /// Изображение аватара.

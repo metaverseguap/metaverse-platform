@@ -23,7 +23,7 @@ namespace MainMenu.UI.AdminMenu
 
         private void Start()
         {
-            serverAPI = MVNetworkManager.singleton.FileServer;
+            serverAPI = MVNetworkManager.singleton.NetworkStore.FileServer;
         }
 
         /// <summary>

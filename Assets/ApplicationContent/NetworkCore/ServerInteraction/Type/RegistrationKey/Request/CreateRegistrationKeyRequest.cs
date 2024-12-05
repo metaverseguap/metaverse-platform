@@ -10,6 +10,6 @@
         /// <summary>
         /// Ключ регистрации.
         /// </summary>
-        public RegistrationKeyRO registrationKey { get; set; }
+        public RegistrationKeyDTO registrationKey { get; set; }
     }
 }

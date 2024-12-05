@@ -13,6 +13,6 @@ namespace NetworkCore.ServerInteraction.Type.LoginKey.Response
         /// <summary>
         /// Ключи авторизации.
         /// </summary>
-        public List<LoginKeyRO> keys { get; set; }
+        public List<LoginKeyDTO> keys { get; set; }
     }
 }

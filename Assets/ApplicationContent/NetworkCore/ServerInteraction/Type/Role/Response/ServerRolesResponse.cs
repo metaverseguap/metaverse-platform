@@ -13,6 +13,6 @@ namespace NetworkCore.ServerInteraction.Type.Role.Response
         /// <summary>
         /// Роли файлового сервера.
         /// </summary>
-        public List<SecurityRoleRO> roles { get; set; }
+        public List<SecurityRoleDTO> roles { get; set; }
     }
 }

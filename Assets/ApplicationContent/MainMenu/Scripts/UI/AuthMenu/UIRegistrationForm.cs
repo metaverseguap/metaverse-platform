@@ -1,7 +1,6 @@
 using MainMenu.Containers;
 using NetworkCore.MirrorNetworking;
 using NetworkCore.ServerInteraction.API;
-using NetworkCore.ServerInteraction.Type.Auth.Request;
 using TMPro;
 using UnityEngine;
 
@@ -26,7 +25,7 @@ namespace MainMenu.UI.AuthMenu
 
         private void Start()
         {
-            serverAPI = MVNetworkManager.singleton.FileServer;
+            serverAPI = MVNetworkManager.singleton.NetworkStore.FileServer;
         }
         
         /// <summary>

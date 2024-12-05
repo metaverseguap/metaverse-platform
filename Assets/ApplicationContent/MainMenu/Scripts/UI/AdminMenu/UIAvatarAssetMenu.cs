@@ -1,7 +1,11 @@
+using System;
 using System.Collections.Generic;
+using System.IO;
+using AppAvatars.Types;
 using Global.Bundles;
 using Global.Files;
 using Global.Logger;
+using Global.UI;
 using Global.UI.LoadingForm;
 using Global.UI.ScrollList;
 using Localization;
@@ -44,7 +48,7 @@ namespace MainMenu.UI.AdminMenu
         {
             if (serverAPI == null)
             {
-                return MVNetworkManager.singleton.FileServer;
+                return MVNetworkManager.singleton.NetworkStore.FileServer;
             }
 
             return serverAPI;
@@ -58,7 +62,9 @@ namespace MainMenu.UI.AdminMenu
             avatarInfos.Clear();
             
             Dictionary<string, AvatarInfo> serverAvatars = GetServerAvatars();
-            string[] avatarAssets = FileUtils.GetFilesFromDirectory(BundleConstants.ASSET_AVATAR_BUNDLES_PATH, new HashSet<string> { "Avatar" }, new HashSet<string> { "manifest" });
+            
+            string directoryName = Path.GetFileName(BundleConstants.ASSET_AVATAR_BUNDLES_PATH);
+            string[] avatarAssets = FileUtils.GetFilesFromDirectory(BundleConstants.ASSET_AVATAR_BUNDLES_PATH, new HashSet<string> { directoryName }, new HashSet<string> { "manifest" });
 
             AddLocalAvatarsToList(avatarAssets, ref serverAvatars);
             AddServerAvatarToList(serverAvatars);
@@ -84,10 +90,12 @@ namespace MainMenu.UI.AdminMenu
             foreach (string avatarAsset in avatarAssets)
             {
                 _assetItemPrefab.Name.text = avatarAsset;
+                _assetItemPrefab.Name.color = Color.white;
                 bundleFiles.Add(avatarAsset);
                 if (serverAvatars.TryGetValue(avatarAsset, out var avatarInfo))
                 {
                     _assetItemPrefab.DisplayName.text = avatarInfo.DisplayName;
+                    SetupDropDown(_assetItemPrefab.Gender, avatarInfo.AvatarGender);
                     _assetItemPrefab.LoadImage.LoadedImage = avatarInfo.Image;
                     _assetItemPrefab.Status.text = LocalizationUtils.GetStringFromTable("MenuLocaleTable", SERVER_KEY);
 
@@ -97,6 +105,7 @@ namespace MainMenu.UI.AdminMenu
                 else
                 {
                     _assetItemPrefab.DisplayName.text = "";
+                    SetupDropDown(_assetItemPrefab.Gender, Gender.MALE);
                     _assetItemPrefab.LoadImage.LoadedImage = null;
                     _assetItemPrefab.Status.text = LocalizationUtils.GetStringFromTable("MenuLocaleTable", LOCAL_KEY);
 
@@ -120,11 +129,28 @@ namespace MainMenu.UI.AdminMenu
                 _assetItemPrefab.Name.color = Color.grey;
 
                 _assetItemPrefab.DisplayName.text = onlyServerAvatar.DisplayName;
+                SetupDropDown(_assetItemPrefab.Gender, onlyServerAvatar.AvatarGender);
                 _assetItemPrefab.LoadImage.LoadedImage = onlyServerAvatar.Image;
                 _assetItemPrefab.Status.text = LocalizationUtils.GetStringFromTable("MenuLocaleTable", SERVER_KEY);
 
                 _avatarAssetsList.AddItemWithContent(_assetItemPrefab.gameObject);
                 avatarInfos.Add(onlyServerAvatar);
+            }
+        }
+        
+        private static void SetupDropDown(TMP_Dropdown deviceDropDown, Gender currentGender)
+        {
+            deviceDropDown.ClearOptions();
+            foreach (Gender device in Enum.GetValues(typeof(Gender)))
+            {
+                TMP_Dropdown.OptionData option = new TMP_Dropdown.OptionData();
+                option.text = device.ToString();
+                deviceDropDown.options.Add(option);
+                if (device == currentGender)
+                {
+                    int currentIndex = deviceDropDown.options.Count - 1;
+                    deviceDropDown.ForceSetValue(currentIndex);
+                }
             }
         }
         
@@ -185,6 +211,11 @@ namespace MainMenu.UI.AdminMenu
             UploadAvatarInfo avatarInfo = new UploadAvatarInfo();
             avatarInfo.Name = avatarAsset.Name.text;
             avatarInfo.DisplayName = avatarAsset.DisplayName.text;
+            string genderStr = avatarAsset.Gender.options[avatarAsset.Gender.value].text;
+            if (Enum.TryParse(genderStr, out Gender gender))
+            {
+                avatarInfo.AvatarGender = gender;
+            }
 
             avatarInfo.Image = avatarAsset.LoadImage.LoadedImage;
             avatarInfo.AvatarFilePath = $"{BundleConstants.ASSET_AVATAR_BUNDLES_PATH}\\{avatarAsset.Name.text}";

@@ -4,11 +4,10 @@ using Global.UI.ScrollList;
 using MainMenu.UI.ScrollList.Items;
 using NetworkCore.MirrorNetworking;
 using NetworkCore.ServerInteraction.API;
-using RoleSystem.Core;
-using RoleSystem.Types;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Serialization;
+using UserSystem.RoleSystem.Core;
+using UserSystem.RoleSystem.Types;
 
 namespace MainMenu.UI.AdminMenu
 {
@@ -36,7 +35,7 @@ namespace MainMenu.UI.AdminMenu
         {
             if (serverAPI == null)
             {
-                return MVNetworkManager.singleton.FileServer;
+                return MVNetworkManager.singleton.NetworkStore.FileServer;
             }
 
             return serverAPI;
