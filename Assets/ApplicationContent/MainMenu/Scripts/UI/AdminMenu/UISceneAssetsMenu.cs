@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Global.Bundles;
 using Global.Files;
 using Global.Logger;
@@ -10,8 +11,8 @@ using Localization;
 using MainMenu.Containers;
 using MainMenu.UI.ScrollList.Items;
 using NetworkCore.MirrorNetworking;
+using NetworkCore.MirrorNetworking.Types.Devices;
 using NetworkCore.ServerInteraction.API;
-using NetworkCore.ServerInteraction.Type.Devices;
 using TMPro;
 using UnityEngine;
 using UploadingSceneInfo = MainMenu.Containers.UploadingSceneInfo;
@@ -48,7 +49,7 @@ namespace MainMenu.UI.AdminMenu
         {
             if (serverAPI == null)
             {
-                return MVNetworkManager.singleton.FileServer;
+                return MVNetworkManager.singleton.NetworkStore.FileServer;
             }
 
             return serverAPI;
@@ -62,7 +63,9 @@ namespace MainMenu.UI.AdminMenu
             sceneInfos.Clear();
             
             Dictionary<string, SceneInfo> serverScenes = GetServerScenes();
-            string[] sceneAssets = FileUtils.GetFilesFromDirectory(BundleConstants.ASSET_SCENE_BUNDLES_PATH, new HashSet<string> { "Scene" }, new HashSet<string> { "manifest" });
+            
+            string directoryName = Path.GetFileName(BundleConstants.ASSET_SCENE_BUNDLES_PATH);
+            string[] sceneAssets = FileUtils.GetFilesFromDirectory(BundleConstants.ASSET_SCENE_BUNDLES_PATH, new HashSet<string> { directoryName }, new HashSet<string> { "manifest" });
 
             AddLocalScenesToList(sceneAssets, ref serverScenes);
             AddServerSceneToList(serverScenes);
@@ -149,7 +152,7 @@ namespace MainMenu.UI.AdminMenu
                 if (device == currentDevice)
                 {
                     int currentIndex = deviceDropDown.options.Count - 1;
-                    deviceDropDown.SetValue(currentIndex);
+                    deviceDropDown.ForceSetValue(currentIndex);
                 }
             }
         }

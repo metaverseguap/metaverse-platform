@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Threading.Tasks;
+using Global.AssetPackages;
 using Global.Converters;
 using Global.Files;
 using Global.Logger;
@@ -21,7 +24,8 @@ namespace NetworkCore.ServerInteraction.API
         private const string ALL_AVATAR_INFO_URL = "/api/avatar/all-info";
         private const string UPLOAD_AVATAR_URL = "/api/avatar/upload-avatar";
         private const string DELETE_AVATARS_URL = "/api/avatar/delete-by-names";
-        
+        private const string AVATAR_FILE_URL = "/api/avatar/file";
+
         /// <summary>
         /// <para>Конструктор.</para>
         /// </summary>
@@ -29,7 +33,7 @@ namespace NetworkCore.ServerInteraction.API
         public AvatarAPI(string serverUri) : base(serverUri)
         {
         }
-        
+
         /// <summary>
         /// <para>Получает информацию о всех аватарах хранящихся на файловом сервере.</para>
         ///
@@ -50,7 +54,7 @@ namespace NetworkCore.ServerInteraction.API
                     info.Name = infoRO.name;
                     info.DisplayName = infoRO.displayName;
                     info.Image = DataConverter.SpriteFromRowData(infoRO.imageData);
-                    
+
                     result.Add(info);
                 }
 
@@ -63,7 +67,7 @@ namespace NetworkCore.ServerInteraction.API
 
             return result;
         }
-        
+
         /// <summary>
         /// <para>Загружает список аватаров на файловый сервер.</para>
         /// </summary>
@@ -83,36 +87,49 @@ namespace NetworkCore.ServerInteraction.API
                     FileUtils.RemoveFile(avatar.AvatarFilePath + ".manifest");
                 }
             }
-            
+
             return result;
         }
-        
+
         private bool UploadAvatar(UploadAvatarInfo avatar)
         {
             var formData = new MultipartFormDataContent();
-            
+
             formData.Add(new StringContent(avatar.DisplayName), "displayName");
-            
+            formData.Add(new StringContent(avatar.AvatarGender.ToString()), "gender");
+
             byte[] imgFileData = DataConverter.SpriteToRowData(avatar.Image);
             var imgFileContent = new ByteArrayContent(imgFileData);
             imgFileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("image/png");
             formData.Add(imgFileContent, "img", avatar.Image.name);
-            
-            byte[] avatarFileData = File.ReadAllBytes(avatar.AvatarFilePath);
-            var avatarFileContent = new ByteArrayContent(avatarFileData);
+
+            var avatarFileStream = new FileStream(avatar.AvatarFilePath, FileMode.Open, FileAccess.Read);
+            var avatarFileContent = new StreamContent(avatarFileStream);
             avatarFileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("application/octet-stream");
             formData.Add(avatarFileContent, "avatar", avatar.Name);
-
-            ResponseDetails response = restAPI.PostMultipartRequest<ResponseDetails>(UPLOAD_AVATAR_URL, formData);
-            if (!response.success)
+            
+            try
             {
-                AppLogger.Warning($"Upload Avatar request ended with error: {ResponseUtils.GetErrorMessagesAsString(response)}");
-                return false;
+                ResponseDetails response = restAPI.PostMultipartRequest<ResponseDetails>(UPLOAD_AVATAR_URL, formData);
+                if (!response.success)
+                {
+                    AppLogger.Warning($"Upload Avatar request ended with error: {ResponseUtils.GetErrorMessagesAsString(response)}");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                AppLogger.Error($"Upload Avatar request ended with error: {ex.Message}");
+            }
+            finally
+            {
+                // Закрываем потоки после завершения запроса
+                avatarFileStream.Dispose();
             }
             
             return true;
         }
-        
+
         /// <summary>
         /// <para>Удаляет множество аватаров.</para>
         /// </summary>
@@ -136,6 +153,29 @@ namespace NetworkCore.ServerInteraction.API
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// <para>Получает файлы указанных аватаров с файлового сервера.</para>
+        /// </summary>
+        /// <param name="downloadAvatarsInfos">информация об аватарах, файлы которых необходимо загрузить</param>
+        /// <returns>информация об успешно загруженных файлах</returns>
+        public async Task<IList<AvatarInfo>> GetAvatarsFiles(IList<AvatarInfo> downloadAvatarsInfos)
+        {
+            IList<AvatarInfo> result = new List<AvatarInfo>(downloadAvatarsInfos);
+            for (int i = result.Count - 1; i >= 0; i--)
+            {
+                AvatarInfo avatar = downloadAvatarsInfos[i];
+                AppLogger.Log($"Downloading avatar {avatar.Name}");
+                SaveFileRequest saveFileRequest = SaveFileRequest.Form(AvatarAssetPackages.ASSETS_DIRECTORY, avatar.Name);
+                bool success = await restAPI.GetFileRequest($"{AVATAR_FILE_URL}/{avatar.Name}", saveFileRequest);
+                if (!success)
+                {
+                    result.RemoveAt(i);
+                }
+            }
+
+            return result;
         }
     }
 }

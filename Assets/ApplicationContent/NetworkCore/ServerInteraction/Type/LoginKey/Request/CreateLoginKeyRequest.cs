@@ -10,6 +10,6 @@
         /// <summary>
         /// Ключ авторизации.
         /// </summary>
-        public LoginKeyRO loginKey { get; set; }
+        public LoginKeyDTO loginKey { get; set; }
     }
 }

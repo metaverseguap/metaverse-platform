@@ -1,9 +1,9 @@
 using NetworkCore.MirrorNetworking;
 using NetworkCore.ServerInteraction.API;
-using RoleSystem.Core;
-using RoleSystem.Types;
 using UnityEngine;
 using UnityEngine.UI;
+using UserSystem.RoleSystem.Core;
+using UserSystem.RoleSystem.Types;
 
 namespace MainMenu.UI.AuthMenu
 {
@@ -17,7 +17,7 @@ namespace MainMenu.UI.AuthMenu
 
         private void Start()
         {
-            serverAPI = MVNetworkManager.singleton.FileServer;
+            serverAPI = MVNetworkManager.singleton.NetworkStore.FileServer;
         }
 
         private void OnEnable()
@@ -34,11 +34,11 @@ namespace MainMenu.UI.AuthMenu
 
         private RoleInfo GetRole()
         {
-            RoleInfo role = MVNetworkManager.singleton.Role;
+            RoleInfo role = MVNetworkManager.singleton.NetworkStore.Role;
             if (role == null)
             {
                 role = serverAPI.Role.GetMyRole();
-                MVNetworkManager.singleton.Role = role;
+                MVNetworkManager.singleton.NetworkStore.Role = role;
             }
 
             return role;

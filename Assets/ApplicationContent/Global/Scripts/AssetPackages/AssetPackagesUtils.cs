@@ -38,8 +38,8 @@ namespace Global.AssetPackages
                 filter += " l:" + label;
             }
             
-            string[] sceneList = AssetDatabase.FindAssets(filter, BUNDLES_SEARCH_PATH);
-            return ExtractBundleAssets(sceneList);
+            string[] objectList = AssetDatabase.FindAssets(filter, BUNDLES_SEARCH_PATH);
+            return ExtractBundleAssets(objectList);
         }
 
         private static string[] ExtractBundleAssets(string[] names)

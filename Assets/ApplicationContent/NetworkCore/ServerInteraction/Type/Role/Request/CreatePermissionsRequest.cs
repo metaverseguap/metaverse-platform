@@ -12,6 +12,6 @@ namespace NetworkCore.ServerInteraction.Type.Role.Request
         /// <summary>
         /// Список создаваемых прав (разрешений).
         /// </summary>
-        public List<PermissionRO> permissions { get; set; }
+        public List<PermissionDTO> permissions { get; set; }
     }
 }

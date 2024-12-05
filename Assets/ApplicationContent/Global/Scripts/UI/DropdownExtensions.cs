@@ -26,7 +26,7 @@ namespace Global.UI
         /// </summary>
         /// <param name="dropdown">выпадающий список</param>
         /// <param name="value">значение выпадающего списка</param>
-        public static void SetValue(this TMP_Dropdown dropdown, int value)
+        public static void ForceSetValue(this TMP_Dropdown dropdown, int value)
         {
             dropdown.value = value;
             dropdown.captionText.text = dropdown.options[dropdown.value].text;

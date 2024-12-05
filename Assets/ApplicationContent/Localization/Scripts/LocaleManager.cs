@@ -10,7 +10,7 @@ namespace Localization
     /// </summary>
     public sealed class LocaleManager : MonoBehaviour
     {
-        private static bool isChangeLocaleNow = false;
+        private static bool isChangeLocaleNow;
 
         /// <summary>
         /// <para>Изменить язык приложения на следующий в спске.</para>

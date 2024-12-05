@@ -69,7 +69,7 @@ namespace NetworkCore.ServerInteraction.API
         public bool CreateLoginKey(LoginKeyInfo loginKeyInfo, out string exceptionMessage)
         {
             CreateLoginKeyRequest request = new CreateLoginKeyRequest();
-            request.loginKey = new LoginKeyRO()
+            request.loginKey = new LoginKeyDTO()
             {
                 key = loginKeyInfo.Key,
                 dateFrom = loginKeyInfo.DateFrom,

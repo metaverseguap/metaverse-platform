@@ -10,6 +10,6 @@
         /// <summary>
         /// Роль.
         /// </summary>
-        public RoleRO role { get; set; }
+        public RoleDTO role { get; set; }
     }
 }

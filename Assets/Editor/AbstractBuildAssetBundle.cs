@@ -1,4 +1,5 @@
-﻿using Global.GUI_DIY;
+﻿using System;
+using Global.GUI_DIY;
 using Global.AssetPackages;
 using Global.Logger;
 using UnityEditor;
@@ -40,20 +41,26 @@ public abstract class AbstractBuildAssetBundle : EditorWindow
     protected static void SetupWindow()
     {
         window.titleContent.text = BASE_WINDOW_NAME;
-        window.maxSize = new Vector2(285, 165);
-        window.minSize = new Vector2(280, 160);
+        window.maxSize = new Vector2(285, 300);
+        window.minSize = new Vector2(280, 290);
     }
-
+    
+    private void OnDestroy()
+    {
+        bundlesList = null;
+    }
+    
     private void OnGUI()
     {
         DrawBundleList();
         DrawCreateBundleButton();
     }
-    
+
     private GUISelectableList CreateAssetsList()
     {
-        GUISelectableList selectableList = new GUISelectableList(280, 100);
+        GUISelectableList selectableList = new GUISelectableList(280, 200);
         selectableList.Title = LIST_NAME;
+        selectableList.Subtitle = $"Путь сохранения: {AssetBundlesPath()}"; 
         selectableList.Items = GetAssets();
 
         return selectableList;
@@ -68,7 +75,7 @@ public abstract class AbstractBuildAssetBundle : EditorWindow
     private void DrawCreateBundleButton()
     {
         const string buttonName = "Создать Bundle";
-        if (GUI.Button(new Rect(0, 120, 280, 20), buttonName))
+        if (GUI.Button(new Rect(0, 260, 280, 20), buttonName))
         {
             string bundleName = BundlesList.SelectedItem;
             AssetPackagesUtils.BuildAssetBundleByName(bundleName, AssetBundlesPath());

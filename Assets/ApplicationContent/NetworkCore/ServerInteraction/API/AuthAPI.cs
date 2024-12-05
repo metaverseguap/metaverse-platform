@@ -1,5 +1,4 @@
-﻿using System.Text;
-using MainMenu.Containers;
+﻿using MainMenu.Containers;
 using NetworkCore.MirrorNetworking;
 using NetworkCore.ServerInteraction.API.Utils;
 using NetworkCore.ServerInteraction.Type.Auth.Request;
@@ -52,7 +51,7 @@ namespace NetworkCore.ServerInteraction.API
             
             apiContainer.SetAuthToken($"Bearer {response.token}");
 
-            MVNetworkManager.singleton.Role = apiContainer.Role.GetMyRole();
+            MVNetworkManager.singleton.NetworkStore.Role = apiContainer.Role.GetMyRole();
             
             exceptionMessage = "";
             return true;
@@ -83,7 +82,7 @@ namespace NetworkCore.ServerInteraction.API
             
             apiContainer.SetAuthToken($"Bearer {response.token}");
             
-            MVNetworkManager.singleton.Role = apiContainer.Role.GetMyRole();
+            MVNetworkManager.singleton.NetworkStore.Role = apiContainer.Role.GetMyRole();
             
             exceptionMessage = "";
             return true;

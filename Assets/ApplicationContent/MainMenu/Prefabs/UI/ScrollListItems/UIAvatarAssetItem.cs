@@ -11,6 +11,7 @@ namespace MainMenu.UI.ScrollList.Items
     {
         [SerializeField] private TMP_Text _name;
         [SerializeField] private TMP_InputField _displayName;
+        [SerializeField] private TMP_Dropdown _gender;
         [SerializeField] private UILoadImageButton _loadImage;
         [SerializeField] private TMP_Text _status;
 
@@ -23,6 +24,11 @@ namespace MainMenu.UI.ScrollList.Items
         /// Отображаемое имя аватара.
         /// </summary>
         public TMP_InputField DisplayName => _displayName;
+
+        /// <summary>
+        /// Пол аватара.
+        /// </summary>
+        public TMP_Dropdown Gender => _gender;
 
         /// <summary>
         /// Изображение аватара.

@@ -12,6 +12,6 @@ namespace NetworkCore.ServerInteraction.Type.Role.Response
         /// <summary>
         /// Информация о роли.
         /// </summary>
-        public RoleRO roleInfo { get; set; }
+        public RoleDTO roleInfo { get; set; }
     }
 }

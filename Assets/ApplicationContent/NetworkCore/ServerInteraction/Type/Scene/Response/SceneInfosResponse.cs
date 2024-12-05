@@ -13,6 +13,6 @@ namespace NetworkCore.ServerInteraction.Type.Scene.Response
         /// <summary>
         /// Список с информацией о сценах.
         /// </summary>
-        public List<SceneInfoRO> infoList { get; set; }
+        public List<SceneInfoDTO> infoList { get; set; }
     }
 }

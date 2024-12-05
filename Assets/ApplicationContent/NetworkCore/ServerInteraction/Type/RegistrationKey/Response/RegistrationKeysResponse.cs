@@ -13,6 +13,6 @@ namespace NetworkCore.ServerInteraction.Type.RegistrationKey.Response
         /// <summary>
         /// Ключи регистрации.
         /// </summary>
-        public List<RegistrationKeyRO> keys { get; set; }
+        public List<RegistrationKeyDTO> keys { get; set; }
     }
 }

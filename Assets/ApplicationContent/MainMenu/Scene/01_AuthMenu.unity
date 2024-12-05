@@ -7218,8 +7218,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1510370057}
-  - component: {fileID: 1510370055}
+  - component: {fileID: 1510370059}
+  - component: {fileID: 1510370061}
+  - component: {fileID: 1510370060}
   - component: {fileID: 1510370058}
+  - component: {fileID: 1510370055}
   m_Layer: 0
   m_Name: NetworkManager
   m_TagString: Untagged
@@ -7288,8 +7291,8 @@ MonoBehaviour:
   headlessStartMode: 0
   editorAutoStart: 0
   sendRate: 60
-  offlineScene: Assets/ApplicationContent/OfflineScene/Void.unity
-  onlineScene: Assets/ApplicationContent/OfflineScene/Void.unity
+  offlineScene: 
+  onlineScene: 
   offlineSceneLoadDelay: 0
   transport: {fileID: 1510370055}
   networkAddress: localhost
@@ -7297,8 +7300,8 @@ MonoBehaviour:
   disconnectInactiveConnections: 0
   disconnectInactiveTimeout: 60
   authenticator: {fileID: 0}
-  playerPrefab: {fileID: 4218176936335729650, guid: 5937a67ac86ebc84aaddb1c2fe220316, type: 3}
-  autoCreatePlayer: 1
+  playerPrefab: {fileID: 0}
+  autoCreatePlayer: 0
   playerSpawnMethod: 0
   spawnPrefabs: []
   exceptionsDisconnect: 1
@@ -7316,7 +7319,50 @@ MonoBehaviour:
   evaluationMethod: 0
   evaluationInterval: 3
   timeInterpolationGui: 0
-  _serverUri: http://localhost:5001/
+--- !u!114 &1510370059
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1510370054}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0686f3243ebc7b428cdad7043f3dc21, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _device: 0
+  _serverUrl: http://localhost:5001
+  _defaultScene: Assets/ApplicationContent/OfflineScene/Void.unity
+  _maxConnections: 0
+  _networkPlayerPrefab: {fileID: 7598941787893235472, guid: a3e81b3006bee5040bffc7b93263a85f, type: 3}
+  _devicePrefabs:
+  - ForDevice: 0
+    Prefab: {fileID: 5107327825997553146, guid: 04cfab6a46b87f348895d60d62ef068d, type: 3}
+--- !u!114 &1510370060
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1510370054}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09697d5ca522cf845b89a46a1889dd66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1510370061
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1510370054}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a2642f3936a75b4393f5e403bdb8164, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1567041129
 GameObject:
   m_ObjectHideFlags: 0
@@ -7640,7 +7686,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a05d786d8ee41664b888c8036aa525db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _nextScene: Assets/ApplicationContent/MainMenu/Scene/02_AdministratorMenu.unity
+  _nextScene: Assets/ApplicationContent/MainMenu/Scene/03_AdministratorMenu.unity
 --- !u!1 &1643504089
 GameObject:
   m_ObjectHideFlags: 0
@@ -9025,7 +9071,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a05d786d8ee41664b888c8036aa525db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _nextScene: Assets/ApplicationContent/MainMenu/Scene/03_AvatarSelectMenu.unity
+  _nextScene: Assets/ApplicationContent/MainMenu/Scene/02_MenuLoading.unity
 --- !u!1 &1870187533
 GameObject:
   m_ObjectHideFlags: 0
@@ -10115,7 +10161,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8713659201631801869, guid: 7aab35fbf4a691e4a979b70b2709a7f8, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7aab35fbf4a691e4a979b70b2709a7f8, type: 3}

@@ -11,8 +11,8 @@ namespace NetworkCore.ServerInteraction.Type.Avatar.Response
     public sealed class AvatarInfosResponse : ResponseDetails
     {
         /// <summary>
-        /// Список с информацией об аватарах
+        /// Список с информацией об аватарах.
         /// </summary>
-        public List<AvatarInfoRO> infoList { get; set; }
+        public List<AvatarInfoDTO> infoList { get; set; }
     }
 }

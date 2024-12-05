@@ -285,6 +285,14 @@ MonoBehaviour:
     m_Localized: In development
     m_Metadata:
       m_Items: []
+  - m_Id: 10552655573426176
+    m_Localized: Avatars downloading...
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10552913908998144
+    m_Localized: Scenes downloading...
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:

@@ -22,7 +22,7 @@ namespace MainMenu.UI.AuthMenu
 
         private void Start()
         {
-            serverAPI = MVNetworkManager.singleton.FileServer;
+            serverAPI = MVNetworkManager.singleton.NetworkStore.FileServer;
         }
 
         /// <summary>

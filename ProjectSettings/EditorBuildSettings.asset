@@ -9,13 +9,13 @@ EditorBuildSettings:
     path: Assets/ApplicationContent/MainMenu/Scene/01_AuthMenu.unity
     guid: 914f1259c17d7034e90d07acea6d6015
   - enabled: 1
-    path: Assets/ApplicationContent/MainMenu/Scene/04_MenuLoading.unity
+    path: Assets/ApplicationContent/MainMenu/Scene/02_MenuLoading.unity
     guid: f0e34981f6ecc90449c1a55b196899e8
   - enabled: 1
-    path: Assets/ApplicationContent/MainMenu/Scene/02_AdministratorMenu.unity
+    path: Assets/ApplicationContent/MainMenu/Scene/03_AdministratorMenu.unity
     guid: 7e6106be7971d5a488de8b76cefe4523
   - enabled: 1
-    path: Assets/ApplicationContent/MainMenu/Scene/03_AvatarSelectMenu.unity
+    path: Assets/ApplicationContent/MainMenu/Scene/04_AvatarSelectMenu.unity
     guid: d683dbb1d4d3931498bcbedd2ec2520a
   - enabled: 1
     path: Assets/ApplicationContent/OfflineScene/Void.unity

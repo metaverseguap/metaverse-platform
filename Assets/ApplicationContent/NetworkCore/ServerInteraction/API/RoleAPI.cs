@@ -8,8 +8,8 @@ using NetworkCore.ServerInteraction.Type.Response;
 using NetworkCore.ServerInteraction.Type.Role;
 using NetworkCore.ServerInteraction.Type.Role.Request;
 using NetworkCore.ServerInteraction.Type.Role.Response;
-using RoleSystem.Core;
-using RoleSystem.Types;
+using UserSystem.RoleSystem.Core;
+using UserSystem.RoleSystem.Types;
 
 namespace NetworkCore.ServerInteraction.API
 {
@@ -224,21 +224,26 @@ namespace NetworkCore.ServerInteraction.API
             return roles;
         }
 
-        private RoleInfo ConvertToRoleInfo(RoleRO roleRO)
+        /// <summary>
+        /// <para>Преобразовать <see cref="RoleDTO"/> к <see cref="RoleInfo"/>.</para>
+        /// </summary>
+        /// <param name="roleDto"><see cref="RoleDTO"/></param>
+        /// <returns><see cref="RoleInfo"/></returns>
+        public static RoleInfo ConvertToRoleInfo(RoleDTO roleDto)
         {
             RoleInfo role = new RoleInfo();
-            if (Enum.TryParse(roleRO.name, out AppRole appRole))
+            if (Enum.TryParse(roleDto.name, out AppRole appRole))
             {
                 role.Name = appRole;
             }
             else
             {
-                AppLogger.Error($"Cannot parse {roleRO.name} to AppRole");
+                AppLogger.Error($"Cannot parse {roleDto.name} to AppRole");
                 return role;
             }
 
             role.Permissions = new List<AppPermission>();
-            foreach (var permission in roleRO.permissions)
+            foreach (var permission in roleDto.permissions)
             {
                 if (Enum.TryParse(permission.name, out AppPermission appPermission))
                 {
@@ -341,12 +346,12 @@ namespace NetworkCore.ServerInteraction.API
         /// <param name="roles">коллекция ролей</param>
         public bool UpsertRoles(ISet<AppRole> roles)
         {
-            List<RoleRO> creatingRoles = new List<RoleRO>();
+            List<RoleDTO> creatingRoles = new List<RoleDTO>();
             foreach (var role in roles)
             {
-                RoleRO roleRo = new RoleRO();
-                roleRo.name = role.ToString();
-                creatingRoles.Add(roleRo);
+                RoleDTO roleDto = new RoleDTO();
+                roleDto.name = role.ToString();
+                creatingRoles.Add(roleDto);
             }
 
             CreateRolesRequest createRolesRequest = new CreateRolesRequest();
@@ -370,12 +375,12 @@ namespace NetworkCore.ServerInteraction.API
         /// <param name="permissions">коллекция прав (разрешений)</param>
         public bool UpsertPermissions(ISet<AppPermission> permissions)
         {
-            List<PermissionRO> creatingPermissions = new List<PermissionRO>();
+            List<PermissionDTO> creatingPermissions = new List<PermissionDTO>();
             foreach (var permission in permissions)
             {
-                PermissionRO permissionRO = new PermissionRO();
-                permissionRO.name = permission.ToString();
-                creatingPermissions.Add(permissionRO);
+                PermissionDTO permissionDto = new PermissionDTO();
+                permissionDto.name = permission.ToString();
+                creatingPermissions.Add(permissionDto);
             }
 
             CreatePermissionsRequest createPermissionsRequest = new CreatePermissionsRequest();
@@ -401,20 +406,20 @@ namespace NetworkCore.ServerInteraction.API
         /// <returns>true, если обновление роли прошло успешно</returns>
         public bool UpsertRole(RoleInfo role, out string exceptionMessage)
         {
-            List<PermissionRO> permissionsRo = new List<PermissionRO>();
+            List<PermissionDTO> permissionsRo = new List<PermissionDTO>();
             foreach (var permission in role.Permissions)
             {
-                PermissionRO permissionRO = new PermissionRO();
-                permissionRO.name = permission.ToString();
-                permissionsRo.Add(permissionRO);
+                PermissionDTO permissionDto = new PermissionDTO();
+                permissionDto.name = permission.ToString();
+                permissionsRo.Add(permissionDto);
             }
 
-            RoleRO roleRo = new RoleRO();
-            roleRo.name = role.Name.ToString();
-            roleRo.permissions = permissionsRo;
+            RoleDTO roleDto = new RoleDTO();
+            roleDto.name = role.Name.ToString();
+            roleDto.permissions = permissionsRo;
             
             CreateRoleRequest createRolesRequest = new CreateRoleRequest();
-            createRolesRequest.role = roleRo;
+            createRolesRequest.role = roleDto;
 
             ResponseDetails response =
                 restAPI.PostRequest<CreateRoleRequest, ResponseDetails>(UPDATE_ROLE_URL, createRolesRequest);

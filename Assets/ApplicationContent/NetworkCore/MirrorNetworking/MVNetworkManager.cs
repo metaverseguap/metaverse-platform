@@ -1,13 +1,8 @@
-using System.Collections;
-using Global.Logger;
 using Mirror;
-using NetworkCore.MirrorNetworking.Player;
-using NetworkCore.MirrorNetworking.Types;
-using NetworkCore.ServerInteraction;
-using NetworkCore.ServerInteraction.API;
+using NetworkCore.MirrorNetworking.Containers;
 using NetworkCore.Utils;
-using RoleSystem.Types;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace NetworkCore.MirrorNetworking
 {
@@ -17,12 +12,52 @@ namespace NetworkCore.MirrorNetworking
     /// Данный класс служит для подключения локальной машины к сети mirror,
     /// либо для создания из локальной машины хоста в сети mirror.
     ///
-    /// Данный класс так же идентифицирует локальную машину в сети mirror. 
+    /// Данный класс так же идентифицирует локальную машину в сети mirror.
+    /// <remarks>к данному классу стоит относиться как к контейнеру, предоставляющему <see cref="NetworkDataStore">даннанные</see> и сетевые события.
+    /// В данном класс не должно располагаться тяжелой логики</remarks>
     /// </summary>
+    [RequireComponent(typeof(NetworkManagerSetups))]
     public sealed class MVNetworkManager : NetworkManager
     {
-        [Header("Server")] 
-        [SerializeField] private string _serverUri;
+        /// <summary>
+        /// Событие происходящие после подключения игрока к серверу.
+        /// </summary>
+        public event UnityAction AfterClientConnected;
+
+        /// <summary>
+        /// Событие происходящие после подключения к серверу нового игрока.
+        /// </summary>
+        public event UnityAction<NetworkConnectionToClient> AfterServerAddPlayer;
+        
+        /// <summary>
+        /// Событие происходящие после отключения игрока от сервера.
+        /// </summary>
+        public event UnityAction<NetworkConnectionToClient> AfterServerLostPlayer;
+
+        /// <summary>
+        /// Событие происходящие после подключения игрока к сети как хоста.
+        /// </summary>
+        public event UnityAction AfterHostStarted;
+
+        /// <summary>
+        /// Событие происходящее перед отключением клиента от сервера.
+        /// </summary>
+        public event UnityAction BeforeClientDisconnected;
+
+        /// <summary>
+        /// Событие происходящие до того, как сервер изменил сцену.
+        /// </summary>
+        public event UnityAction<string> BeforeServerChangeScene;
+        
+        /// <summary>
+        /// Событие происходящие после того, как сервер изменил сцену.
+        /// </summary>
+        public event UnityAction<string> AfterServerChangeScene;
+
+        /// <summary>
+        /// Настройки менеджера, устанавливаемые через редактор Unity.
+        /// </summary>
+        private NetworkManagerSetups networkManagerSetups;
 
         /// <summary>
         /// <para><inheritdoc cref="NetworkManager.singleton"/></para>
@@ -33,102 +68,93 @@ namespace NetworkCore.MirrorNetworking
         public new static MVNetworkManager singleton { get; private set; }
 
         /// <summary>
-        /// <para>Контейнер состояния игрока при миграции хоста.</para>
+        /// Хранилище данных.
         /// </summary>
-        public HostMigrationState HostMigrationState { get; set; } = new HostMigrationState();
-
-        /// <summary>
-        /// <para>Доступ к файловму серверу.</para>
-        /// </summary>
-        public APIContainer FileServer { get; private set; }
-
-        /// <summary>
-        /// <para>Роль пользователя.</para>
-        /// </summary>
-        public RoleInfo Role { get; set; }
+        public NetworkDataStore NetworkStore { get; private set; }
 
         public override void Awake()
         {
             base.Awake();
             singleton = this;
-            FileServer = new APIContainer(_serverUri);
+            networkManagerSetups = GetComponent<NetworkManagerSetups>();
+            NetworkStore = new NetworkDataStore(networkManagerSetups);
+            offlineScene = networkManagerSetups.DefaultScene;
+            onlineScene = networkManagerSetups.DefaultScene;
+            maxConnections = networkManagerSetups.MaxConnections;
+            playerPrefab = NetworkStore.Player.NetworkPlayer.gameObject;
+            networkAddress = IPUtils.GetIpAsUrl();
+        }
+        
+        /// <summary>
+        /// <para><inheritdoc cref="NetworkManager.OnStartHost"/></para>
+        ///
+        /// <remarks>метод, вызываемый при подключении машины как хоста</remarks>
+        /// </summary>
+        public override void OnStartHost()
+        {
+            base.OnStartHost();
+            AfterHostStarted?.Invoke();
         }
 
+        /// <summary>
+        /// <para><inheritdoc cref="NetworkManager.OnClientConnect"/></para>
+        ///
+        /// <remarks>метод, вызываемый при попытке игрока(я как клиент подключаюсь) подключиться к серверу</remarks>
+        /// </summary>
+        public override void OnClientConnect()
+        {
+            base.OnClientConnect();
+            AfterClientConnected?.Invoke();
+        }
+
+        /// <summary>
+        /// <para><inheritdoc cref="NetworkManager.OnClientConnect"/></para>
+        ///
+        /// <remarks>метод, вызываемый при подключении нового игрока(ко мне как к серверу подключаются) к серверу</remarks>
+        /// </summary>
+        /// <param name="conn">сведенья о подключенном игроке</param>
         public override void OnServerAddPlayer(NetworkConnectionToClient conn)
         {
             base.OnServerAddPlayer(conn);
-            SetBackUpHost();
+            AfterServerAddPlayer?.Invoke(conn);
         }
 
-        public override void OnServerDisconnect(NetworkConnectionToClient conn)
+        /// <summary>
+        /// <para><inheritdoc cref="NetworkManager.ServerChangeScene"/></para>
+        ///
+        /// <remarks>метод, вызываемый когда сервер меняет сцену</remarks>
+        /// </summary>
+        /// <param name="newSceneName">имя новой сцены</param>
+        public override void ServerChangeScene(string newSceneName)
         {
-            base.OnServerDisconnect(conn);
+            BeforeServerChangeScene?.Invoke(newSceneName);
+            
+            base.ServerChangeScene(newSceneName);
+            
+            AfterServerChangeScene?.Invoke(newSceneName);
         }
 
+        /// <summary>
+        /// <para><inheritdoc cref="NetworkManager.OnClientDisconnect"/></para>
+        ///
+        /// <remarks>метод, вызываемый при отключении игрока(я как клиент отключаюсь) от сервера</remarks>
+        /// </summary>
         public override void OnClientDisconnect()
         {
-            if (HostMigrationState.PlayerMigrationStatus != HostMigrationStatus.I_AM_SERVER)
-            {
-                StartCoroutine(HostMigrate());
-            }
-            else
-            {
-                //serverAPI.RemoveHost();
-            }
-
+            BeforeClientDisconnected?.Invoke();
             base.OnClientDisconnect();
         }
 
-        private void SetBackUpHost()
+        /// <summary>
+        /// <para><inheritdoc cref="NetworkManager.OnServerDisconnect"/></para>
+        ///
+        /// <remarks>метод, вызываемый когда игрок(от меня как от сервера отключился какой-то игрок) покинул сервер</remarks>
+        /// </summary>
+        /// <param name="conn">сведенья об отключаемом игроке</param>
+        public override void OnServerDisconnect(NetworkConnectionToClient conn)
         {
-            NetworkConnectionToClient nextHost = GetNextHost();
-
-            if (nextHost == null) return;
-
-            //once found send to each client to store
-            NetworkGamePlayer newHost = nextHost.identity.GetComponent<NetworkGamePlayer>();
-            newHost.StoreNewHostData(nextHost.identity.netId);
-        }
-
-
-        private NetworkConnectionToClient GetNextHost()
-        {
-            foreach (NetworkConnectionToClient conn in NetworkServer.connections.Values)
-            {
-                if (conn.identity.isLocalPlayer) continue;
-
-                return conn;
-            }
-
-            return null;
-        }
-
-        private IEnumerator HostMigrate()
-        {
-            if (HostMigrationState.PlayerMigrationStatus == HostMigrationStatus.I_AM_NEW_HOST)
-            {
-                //these delays can be played with,
-                //i was told we have to wait x amount of frames
-                //before attempting to start
-                yield return new WaitForSeconds(0.3f);
-                string url = IPUtils.UrlFromIP(HostMigrationState.NewHostCache.IP);
-                //serverAPI.CreateHost(url, HostMigrationState.HostCache.SceneName);
-                StartHost();
-                AppLogger.Log("New host");
-            }
-            else
-            {
-                //these delays can be played with,
-                //i was told we have to wait x amount of frames
-                //before attempting to start
-                yield return new WaitForSeconds(0.6f);
-
-                networkAddress = HostMigrationState.NewHostCache.IP;
-                StartClient();
-                AppLogger.Log("New client");
-            }
-
-            yield return null;
+            base.OnServerDisconnect(conn);
+            AfterServerLostPlayer?.Invoke(conn);
         }
     }
 }

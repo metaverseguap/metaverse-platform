@@ -1,5 +1,5 @@
 ﻿using System;
-using RoleSystem.Core;
+using UserSystem.RoleSystem.Core;
 
 namespace MainMenu.Containers
 {

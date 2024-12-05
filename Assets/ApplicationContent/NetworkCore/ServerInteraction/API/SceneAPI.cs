@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Threading.Tasks;
+using Global.AssetPackages;
 using Global.Converters;
 using Global.Files;
 using Global.Logger;
 using MainMenu.Containers;
+using NetworkCore.MirrorNetworking.Types.Devices;
 using NetworkCore.ServerInteraction.API.Utils;
-using NetworkCore.ServerInteraction.Type.Devices;
 using NetworkCore.ServerInteraction.Type.Request;
 using NetworkCore.ServerInteraction.Type.Response;
 using NetworkCore.ServerInteraction.Type.Scene.Response;
@@ -23,6 +25,7 @@ namespace NetworkCore.ServerInteraction.API
         private const string ALL_SCENE_INFO_URL = "/api/scenes/all-info";
         private const string UPLOAD_SCENE_URL = "/api/scenes/upload-scene";
         private const string DELETE_SCENES_URL = "/api/scenes/delete-by-names";
+        private const string SCENE_FILE_URL = "/api/scenes/file";
         
         /// <summary>
         /// <para>Конструктор.</para>
@@ -107,17 +110,29 @@ namespace NetworkCore.ServerInteraction.API
             imgFileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("image/png");
             formData.Add(imgFileContent, "img", scene.Image.name);
             
-            byte[] sceneFileData = File.ReadAllBytes(scene.SceneFilePath);
-            var sceneFileContent = new ByteArrayContent(sceneFileData);
+            var sceneFileStream = new FileStream(scene.SceneFilePath, FileMode.Open, FileAccess.Read);
+            var sceneFileContent = new StreamContent(sceneFileStream);
             sceneFileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("application/octet-stream");
             formData.Add(sceneFileContent, "scene", scene.Name);
 
-            ResponseDetails response = restAPI.PostMultipartRequest<ResponseDetails>(UPLOAD_SCENE_URL, formData);
-            
-            if (!response.success)
+            try
             {
-                AppLogger.Warning($"Upload Scenes request ended with error: {ResponseUtils.GetErrorMessagesAsString(response)}");
-                return false;
+                ResponseDetails response = restAPI.PostMultipartRequest<ResponseDetails>(UPLOAD_SCENE_URL, formData);
+
+                if (!response.success)
+                {
+                    AppLogger.Warning($"Upload Scenes request ended with error: {ResponseUtils.GetErrorMessagesAsString(response)}");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                AppLogger.Error($"Upload Scenes request ended with error: {ex.Message}");
+            }
+            finally
+            {
+                // Закрываем потоки после завершения запроса
+                sceneFileStream.Dispose();
             }
             
             return true;
@@ -135,8 +150,7 @@ namespace NetworkCore.ServerInteraction.API
                 names = deletedNames
             };
             
-            ResponseDetails response =
-                restAPI.PostRequest<DeleteByNamesRequest, ResponseDetails>(DELETE_SCENES_URL, request);
+            ResponseDetails response = restAPI.PostRequest<DeleteByNamesRequest, ResponseDetails>(DELETE_SCENES_URL, request);
 
             if (!response.success)
             {
@@ -145,6 +159,30 @@ namespace NetworkCore.ServerInteraction.API
             }
 
             return true;
+        }
+        
+        /// <summary>
+        /// <para>Получает файлы указанных сцен с файлового сервера.</para>
+        /// </summary>
+        /// <param name="downloadScenesInfos">информация осценах, файлы которых необходимо загрузить</param>
+        /// <returns>информация об успешно загруженных файлах</returns>
+        public async Task<IList<SceneInfo>> GetSceneFiles(IList<SceneInfo> downloadScenesInfos)
+        {
+            IList<SceneInfo> result = new List<SceneInfo>(downloadScenesInfos);
+            for (int i = result.Count - 1; i >= 0; i--)
+            {
+                SceneInfo scenes = downloadScenesInfos[i];
+                AppLogger.Log($"Downloading scene {scenes.Name}");
+                SaveFileRequest saveFileRequest = SaveFileRequest.Form(SceneAssetPackages.ASSETS_DIRECTORY, scenes.Name);
+
+                bool success = await restAPI.GetFileRequest($"{SCENE_FILE_URL}/{scenes.Name}", saveFileRequest);
+                if (!success)
+                {
+                    result.RemoveAt(i);
+                }
+            }
+
+            return result;
         }
     }
 }

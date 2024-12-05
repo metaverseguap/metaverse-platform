@@ -9,7 +9,7 @@ using NetworkCore.ServerInteraction.Type.RegistrationKey.Response;
 using NetworkCore.ServerInteraction.Type.Request;
 using NetworkCore.ServerInteraction.Type.Response;
 using NetworkCore.ServerInteraction.Type.Role;
-using RoleSystem.Core;
+using UserSystem.RoleSystem.Core;
 
 namespace NetworkCore.ServerInteraction.API
 {
@@ -75,22 +75,22 @@ namespace NetworkCore.ServerInteraction.API
         /// <returns>true, если ключь был успешно создан</returns>
         public bool CreateRegistrationKey(RegistrationKeyInfo regKeyInfo, out string exceptionMessage)
         {
-            RegistrationKeyRO regKeyRO = new RegistrationKeyRO();
-            regKeyRO.key = regKeyInfo.Key;
-            regKeyRO.dateFrom = regKeyInfo.DateFrom;
-            regKeyRO.dateTo = regKeyInfo.DateTo;
-            regKeyRO.organization = regKeyInfo.Organization;
+            RegistrationKeyDTO regKeyDto = new RegistrationKeyDTO();
+            regKeyDto.key = regKeyInfo.Key;
+            regKeyDto.dateFrom = regKeyInfo.DateFrom;
+            regKeyDto.dateTo = regKeyInfo.DateTo;
+            regKeyDto.organization = regKeyInfo.Organization;
 
-            RoleRO roleRO = new RoleRO();
-            roleRO.name = regKeyInfo.Role.ToString();
-            regKeyRO.role = roleRO;
+            RoleDTO roleDto = new RoleDTO();
+            roleDto.name = regKeyInfo.Role.ToString();
+            regKeyDto.role = roleDto;
 
-            SecurityRoleRO securityRoleRO = new SecurityRoleRO();
-            securityRoleRO.name = regKeyInfo.ServerRole;
-            regKeyRO.securityRole = securityRoleRO;
+            SecurityRoleDTO securityRoleDto = new SecurityRoleDTO();
+            securityRoleDto.name = regKeyInfo.ServerRole;
+            regKeyDto.securityRole = securityRoleDto;
 
             CreateRegistrationKeyRequest request = new CreateRegistrationKeyRequest();
-            request.registrationKey = regKeyRO;
+            request.registrationKey = regKeyDto;
 
             ResponseDetails response =
                 restAPI.PostRequest<CreateRegistrationKeyRequest, ResponseDetails>(CREATE_KEY_URL, request);

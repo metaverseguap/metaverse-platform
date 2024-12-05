@@ -13,6 +13,6 @@ namespace NetworkCore.ServerInteraction.Type.Role.Response
         /// <summary>
         /// Роли.
         /// </summary>
-        public List<RoleRO> roles { get; set; }
+        public List<RoleDTO> roles { get; set; }
     }
 }

@@ -12,6 +12,6 @@ namespace NetworkCore.ServerInteraction.Type.Role.Request
         /// <summary>
         /// Список создаваемых ролей.
         /// </summary>
-        public List<RoleRO> roles { get; set; }
+        public List<RoleDTO> roles { get; set; }
     }
 }
