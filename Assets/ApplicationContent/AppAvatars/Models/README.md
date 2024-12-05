@@ -6,6 +6,7 @@
 # Сборка ассетов
 В меню Asset есть пункт `Build Asset Bundle` -> `Avatar`. В нем появляются все Bundle помеченные label "Avatar". 
 
+![image](https://github.com/user-attachments/assets/a58f0948-4a24-4ce4-a25e-c34d5e00e0e5)
 
 
 Выберите нужный ассет из списка и нажмите Создать Bundle. Bundle соберется в папку "metaverse-platform\Bundles".
