@@ -35,11 +35,6 @@ namespace NetworkCore.MirrorNetworking.Containers
         public APIContainer FileServer { get; private set; }
 
         /// <summary>
-        /// Роль пользователя.
-        /// </summary>
-        public RoleInfo Role { get; set; }
-
-        /// <summary>
         /// Хранилище аватаров.
         /// </summary>
         public AvatarStore Avatars { get; } = new AvatarStore();
