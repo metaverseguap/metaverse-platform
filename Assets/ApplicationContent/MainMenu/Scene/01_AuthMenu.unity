@@ -4049,6 +4049,7 @@ GameObject:
   - component: {fileID: 958066070}
   - component: {fileID: 958066069}
   - component: {fileID: 958066068}
+  - component: {fileID: 958066071}
   m_Layer: 5
   m_Name: BackButton
   m_TagString: Untagged
@@ -4183,6 +4184,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 958066066}
   m_CullTransparentMesh: 1
+--- !u!114 &958066071
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 958066066}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7eb962b5a881d844490a099436608be1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _key: 27
 --- !u!1 &961315122
 GameObject:
   m_ObjectHideFlags: 0
@@ -7334,7 +7348,7 @@ MonoBehaviour:
   _device: 0
   _serverUrl: http://localhost:5001
   _defaultScene: Assets/ApplicationContent/OfflineScene/Void.unity
-  _maxConnections: 0
+  _maxConnections: 30
   _networkPlayerPrefab: {fileID: 7598941787893235472, guid: a3e81b3006bee5040bffc7b93263a85f, type: 3}
   _devicePrefabs:
   - ForDevice: 0
