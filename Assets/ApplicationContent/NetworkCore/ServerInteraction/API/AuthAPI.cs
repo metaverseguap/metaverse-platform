@@ -50,8 +50,6 @@ namespace NetworkCore.ServerInteraction.API
             }
             
             apiContainer.SetAuthToken($"Bearer {response.token}");
-
-            MVNetworkManager.singleton.NetworkStore.Role = apiContainer.Role.GetMyRole();
             
             exceptionMessage = "";
             return true;
@@ -81,8 +79,6 @@ namespace NetworkCore.ServerInteraction.API
             }
             
             apiContainer.SetAuthToken($"Bearer {response.token}");
-            
-            MVNetworkManager.singleton.NetworkStore.Role = apiContainer.Role.GetMyRole();
             
             exceptionMessage = "";
             return true;

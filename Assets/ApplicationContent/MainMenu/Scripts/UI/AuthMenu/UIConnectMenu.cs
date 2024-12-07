@@ -15,16 +15,13 @@ namespace MainMenu.UI.AuthMenu
         [SerializeField] private Button _adminMenuButton;
         private APIContainer serverAPI;
 
-        private void Start()
-        {
-            serverAPI = MVNetworkManager.singleton.NetworkStore.FileServer;
-        }
-
         private void OnEnable()
         {
+            EnsureServerAPI();
+            
             _adminMenuButton.gameObject.SetActive(false);
 
-            RoleInfo role = GetRole();
+            RoleInfo role = serverAPI.Role.GetMyRole();
 
             if (role.Permissions.Contains(AppPermission.ADMIN_MENU_ACCESS))
             {
@@ -32,16 +29,12 @@ namespace MainMenu.UI.AuthMenu
             }
         }
 
-        private RoleInfo GetRole()
+        private void EnsureServerAPI()
         {
-            RoleInfo role = MVNetworkManager.singleton.NetworkStore.Role;
-            if (role == null)
+            if (serverAPI == null)
             {
-                role = serverAPI.Role.GetMyRole();
-                MVNetworkManager.singleton.NetworkStore.Role = role;
+                serverAPI = MVNetworkManager.singleton.NetworkStore.FileServer;
             }
-
-            return role;
         }
     }
 }
