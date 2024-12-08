@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using AppAvatars.Types;
 using Global.Converters;
 using Global.Files;
 using Global.Logger;
@@ -80,6 +82,10 @@ namespace Global.AssetPackages
             AvatarInfo avatarInfo = new AvatarInfo();
             avatarInfo.Name = dto.name;
             avatarInfo.DisplayName = dto.displayName;
+            if (Enum.TryParse(dto.gender, out Gender avatarGender))
+            {
+                avatarInfo.AvatarGender = avatarGender;
+            }
             avatarInfo.Image = DataConverter.SpriteFromRowData(dto.imageData);
                     
             return avatarInfo;

@@ -89,6 +89,7 @@ namespace MainMenu.UI.LoadingScene
             AvatarInfoDTO dto = new AvatarInfoDTO();
             dto.name = avatarInfo.Name;
             dto.displayName = avatarInfo.DisplayName;
+            dto.gender = avatarInfo.AvatarGender.ToString();
             dto.imageData = DataConverter.SpriteToRowData(avatarInfo.Image);
                         
             return dto;

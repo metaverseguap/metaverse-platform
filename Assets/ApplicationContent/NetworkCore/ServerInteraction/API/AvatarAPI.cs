@@ -4,6 +4,7 @@ using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using AppAvatars.Types;
 using Global.AssetPackages;
 using Global.Converters;
 using Global.Files;
@@ -53,6 +54,10 @@ namespace NetworkCore.ServerInteraction.API
                     AvatarInfo info = new AvatarInfo();
                     info.Name = infoRO.name;
                     info.DisplayName = infoRO.displayName;
+                    if (Enum.TryParse(infoRO.gender, out Gender avatarGender))
+                    {
+                        info.AvatarGender = avatarGender;
+                    }
                     info.Image = DataConverter.SpriteFromRowData(infoRO.imageData);
 
                     result.Add(info);

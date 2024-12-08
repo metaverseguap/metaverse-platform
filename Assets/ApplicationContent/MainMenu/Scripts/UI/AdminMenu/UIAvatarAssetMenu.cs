@@ -138,18 +138,18 @@ namespace MainMenu.UI.AdminMenu
             }
         }
         
-        private static void SetupDropDown(TMP_Dropdown deviceDropDown, Gender currentGender)
+        private static void SetupDropDown(TMP_Dropdown genderDropDown, Gender currentGender)
         {
-            deviceDropDown.ClearOptions();
-            foreach (Gender device in Enum.GetValues(typeof(Gender)))
+            genderDropDown.ClearOptions();
+            foreach (Gender gender in Enum.GetValues(typeof(Gender)))
             {
                 TMP_Dropdown.OptionData option = new TMP_Dropdown.OptionData();
-                option.text = device.ToString();
-                deviceDropDown.options.Add(option);
-                if (device == currentGender)
+                option.text = gender.ToString();
+                genderDropDown.options.Add(option);
+                if (gender == currentGender)
                 {
-                    int currentIndex = deviceDropDown.options.Count - 1;
-                    deviceDropDown.ForceSetValue(currentIndex);
+                    int currentIndex = genderDropDown.options.Count - 1;
+                    genderDropDown.ForceSetValue(currentIndex);
                 }
             }
         }
