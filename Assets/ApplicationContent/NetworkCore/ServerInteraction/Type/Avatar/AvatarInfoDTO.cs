@@ -16,6 +16,11 @@
         /// Отображаемое имя аватара.
         /// </summary>
         public string displayName { get; set; }
+        
+        /// <summary>
+        /// Пол аватара.
+        /// </summary>
+        public string gender { get; set; }
 
         /// <summary>
         /// Путь до файла изображения аватара на сервере.
