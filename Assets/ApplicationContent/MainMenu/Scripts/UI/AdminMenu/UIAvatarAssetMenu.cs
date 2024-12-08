@@ -185,6 +185,8 @@ namespace MainMenu.UI.AdminMenu
 
         private IList<UploadAvatarInfo> CreateUploadingAvatars(IList<GameObject> selected)
         {
+            _messageField.text = "";
+            
             IList<UploadAvatarInfo> uploadingAvatars = new List<UploadAvatarInfo>();
             foreach (var item in selected)
             {
@@ -205,6 +207,12 @@ namespace MainMenu.UI.AdminMenu
         {
             if (!bundleFiles.Contains(avatarAsset.Name.text))
             {
+                return null;
+            }
+
+            if (avatarAsset.Status.text == LocalizationUtils.GetStringFromTable("MenuLocaleTable", SERVER_KEY))
+            {
+                _messageField.text = LocalizationUtils.GetStringFromTable("MenuLocaleTable", "MainMenu.label.message.canNotLoadServerAssets");
                 return null;
             }
 

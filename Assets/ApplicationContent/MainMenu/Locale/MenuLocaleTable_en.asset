@@ -293,6 +293,12 @@ MonoBehaviour:
     m_Localized: Scenes downloading...
     m_Metadata:
       m_Items: []
+  - m_Id: 12272913921351680
+    m_Localized: "Not all assets have been uploaded to the server. Assets marked
+      as \u201CServer\u201D cannot be re-uploaded. First delete these assets from
+      the server, and then upload them again"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:
