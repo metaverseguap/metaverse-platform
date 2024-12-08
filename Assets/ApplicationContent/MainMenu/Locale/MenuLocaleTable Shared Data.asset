@@ -291,6 +291,10 @@ MonoBehaviour:
     m_Key: MainMenu.label.loading.scenes
     m_Metadata:
       m_Items: []
+  - m_Id: 12272913921351680
+    m_Key: MainMenu.label.message.canNotLoadServerAssets
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
