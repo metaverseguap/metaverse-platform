@@ -7348,11 +7348,12 @@ MonoBehaviour:
   _device: 0
   _serverUrl: http://localhost:5001
   _defaultScene: Assets/ApplicationContent/OfflineScene/Void.unity
+  _menuScene: Assets/ApplicationContent/MainMenu/Scene/01_AuthMenu.unity
   _maxConnections: 30
   _networkPlayerPrefab: {fileID: 7598941787893235472, guid: a3e81b3006bee5040bffc7b93263a85f, type: 3}
   _devicePrefabs:
   - ForDevice: 0
-    Prefab: {fileID: 5107327825997553146, guid: 04cfab6a46b87f348895d60d62ef068d, type: 3}
+    Prefab: {fileID: 563657382684787115, guid: 2501d40b833f9864a85dab9868733f74, type: 3}
 --- !u!114 &1510370060
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10099,7 +10100,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 8713659201631801858, guid: 7aab35fbf4a691e4a979b70b2709a7f8, type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8713659201631801858, guid: 7aab35fbf4a691e4a979b70b2709a7f8, type: 3}
       propertyPath: m_LocalPosition.x

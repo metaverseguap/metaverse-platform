@@ -1,0 +1,76 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: TabletLocaleTable Shared Data
+  m_EditorClassIdentifier: 
+  m_TableCollectionName: TabletLocaleTable
+  m_TableCollectionNameGuidString: 9b9c0ba5fd2aabb408db600d5627e2cd
+  m_Entries:
+  - m_Id: 39877615616
+    m_Key: Tablet.label.currentRoom
+    m_Metadata:
+      m_Items: []
+  - m_Id: 405096636416
+    m_Key: Tablet.label.additionalFunction
+    m_Metadata:
+      m_Items: []
+  - m_Id: 594029060096
+    m_Key: Tablet.button.browser
+    m_Metadata:
+      m_Items: []
+  - m_Id: 804230799360
+    m_Key: Tablet.button.files
+    m_Metadata:
+      m_Items: []
+  - m_Id: 882240659456
+    m_Key: Tablet.button.map
+    m_Metadata:
+      m_Items: []
+  - m_Id: 995075825664
+    m_Key: Tablet.button.microphone
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1144627929088
+    m_Key: Tablet.button.chat
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1329282162688
+    m_Key: Tablet.button.sceneContent
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1528939421696
+    m_Key: Tablet.button.roomSelection
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1755155013632
+    m_Key: Tablet.button.exitMetaverse
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2250573619200
+    m_Key: Tablet.button.exitTablet
+    m_Metadata:
+      m_Items: []
+  - m_Id: 47987520970752
+    m_Key: Tablet.label.exitMetaverse
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 4696595838635606018
+  references:
+    version: 2
+    RefIds:
+    - rid: 4696595838635606018
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1738415828080

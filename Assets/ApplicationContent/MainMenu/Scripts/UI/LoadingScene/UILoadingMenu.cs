@@ -107,10 +107,16 @@ namespace MainMenu.UI.LoadingScene
             foreach (AvatarInfo newAvatar in currentAvatars)
             {
                 string bundlePath = Path.Combine(AvatarAssetPackages.ASSETS_DIRECTORY, newAvatar.Name);
+
+                if (AssetBundleCache.GetBundle(newAvatar.Name) != null)
+                {
+                    continue;
+                }
+                
                 AssetBundle assetBundle = AssetBundle.LoadFromFile(bundlePath);
                 if (assetBundle == null)
                 {
-                    AppLogger.Error($"Failed to load AssetBundle {newAvatar.Name}");
+                    AppLogger.Warning($"Failed to load AssetBundle {newAvatar.Name}");
                 }
                 else
                 {

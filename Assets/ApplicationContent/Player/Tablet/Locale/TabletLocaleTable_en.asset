@@ -1,0 +1,79 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: TabletLocaleTable_en
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: en
+  m_SharedData: {fileID: 11400000, guid: 9b9c0ba5fd2aabb408db600d5627e2cd, type: 2}
+  m_Metadata:
+    m_Items:
+    - rid: 4696595838635606019
+  m_TableData:
+  - m_Id: 39877615616
+    m_Localized: 'Current room: {0}'
+    m_Metadata:
+      m_Items:
+      - rid: 4696595838635606019
+  - m_Id: 405096636416
+    m_Localized: Additional functions
+    m_Metadata:
+      m_Items: []
+  - m_Id: 594029060096
+    m_Localized: Brwoser
+    m_Metadata:
+      m_Items: []
+  - m_Id: 804230799360
+    m_Localized: Files
+    m_Metadata:
+      m_Items: []
+  - m_Id: 882240659456
+    m_Localized: Map
+    m_Metadata:
+      m_Items: []
+  - m_Id: 995075825664
+    m_Localized: 'Microphone: {0}'
+    m_Metadata:
+      m_Items:
+      - rid: 4696595838635606019
+  - m_Id: 1144627929088
+    m_Localized: 'Chat: {0}'
+    m_Metadata:
+      m_Items:
+      - rid: 4696595838635606019
+  - m_Id: 1329282162688
+    m_Localized: Scene management
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1528939421696
+    m_Localized: Room selection
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1755155013632
+    m_Localized: Exit the metaverse
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2250573619200
+    m_Localized: Shut down the tablet
+    m_Metadata:
+      m_Items: []
+  - m_Id: 47987520970752
+    m_Localized: to exit the metaverse?
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds:
+    - rid: 4696595838635606019
+      type: {class: SmartFormatTag, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_Entries: 0020e44809000000002024afe7000000002024810a010000

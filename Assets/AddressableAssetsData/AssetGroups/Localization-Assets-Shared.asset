@@ -26,6 +26,16 @@ MonoBehaviour:
       Data.asset
     m_ReadOnly: 1
     m_SerializedLabels: []
+  - m_GUID: 9b9c0ba5fd2aabb408db600d5627e2cd
+    m_Address: Assets/ApplicationContent/Player/Tablet/Locale/TabletLocaleTable Shared
+      Data.asset
+    m_ReadOnly: 1
+    m_SerializedLabels: []
+  - m_GUID: 0df5c2b811beb134895270286fb73096
+    m_Address: Assets/ApplicationContent/Global/Locale/GloblalLocaleTable Shared
+      Data.asset
+    m_ReadOnly: 1
+    m_SerializedLabels: []
   m_ReadOnly: 1
   m_Settings: {fileID: 11400000, guid: 5bf8a1ea976bdbc46a21c7ce6b158cfc, type: 2}
   m_SchemaSet:

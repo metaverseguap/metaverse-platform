@@ -63,9 +63,43 @@ namespace NetworkCore.MirrorNetworking
         /// <para><inheritdoc cref="NetworkManager.singleton"/></para>
         /// <para>Доступ к данному типу NetworkManager.</para>
         /// 
-        /// Данное свойство стоит использовать для получения экземпляра MVNetworkManager в других классах
+        /// <para>Данное свойство стоит использовать для получения экземпляра MVNetworkManager в других классах.</para>
+        /// <para>Если в сцене нет NetworkManager, то данное свойство вернет null.</para>
+        /// <para>По контракту, NetworkManager обязательно присутствует в пространствах имен NetworkCore.MirrorNetworking и MainMenu.
+        /// В остальных местах перед вызовом данного метода следует проверить возможность его использования при помощи <see cref="MVNetworkManager.IsOnline"/></para>
         /// </summary>
         public new static MVNetworkManager singleton { get; private set; }
+
+        /// <summary>
+        /// <para>Есть ли в данный момент подключение к сети mirror.</para>
+        ///
+        /// Для взаимодействия с сетевыми функциями нужно вызвать статический метод <see cref="MVNetworkManager.singleton"/>
+        /// и использовать результат его работы для взаимодействия с сетью. Но если сцена запускается автономно,
+        /// то в ней нет MVNetworkManager и взаимодействие с сетью через <see cref="MVNetworkManager.singleton"/> невозможно.
+        /// Данный метод проверяет, возможно ли в текущей сцене использовать сетевые функции. Если метод вернет true,
+        /// значит можно, воспользовавшись методом <see cref="MVNetworkManager.singleton"/>, взаимодействовать с сетевыми функциями.
+        /// Если данный метод возвращает false, то сетевые функции должны быть недоступны, но сами компоненты и скрипты должны продолжать функционировать.
+        /// </summary>
+        /// <returns>true, если в данный момент есть подключение к сети mirror</returns>
+        public static bool IsOnline()
+        {
+            return singleton != null;
+        }
+        
+        /// <summary>
+        /// <para>Отсутствует ли в данный момент подключение к сети mirror.</para>
+        ///
+        /// Для взаимодействия с сетевыми функциями нужно вызвать статический метод <see cref="MVNetworkManager.singleton"/>
+        /// и использовать результат его работы для взаимодействия с сетью. Но если сцена запускается автономно,
+        /// то в ней нет MVNetworkManager и взаимодействие с сетью через <see cref="MVNetworkManager.singleton"/> невозможно.
+        /// Данный метод проверяет, отсутствие возможности в текущей сцене использовать сетевые функции. Если метод вернет true,
+        /// значит сетевые функции должны быть недоступны, но сами компоненты и скрипты должны продолжать функционировать.
+        /// </summary>
+        /// <returns>true, если в данный момент нет подключения к сети mirror</returns>
+        public static bool IsOffline()
+        {
+            return !IsOnline();
+        }
 
         /// <summary>
         /// Хранилище данных.
@@ -75,7 +109,7 @@ namespace NetworkCore.MirrorNetworking
         public override void Awake()
         {
             base.Awake();
-            singleton = this;
+            singleton = NetworkManager.singleton as MVNetworkManager;
             networkManagerSetups = GetComponent<NetworkManagerSetups>();
             NetworkStore = new NetworkDataStore(networkManagerSetups);
             offlineScene = networkManagerSetups.DefaultScene;

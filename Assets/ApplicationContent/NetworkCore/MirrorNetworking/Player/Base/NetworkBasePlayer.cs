@@ -1,3 +1,5 @@
+using AppAvatars;
+using AppAvatars.AvatarSetups;
 using Mirror;
 using UnityEngine;
 
@@ -16,11 +18,29 @@ namespace NetworkCore.MirrorNetworking.Player.Base
         private string avatarName = "";
         [SyncVar]
         private int connectionId = 0;
+        
+        private AbstractPlayer playerController;
 
         /// <summary>
         /// Отображаемое имя игрока.
         /// </summary>
         public string DisplayName => displayName;
+
+        /// <summary>
+        /// Ссылка на контроллер игрока.
+        /// </summary>
+        public AbstractPlayer PlayerController
+        {
+            get => playerController;
+            set
+            {
+                playerController = value;
+                
+                transform.SetParent(playerController.transform);
+                MoveObjectToBoneSetup.MoveObjectToBone(transform, playerController.AvatarComponent.SpawnedAvatar.Prefab, HumanBodyBones.Head);
+                transform.position += new Vector3(0, 0.5f, 0);
+            }
+        }
 
         /// <summary>
         /// <para>Установить отображаемое имя игрока.</para>

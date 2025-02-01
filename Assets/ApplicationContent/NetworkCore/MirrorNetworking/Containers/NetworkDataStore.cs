@@ -52,6 +52,7 @@ namespace NetworkCore.MirrorNetworking.Containers
         {
             FileServer = new APIContainer(setups.ServerUrl);
             Player.NetworkPlayer = setups.NetworkPlayerPrefab;
+            Scenes.MenuSceneName = setups.MenuScene;
             foreach (var prefab in setups.DevicePrefabs)
             {
                 if (prefab.ForDevice == setups.Device)
