@@ -20,9 +20,11 @@ namespace NetworkCore.MirrorNetworking.Containers
 
         [Header("Application Settings")] 
         [SerializeField] [Scene] private string _defaultScene;
+        [SerializeField] [Scene] private string _menuScene;
 
         [SerializeField] private int _maxConnections;
         [SerializeField] private NetworkBasePlayer _networkPlayerPrefab;
+        [Tooltip("Контроллеры игрока для различных устройств")]
         [SerializeField] private List<DevicePlayerPrefab> _devicePrefabs;
 
         /// <summary>
@@ -39,6 +41,11 @@ namespace NetworkCore.MirrorNetworking.Containers
         /// Сцена по умолчанию.
         /// </summary>
         public string DefaultScene => _defaultScene;
+        
+        /// <summary>
+        /// Сцена меню.
+        /// </summary>
+        public string MenuScene => _menuScene;
 
         /// <summary>
         /// Максимальное количество подключений к серверу.

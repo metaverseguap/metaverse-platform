@@ -1,5 +1,6 @@
 using MainMenu.Containers;
 using MainMenu.UI.AvatarSelectMenu;
+using OfflineScene;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -33,14 +34,14 @@ namespace NetworkCore.MirrorNetworking.UI
 
         private void EnsureNetworkManager()
         {
-            if (MVNetworkManager.singleton == null)
-            {
-                button.interactable = false;
-            }
-            else
+            if (MVNetworkManager.IsOnline())
             {
                 button.interactable = true;
                 connection = MVNetworkManager.singleton;
+            }
+            else
+            {
+                button.interactable = false;
             }
         }
 
@@ -60,6 +61,7 @@ namespace NetworkCore.MirrorNetworking.UI
             connection.NetworkStore.Player.AvatarName = avatarInfo.Name;
 
             connection.StartHost();
+            connection.NetworkStore.Scenes.CurrentScene = OfflineSceneConstants.SCENE_INFO;
             connection.ServerChangeScene(connection.offlineScene);
         }
     }

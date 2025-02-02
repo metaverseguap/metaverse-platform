@@ -1,3 +1,4 @@
+using Cinemachine;
 using UnityEngine;
 
 namespace Player.EmbeddedPlayers.PC
@@ -8,7 +9,7 @@ namespace Player.EmbeddedPlayers.PC
     [RequireComponent(typeof(CharacterController))]
     public sealed class PlayerControllerPC : MonoBehaviour
     {
-        [SerializeField] private Camera _playerCamera;
+        [SerializeField] private CinemachineVirtualCamera _playerCamera;
         [SerializeField] private float _mouseSensitivity = 2f;
 
         [Tooltip("Restriction imposed on turning the character's head up")] 
@@ -31,7 +32,7 @@ namespace Player.EmbeddedPlayers.PC
         /// <summary>
         /// Камера игрока.
         /// </summary>
-        public Camera PlayerCamera { get; private set; }
+        public CinemachineVirtualCamera PlayerCamera { get; private set; }
 
         private const float FREE_FALL_CONST = -9.87f;
         // TODO: Заменить CharacterController на собственную систему контроля 

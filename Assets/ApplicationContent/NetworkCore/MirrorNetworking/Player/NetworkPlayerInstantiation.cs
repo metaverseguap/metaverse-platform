@@ -1,5 +1,4 @@
 using AppAvatars;
-using AppAvatars.AvatarSetups;
 using AppAvatars.Containers;
 using MainMenu.Containers;
 using Mirror;
@@ -127,9 +126,7 @@ namespace NetworkCore.MirrorNetworking.Player
                 avatarPrefabInfo.ForGender = avatar.AvatarGender;
                 playerController.AvatarComponent.CreatePlayerFromAvatar(avatarPrefabInfo);
 
-                basePlayerInstance.transform.SetParent(playerController.transform);
-                MoveObjectToBoneSetup.MoveObjectToBone(basePlayerInstance.transform, playerController.AvatarComponent.SpawnedAvatar.Prefab, HumanBodyBones.Head);
-                basePlayerInstance.transform.position += new Vector3(0, 0.5f, 0);
+                basePlayerInstance.PlayerController = playerController;
 
                 if (conn == NetworkServer.localConnection)
                 {
@@ -140,6 +137,10 @@ namespace NetworkCore.MirrorNetworking.Player
 
         private void OnServerLostPlayer(NetworkConnectionToClient conn)
         {
+            NetworkBasePlayer networkPlayer = MVNetworkManager.singleton.NetworkStore.GamePlayers[conn.connectionId];
+            Destroy(networkPlayer.PlayerController.gameObject);
+
+            NetworkServer.DestroyPlayerForConnection(conn);
             MVNetworkManager.singleton.NetworkStore.GamePlayers.Remove(conn.connectionId);
         }
     }

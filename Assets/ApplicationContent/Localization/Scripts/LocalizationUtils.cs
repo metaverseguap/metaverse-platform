@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
 using Global.Logger;
+using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
 using UnityEngine.Localization.Tables;
 
@@ -11,9 +13,13 @@ namespace Localization
     public static class LocalizationUtils
     {
         /// <summary>
-        /// Кеш таблиц локализации. Ключом является имя таблицы локализации.
+        /// <para>Кеш таблиц локализации.</para>
+        /// 
+        /// Ключ первого словаря - локаль пользователя.
+        /// Ключ вложенного словаря - имя таблицы.
+        /// 
         /// </summary>
-        private static Dictionary<string, StringTable> localizationTablesCache = new Dictionary<string, StringTable>();
+        private static ConcurrentDictionary<Locale, Dictionary<string, StringTable>> localizationTablesCache = new ConcurrentDictionary<Locale, Dictionary<string, StringTable>>();
 
         /// <summary>
         /// <para>Получить локализованную строку по ключу из указанной таблицы.</para>
@@ -23,18 +29,20 @@ namespace Localization
         /// <returns>локализованная строка из указанной таблицы под указанным ключом или пустая строка, если в таблице не данного ключа</returns>
         public static string GetStringFromTable(string tableName, string key)
         {
-            bool tableExists = EnsureLocalizationTable(tableName);
+            Locale currentLocale = LocalizationSettings.SelectedLocale;
+            bool tableExists = EnsureLocalizationTable(currentLocale, tableName);
             if (!tableExists)
             {
                 return "";
             }
 
-            return GetLocalizedString(localizationTablesCache[tableName], key);
+            StringTable localizationTable = localizationTablesCache[currentLocale][tableName];
+            return GetLocalizedString(localizationTable, key);
         }
 
-        private static bool EnsureLocalizationTable(string tableName)
+        private static bool EnsureLocalizationTable(Locale locale, string tableName)
         {
-            if (!localizationTablesCache.ContainsKey(tableName))
+            if (!localizationTablesCache.ContainsKey(locale) || !localizationTablesCache[locale].ContainsKey(tableName))
             {
                 StringTable table = LocalizationSettings.StringDatabase.GetTable(tableName);
                 if (table == null)
@@ -43,7 +51,8 @@ namespace Localization
                     return false;
                 }
 
-                localizationTablesCache.Add(tableName, table);
+                localizationTablesCache.TryAdd(locale, new Dictionary<string, StringTable>());
+                localizationTablesCache[locale].Add(tableName, table);
             }
 
             return true;
