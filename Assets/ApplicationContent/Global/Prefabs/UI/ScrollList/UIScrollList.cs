@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace Global.UI.ScrollList
@@ -9,11 +10,25 @@ namespace Global.UI.ScrollList
     /// </summary>
     public sealed class UIScrollList : MonoBehaviour
     {
+        /// <summary>
+        /// Событие происходящее при изменении значения элемента списка.
+        /// </summary>
+        public event UnityAction OnItemChangeValue;
+        
         [SerializeField] private GameObject _itemPrefab;
         [SerializeField] private Transform _content;
+        [SerializeField] private bool _enableMultiselect = true;
+        
         private readonly IList<Toggle> selectedItems = new List<Toggle>();
         private readonly IList<GameObject> items = new List<GameObject>();
         
+        private RectTransform rectTransform;
+
+        private void OnDestroy()
+        {
+            Clear();
+        }
+
         /// <summary>
         /// <para>Добавить выбираемый элемент списка с содеранием контент.</para>
         /// </summary>
@@ -21,6 +36,9 @@ namespace Global.UI.ScrollList
         public void AddItemWithContent(GameObject content)
         {
             GameObject item = Instantiate(_itemPrefab, _content);
+            RectTransform itemRectTransform = item.GetComponent<RectTransform>();
+            rectTransform = EnsureRectTransform();
+            itemRectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x - 30.0f, itemRectTransform.sizeDelta.y);
             items.Add(item);
             
             UIMarkerCheckElementContent itemContent = item.GetComponentInChildren<UIMarkerCheckElementContent>();
@@ -28,8 +46,33 @@ namespace Global.UI.ScrollList
             
             Toggle checkbox = item.GetComponentInChildren<Toggle>();
             selectedItems.Add(checkbox);
+
+            checkbox.onValueChanged.AddListener((_) => SomeItemChangeValue(checkbox));
+        }
+        
+        private RectTransform EnsureRectTransform()
+        {
+            if (rectTransform == null)
+            {
+                rectTransform = GetComponent<RectTransform>();
+            }
+            
+            return rectTransform;
         }
 
+        private void SomeItemChangeValue(Toggle checkbox)
+        {
+            if (checkbox.isOn && !_enableMultiselect)
+            {
+                foreach (var item in selectedItems)
+                {
+                    item.isOn = item == checkbox;
+                }
+            }
+
+            OnItemChangeValue?.Invoke();
+        }
+        
         /// <summary>
         /// <para>Возвращает список индексов выбранных элементов.</para>
         /// </summary>
@@ -98,13 +141,17 @@ namespace Global.UI.ScrollList
         /// </summary>
         public void Clear()
         {
+            foreach (var toggle in selectedItems)
+            {
+                toggle.onValueChanged.RemoveAllListeners();
+            }
+            selectedItems.Clear();
+            
             foreach (GameObject item in items)
             {
                 Destroy(item);
             }
-
             items.Clear();
-            selectedItems.Clear();
         }
     }
 }

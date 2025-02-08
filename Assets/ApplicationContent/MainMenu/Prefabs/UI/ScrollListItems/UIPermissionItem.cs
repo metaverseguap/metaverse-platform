@@ -2,7 +2,7 @@ using Global.UI.ScrollList;
 using TMPro;
 using UnityEngine;
 
-namespace MainMenu.UI.ScrollList.Items
+namespace MainMenu.UI.ScrollListItems
 {
     /// <summary>
     /// <para>Элемент <see cref="UIScrollList"/>, хранящий право (разрешение) пользователя.</para>

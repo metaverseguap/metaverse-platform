@@ -39,6 +39,11 @@ namespace NetworkCore.ServerInteraction.API
         /// <inheritdoc cref="UserAPI"/>
         /// </summary>
         public UserAPI User { get; private set; }
+        
+        /// <summary>
+        /// <inheritdoc cref="HostsAPI"/>
+        /// </summary>
+        public HostsAPI Hosts { get; private set; }
 
         /// <summary>
         /// <para>Конструктор.</para>
@@ -53,6 +58,7 @@ namespace NetworkCore.ServerInteraction.API
             this.Scene = new SceneAPI(serverUri);
             this.Avatar = new AvatarAPI(serverUri);
             this.User = new UserAPI(serverUri);
+            this.Hosts = new HostsAPI(serverUri);
         }
 
         /// <summary>
@@ -68,6 +74,7 @@ namespace NetworkCore.ServerInteraction.API
             this.Scene.SetAuthorization(token);
             this.Avatar.SetAuthorization(token);
             this.User.SetAuthorization(token);
+            this.Hosts.SetAuthorization(token);
         }
     }
 }

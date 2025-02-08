@@ -9,7 +9,7 @@ using Global.UI.LoadingForm;
 using Global.UI.ScrollList;
 using Localization;
 using MainMenu.Containers;
-using MainMenu.UI.ScrollList.Items;
+using MainMenu.UI.ScrollListItems;
 using NetworkCore.MirrorNetworking;
 using NetworkCore.MirrorNetworking.Types.Devices;
 using NetworkCore.ServerInteraction.API;
