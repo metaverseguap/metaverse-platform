@@ -13,14 +13,16 @@ namespace Global.UI.AreYouSureWindow
         [SerializeField] private UIAreYouSureLabel _label;
         [SerializeField] private Button _yesButton;
         [SerializeField] private Button _noButton;
+        [Range(0.01f, 2)]
+        [SerializeField] private float _activationDuration = 0.5f;
         
         private Vector3 _originalScale;
 
-        private void Start()
+        private void Awake()
         {
             _originalScale = new Vector3(transform.localScale.x, transform.localScale.y, transform.localScale.z);
             _noButton.onClick.AddListener(OnNoClick);
-            transform.localScale = Vector3.zero;
+            transform.DOScale(Vector3.zero, 0.01f);
         }
 
         private void OnDestroy()
@@ -30,7 +32,8 @@ namespace Global.UI.AreYouSureWindow
 
         private void OnNoClick()
         {
-            transform.localScale = Vector3.zero;
+            transform.DOScale(Vector3.zero, _activationDuration)
+                .onComplete = () => gameObject.SetActive(false);
         }
 
         /// <summary>
@@ -42,13 +45,15 @@ namespace Global.UI.AreYouSureWindow
         /// <param name="onSureClick">событие происходящее при подтверждении действия</param>
         public void ShowWindow(string toDoWhat, Action onSureClick)
         {
+            gameObject.SetActive(true);
             _label.ChangeLabel(toDoWhat);
-            transform.DOScale(_originalScale, 0.5f);
+            transform.DOScale(_originalScale, _activationDuration);
             _yesButton.onClick.AddListener(() =>
                 {
                     onSureClick?.Invoke();
-                    transform.localScale = Vector3.zero;
                     _yesButton.onClick.RemoveAllListeners();
+                    transform.DOScale(Vector3.zero, _activationDuration)
+                        .onComplete = () => gameObject.SetActive(false);
                 }
             );
         }
