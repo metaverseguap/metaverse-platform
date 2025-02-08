@@ -1,5 +1,7 @@
 ﻿using Global.UI.AreYouSureWindow;
 using Localization;
+using Mirror;
+using NetworkCore.ServerInteraction.API;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -16,6 +18,7 @@ namespace NetworkCore.MirrorNetworking.UI
         
         private Button button;
         private MVNetworkManager connection;
+        private APIContainer serverAPI;
 
         private void OnEnable()
         {
@@ -38,6 +41,7 @@ namespace NetworkCore.MirrorNetworking.UI
             {
                 button.interactable = true;
                 connection = MVNetworkManager.singleton;
+                serverAPI = connection.NetworkStore.FileServer;
             }
             else
             {
@@ -62,8 +66,17 @@ namespace NetworkCore.MirrorNetworking.UI
             {
                 return;
             }
-                
-            connection.StopHost();
+
+            if (NetworkServer.activeHost)
+            {
+                serverAPI.Hosts.RemoveHost();
+                connection.StopHost();
+            }
+            else
+            {
+                connection.StopClient();
+            }
+            
             string menuScene = connection.NetworkStore.Scenes.MenuSceneName;
             SceneManager.LoadScene(menuScene, LoadSceneMode.Single);
         }

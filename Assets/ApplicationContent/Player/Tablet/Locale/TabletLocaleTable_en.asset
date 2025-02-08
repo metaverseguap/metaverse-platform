@@ -70,6 +70,34 @@ MonoBehaviour:
     m_Localized: to exit the metaverse?
     m_Metadata:
       m_Items: []
+  - m_Id: 2478122434043904
+    m_Localized: Room selection functions are not available in offline mode
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2490748387991552
+    m_Localized: Scene selection
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2491778844598272
+    m_Localized: Room selection
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2492279078264832
+    m_Localized: Connect to host
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2493085739393024
+    m_Localized: Become a host
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2556908236185600
+    m_Localized: to go back to the offline scene
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2556654199775232
+    m_Localized: Back to offline scene
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:

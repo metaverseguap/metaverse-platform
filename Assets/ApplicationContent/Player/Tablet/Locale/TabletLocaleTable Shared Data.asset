@@ -63,6 +63,34 @@ MonoBehaviour:
     m_Key: Tablet.label.exitMetaverse
     m_Metadata:
       m_Items: []
+  - m_Id: 2478122434043904
+    m_Key: Tablet.label.roomSelect.warning
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2490748387991552
+    m_Key: Tablet.label.roomSelect.sceneSelect
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2491778844598272
+    m_Key: Tablet.label.roomSelect.selectRoom
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2492279078264832
+    m_Key: Tablet.button.roomSelect.connectToHost
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2493085739393024
+    m_Key: Tablet.button.roomSelect.becomeAHost
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2556654199775232
+    m_Key: Tablet.button.roomSelect.toOfflineScene
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2556908236185600
+    m_Key: Tablet.label.toOfflineScene
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

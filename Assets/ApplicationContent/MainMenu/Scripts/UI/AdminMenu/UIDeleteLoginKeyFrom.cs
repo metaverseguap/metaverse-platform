@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Global.UI.ScrollList;
 using MainMenu.Containers;
-using MainMenu.UI.ScrollList.Items;
+using MainMenu.UI.ScrollListItems;
 using NetworkCore.MirrorNetworking;
 using NetworkCore.ServerInteraction.API;
 using UnityEngine;
@@ -9,7 +9,7 @@ using UnityEngine;
 namespace MainMenu.UI.AdminMenu
 {
     /// <summary>
-    /// <para>Компонент управлюящий меню удаления ключей авторизации.</para>
+    /// <para>Компонент, управляющий меню удаления ключей авторизации.</para>
     /// </summary>
     public sealed class UIDeleteLoginKeyFrom : MonoBehaviour
     {

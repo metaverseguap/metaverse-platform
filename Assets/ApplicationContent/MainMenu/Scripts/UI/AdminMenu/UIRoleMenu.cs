@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Global.UI;
 using Global.UI.ScrollList;
-using MainMenu.UI.ScrollList.Items;
+using MainMenu.UI.ScrollListItems;
 using NetworkCore.MirrorNetworking;
 using NetworkCore.ServerInteraction.API;
 using TMPro;

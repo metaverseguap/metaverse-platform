@@ -52,8 +52,8 @@ namespace Global.UI.AreYouSureWindow
                 {
                     onSureClick?.Invoke();
                     _yesButton.onClick.RemoveAllListeners();
-                    transform.DOScale(Vector3.zero, _activationDuration)
-                        .onComplete = () => gameObject.SetActive(false);
+                    transform.localScale = Vector3.zero;
+                    gameObject.SetActive(false);
                 }
             );
         }
