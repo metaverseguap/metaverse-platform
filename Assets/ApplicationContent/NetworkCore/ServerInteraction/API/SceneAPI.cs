@@ -171,11 +171,7 @@ namespace NetworkCore.ServerInteraction.API
             IList<SceneInfo> result = new List<SceneInfo>(downloadScenesInfos);
             for (int i = result.Count - 1; i >= 0; i--)
             {
-                SceneInfo scenes = downloadScenesInfos[i];
-                AppLogger.Log($"Downloading scene {scenes.Name}");
-                SaveFileRequest saveFileRequest = SaveFileRequest.Form(SceneAssetPackages.ASSETS_DIRECTORY, scenes.Name);
-
-                bool success = await restAPI.GetFileRequest($"{SCENE_FILE_URL}/{scenes.Name}", saveFileRequest);
+                bool success = await GetSceneFile(downloadScenesInfos[i]);
                 if (!success)
                 {
                     result.RemoveAt(i);
@@ -183,6 +179,19 @@ namespace NetworkCore.ServerInteraction.API
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// <para>Получает файл указанной сцены с файлового сервера.</para>
+        /// </summary>
+        /// <param name="scene">информация осцене, файл которой необходимо загрузить</param>
+        /// <returns>true, если файл сцены был успешно загружен</returns>
+        public async Task<bool> GetSceneFile(SceneInfo scene)
+        {
+            AppLogger.Log($"Downloading scene {scene.Name}");
+            SaveFileRequest saveFileRequest = SaveFileRequest.Form(SceneAssetPackages.ASSETS_DIRECTORY, scene.Name);
+
+            return await restAPI.GetFileRequest($"{SCENE_FILE_URL}/{scene.Name}", saveFileRequest);
         }
     }
 }

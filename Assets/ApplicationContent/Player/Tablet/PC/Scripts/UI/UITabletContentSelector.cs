@@ -16,12 +16,8 @@ namespace Player.Tablet.PC.UI
         private void Awake()
         {
             contents = new GameObject[] { _roomContent, _roomSelectionContent };
-            UpdateRoomContent(SceneManager.GetActiveScene(), LoadSceneMode.Single);
-        }
-
-        private void OnEnable()
-        {
             SceneManager.sceneLoaded += UpdateRoomContent;
+            UpdateRoomContent(SceneManager.GetActiveScene(), LoadSceneMode.Single);
         }
 
         private void OnDestroy()

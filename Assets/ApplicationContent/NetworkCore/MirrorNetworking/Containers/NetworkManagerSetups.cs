@@ -21,6 +21,7 @@ namespace NetworkCore.MirrorNetworking.Containers
         [Header("Application Settings")] 
         [SerializeField] [Scene] private string _defaultScene;
         [SerializeField] [Scene] private string _menuScene;
+        [SerializeField] [Scene] private string _loadingScene;
 
         [SerializeField] private int _maxConnections;
         [SerializeField] private NetworkBasePlayer _networkPlayerPrefab;
@@ -46,6 +47,11 @@ namespace NetworkCore.MirrorNetworking.Containers
         /// Сцена меню.
         /// </summary>
         public string MenuScene => _menuScene;
+        
+        /// <summary>
+        /// Сцена загрузки между комнатами.
+        /// </summary>
+        public string LoadingScene => _loadingScene;
 
         /// <summary>
         /// Максимальное количество подключений к серверу.

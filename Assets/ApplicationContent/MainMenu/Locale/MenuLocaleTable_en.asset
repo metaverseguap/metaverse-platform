@@ -299,10 +299,15 @@ MonoBehaviour:
       the server, and then upload them again"
     m_Metadata:
       m_Items: []
+  - m_Id: 37365617336262656
+    m_Localized: Loading Scene Asset {0}%
+    m_Metadata:
+      m_Items:
+      - rid: 5997839330276540435
   references:
     version: 2
     RefIds:
     - rid: 5997839330276540435
       type: {class: SmartFormatTag, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
       data:
-        m_Entries: 00102260d7040000
+        m_Entries: 00102260d7040000002024bcd4bf8400

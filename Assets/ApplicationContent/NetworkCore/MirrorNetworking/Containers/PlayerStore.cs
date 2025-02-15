@@ -4,6 +4,16 @@ using NetworkCore.MirrorNetworking.Player.Base;
 namespace NetworkCore.MirrorNetworking.Containers
 {
     /// <summary>
+    /// <para>Статус игрока при подключении к сцене.</para>
+    /// </summary>
+    public enum PlayerConnectionStatus
+    {
+        None,
+        Host,
+        Client
+    }
+    
+    /// <summary>
     /// <para>Хранилище данных об игроке.</para>
     /// </summary>
     public sealed class PlayerStore
@@ -22,5 +32,10 @@ namespace NetworkCore.MirrorNetworking.Containers
         /// Имя аватара игрока.
         /// </summary>
         public string AvatarName { get; set; }
+        
+        /// <summary>
+        /// Статус игрока при подключении к сцене.
+        /// </summary>
+        public PlayerConnectionStatus PlayerStatus { get; set; }
     }
 }

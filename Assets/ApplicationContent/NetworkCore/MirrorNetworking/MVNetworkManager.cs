@@ -112,7 +112,9 @@ namespace NetworkCore.MirrorNetworking
             singleton = NetworkManager.singleton as MVNetworkManager;
             networkManagerSetups = GetComponent<NetworkManagerSetups>();
             NetworkStore = new NetworkDataStore(networkManagerSetups);
-            offlineScene = networkManagerSetups.DefaultScene;
+            // Отключаем автоматическую загрузку сцены при отключении от сервера.
+            // Загрузки сцены контролируются вручную в расширениях NetworkManagerExtensions
+            offlineScene = null;
             onlineScene = networkManagerSetups.DefaultScene;
             maxConnections = networkManagerSetups.MaxConnections;
             playerPrefab = NetworkStore.Player.NetworkPlayer.gameObject;

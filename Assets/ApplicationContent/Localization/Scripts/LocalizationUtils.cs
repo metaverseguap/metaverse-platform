@@ -51,8 +51,9 @@ namespace Localization
                     return false;
                 }
 
-                localizationTablesCache.TryAdd(locale, new Dictionary<string, StringTable>());
-                localizationTablesCache[locale].Add(tableName, table);
+                localizationTablesCache
+                    .GetOrAdd(locale, new Dictionary<string, StringTable>())
+                    .Add(tableName, table);
             }
 
             return true;

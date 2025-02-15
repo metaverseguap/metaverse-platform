@@ -7349,6 +7349,7 @@ MonoBehaviour:
   _serverUrl: http://localhost:5001
   _defaultScene: Assets/ApplicationContent/OfflineScene/Void.unity
   _menuScene: Assets/ApplicationContent/MainMenu/Scene/01_AuthMenu.unity
+  _loadingScene: Assets/ApplicationContent/MainMenu/Scene/05_IntermediateLoadingScene.unity
   _maxConnections: 30
   _networkPlayerPrefab: {fileID: 7598941787893235472, guid: a3e81b3006bee5040bffc7b93263a85f, type: 3}
   _devicePrefabs:
@@ -9086,7 +9087,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a05d786d8ee41664b888c8036aa525db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _nextScene: Assets/ApplicationContent/MainMenu/Scene/02_MenuLoading.unity
+  _nextScene: Assets/ApplicationContent/MainMenu/Scene/02_AvatarLoading.unity
 --- !u!1 &1870187533
 GameObject:
   m_ObjectHideFlags: 0

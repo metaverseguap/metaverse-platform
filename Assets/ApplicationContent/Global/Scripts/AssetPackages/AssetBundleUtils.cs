@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System.Collections.Concurrent;
+using System.IO;
+using System.Threading;
 using Global.Files;
 using Global.Logger;
 using Newtonsoft.Json;
@@ -11,7 +13,10 @@ namespace Global.AssetPackages
     /// </summary>
     public static class AssetBundleUtils
     {
-        
+        // Чтение и запись файлов используется в многопоточной среде - необходима синхронизация
+        // Словарь блокировок - ключами являются имена файлов, а значениями объекты блокировок
+        private static readonly ConcurrentDictionary<string, ReaderWriterLockSlim> fileLocks = new ConcurrentDictionary<string, ReaderWriterLockSlim>();
+
         /// <summary>
         /// <para>Сериализовать ассет в файл.</para>
         /// </summary>
@@ -21,8 +26,20 @@ namespace Global.AssetPackages
         public static void SerializeAsset<T>(string assetPath, T asset)
         {
             const string emptyList = "[]";
-            FileUtils.EnsureFileExists(assetPath, emptyList, true);
-            File.WriteAllText(assetPath, JsonConvert.SerializeObject(asset, Formatting.Indented));
+
+            // Получаем или создаем блокировку для данного файла
+            var fileLock = fileLocks.GetOrAdd(assetPath, new ReaderWriterLockSlim());
+
+            fileLock.EnterWriteLock();
+            try
+            {
+                FileUtils.EnsureFileExists(assetPath, emptyList, true);
+                File.WriteAllText(assetPath, JsonConvert.SerializeObject(asset, Formatting.Indented));
+            }
+            finally
+            {
+                fileLock.ExitWriteLock();
+            }
         }
 
         /// <summary>
@@ -34,8 +51,20 @@ namespace Global.AssetPackages
         public static R DeserializeAsset<R>(string assetPath)
         {
             const string emptyList = "[]";
-            FileUtils.EnsureFileExists(assetPath, emptyList, true);
-            return JsonConvert.DeserializeObject<R>(File.ReadAllText(assetPath));
+
+            // Получаем или создаем блокировку для данного файла
+            var fileLock = fileLocks.GetOrAdd(assetPath, new ReaderWriterLockSlim());
+
+            fileLock.EnterReadLock();
+            try
+            {
+                FileUtils.EnsureFileExists(assetPath, emptyList, true);
+                return JsonConvert.DeserializeObject<R>(File.ReadAllText(assetPath));
+            }
+            finally
+            {
+                fileLock.ExitReadLock();
+            }
         }
         
         /// <summary>

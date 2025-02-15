@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,7 +15,6 @@ using NetworkCore.MirrorNetworking;
 using NetworkCore.MirrorNetworking.Containers;
 using NetworkCore.ServerInteraction.API;
 using NetworkCore.ServerInteraction.Type.Avatar;
-using NetworkCore.ServerInteraction.Type.Scene;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -21,9 +22,10 @@ using UnityEngine.SceneManagement;
 namespace MainMenu.UI.LoadingScene
 {
     /// <summary>
-    /// <para>Скрипт загружающий компоненты с файлового сервера.</para>
+    /// <para>Скрипт загружающий информацию о аватарах и сценах с файлового сервера.</para>
+    /// Скрипт так же загружает файлы аватаров.
     /// </summary>
-    public sealed class UILoadingMenu : MonoBehaviour
+    public sealed class UIInfoLoadingMenu : MonoBehaviour
     {
         [SerializeField] private TMP_Text _loadingText;
         [SerializeField] [Scene] private string _selectAvatarScene;
@@ -31,17 +33,18 @@ namespace MainMenu.UI.LoadingScene
         private APIContainer serverAPI;
         private AvatarStore avatarStore;
         private SceneStore sceneStore;
-        
-        private void OnEnable()
+
+        private void Awake()
         {
             SceneManager.sceneLoaded += OnSceneLoaded;
+            _loadingText.text = LocalizationUtils.GetStringFromTable("MenuLocaleTable", "MainMenu.label.loading");
         }
 
-        private void OnDisable()
+        private void OnDestroy()
         {
             SceneManager.sceneLoaded -= OnSceneLoaded;
         }
-        
+
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
             MVNetworkManager networkManager = MVNetworkManager.singleton;
@@ -49,20 +52,43 @@ namespace MainMenu.UI.LoadingScene
             sceneStore = networkManager.NetworkStore.Scenes;
             serverAPI = networkManager.NetworkStore.FileServer;
 
-            DownloadAssets();
+            // Загрузка ассетов с сервера в асинхронном режиме
+            StartCoroutine(DownloadAssets());
         }
 
-        private async void DownloadAssets()
+        private IEnumerator DownloadAssets()
         {
-            await AvatarDownloading();
-            await SceneDownloading();
+            // Ждем один кадр, что бы сцена загрузилась
+            yield return null;
+            
+            string loadingText = _loadingText.text;
+
+            loadingText = LocalizationUtils.GetStringFromTable("MenuLocaleTable", "MainMenu.label.loading.avatars");
+            yield return ExecuteThenAwaitFrame(() => _loadingText.text = loadingText);
+
+            yield return new WaitUntil(() => AvatarDownloading().IsCompleted);
+
+            loadingText = LocalizationUtils.GetStringFromTable("MenuLocaleTable", "MainMenu.label.loading.scenes");
+            yield return ExecuteThenAwaitFrame(() => _loadingText.text = loadingText);
+
+            yield return new WaitUntil(() => SceneInfoDownloading().IsCompleted);
+
+            // Ждем один кадр
+            yield return null;
+
             SceneManager.LoadScene(_selectAvatarScene, LoadSceneMode.Single);
+        }
+
+        private IEnumerator ExecuteThenAwaitFrame(Action callback = null)
+        {
+            callback?.Invoke();
+
+            // Ждем один кадр, что бы сцена загрузилась
+            yield return null;
         }
 
         private async Task AvatarDownloading()
         {
-            _loadingText.text = LocalizationUtils.GetStringFromTable("MenuLocaleTable", "MainMenu.label.loading.avatars");
-
             IList<AvatarInfo> serverAvatarsInfos = serverAPI.Avatar.GetAllAvatarsInfo();
             IList<AvatarInfo> localAvatars = AvatarAssetPackages.GetMatchingLocalAvatars(serverAvatarsInfos);
             serverAvatarsInfos = ContainerUtils.RemoveMatchingElements(serverAvatarsInfos, localAvatars);
@@ -91,7 +117,7 @@ namespace MainMenu.UI.LoadingScene
             dto.displayName = avatarInfo.DisplayName;
             dto.gender = avatarInfo.AvatarGender.ToString();
             dto.imageData = DataConverter.SpriteToRowData(avatarInfo.Image);
-                        
+
             return dto;
         }
 
@@ -106,12 +132,12 @@ namespace MainMenu.UI.LoadingScene
 
             foreach (AvatarInfo newAvatar in currentAvatars)
             {
-                string bundlePath = Path.Combine(AvatarAssetPackages.ASSETS_DIRECTORY, newAvatar.Name);
-
                 if (AssetBundleCache.GetBundle(newAvatar.Name) != null)
                 {
                     continue;
                 }
+                
+                string bundlePath = Path.Combine(AvatarAssetPackages.ASSETS_DIRECTORY, newAvatar.Name);
                 
                 AssetBundle assetBundle = AssetBundle.LoadFromFile(bundlePath);
                 if (assetBundle == null)
@@ -135,52 +161,25 @@ namespace MainMenu.UI.LoadingScene
                     }
 
                     avatarStore.AvatarFiles.Add(avatarFile.Name, avatarFile);
-                    
+
                     AppLogger.Log($"Asset {newAvatar.Name} was loaded");
                 }
             }
         }
 
-        private async Task SceneDownloading()
+        private async Task SceneInfoDownloading()
         {
-            _loadingText.text = LocalizationUtils.GetStringFromTable("MenuLocaleTable", "MainMenu.label.loading.scenes");
             if (sceneStore.SceneInfos.Count == 0)
             {
                 IList<SceneInfo> serverScenesInfos = serverAPI.Scene.GetAllSceneInfo();
                 IList<SceneInfo> localScenesInfos = SceneAssetPackages.GetMatchingLocalScenes(serverScenesInfos);
                 serverScenesInfos = ContainerUtils.RemoveMatchingElements(serverScenesInfos, localScenesInfos);
 
-                IList<SceneInfo> newScenes = await serverAPI.Scene.GetSceneFiles(serverScenesInfos);
-
-                SaveSceneInfos(localScenesInfos, newScenes);
                 sceneStore.SceneInfos =
                     localScenesInfos
-                        .Concat(newScenes)
+                        .Concat(serverScenesInfos)
                         .ToList();
             }
-        }
-
-        private void SaveSceneInfos(IList<SceneInfo> localScenes, IList<SceneInfo> newScenes)
-        {
-            IList<SceneInfoDTO> currentScenesInfos =
-                new List<SceneInfo>(localScenes)
-                    .Concat(newScenes)
-                    .Select(ToSceneRO)
-                    .ToList();
-
-            SceneAssetPackages.SaveSceneInfo(currentScenesInfos);
-        }
-
-        private static SceneInfoDTO ToSceneRO(SceneInfo sceneInfo)
-        {
-            SceneInfoDTO dto = new SceneInfoDTO();
-            dto.name = sceneInfo.Name;
-            dto.displayName = sceneInfo.DisplayName;
-            dto.device = sceneInfo.Device.ToString();
-            dto.imageData = DataConverter.SpriteToRowData(sceneInfo.Image);
-            dto.sortIndex = sceneInfo.SortIndex;
-
-            return dto;
         }
     }
 }

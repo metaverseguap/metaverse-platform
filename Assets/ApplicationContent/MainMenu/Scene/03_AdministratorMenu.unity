@@ -110889,7 +110889,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a05d786d8ee41664b888c8036aa525db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _nextScene: Assets/ApplicationContent/MainMenu/Scene/02_MenuLoading.unity
+  _nextScene: Assets/ApplicationContent/MainMenu/Scene/02_AvatarLoading.unity
 --- !u!1 &1865181173
 GameObject:
   m_ObjectHideFlags: 0
