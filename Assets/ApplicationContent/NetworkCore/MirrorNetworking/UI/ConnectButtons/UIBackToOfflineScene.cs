@@ -1,7 +1,6 @@
 ﻿using Global.UI.AreYouSureWindow;
 using Localization;
-using Mirror;
-using NetworkCore.ServerInteraction.API;
+using NetworkCore.MirrorNetworking.Utils;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -9,16 +8,15 @@ using UnityEngine.UI;
 namespace NetworkCore.MirrorNetworking.UI
 {
     /// <summary>
-    /// <para>Кнопка отключения от mirror и возврата в главное меню.</para>
+    /// <para>Кнопка возвращения в офлайн сцену.</para>
     /// </summary>
     [RequireComponent(typeof(Button))]
-    public sealed class UIMirrorDisconnectButton : MonoBehaviour
+    public sealed class UIBackToOfflineScene : MonoBehaviour
     {
         [SerializeField] private UIAreYouSureWindow _areYouSureWindow;
         
         private Button button;
         private MVNetworkManager connection;
-        private APIContainer serverAPI;
 
         private void OnEnable()
         {
@@ -39,9 +37,11 @@ namespace NetworkCore.MirrorNetworking.UI
         {
             if (MVNetworkManager.IsOnline())
             {
-                button.interactable = true;
                 connection = MVNetworkManager.singleton;
-                serverAPI = connection.NetworkStore.FileServer;
+                
+                string offlineScene = connection.offlineScene;
+                string currentScene = SceneManager.GetActiveScene().path;
+                button.interactable = currentScene != offlineScene;
             }
             else
             {
@@ -56,29 +56,19 @@ namespace NetworkCore.MirrorNetworking.UI
 
         private void ShowWarning()
         {
-            string message = LocalizationUtils.GetStringFromTable("TabletLocaleTable", "Tablet.label.exitMetaverse");
-            _areYouSureWindow.ShowWindow(message, StartDisconnection);
+            string message = LocalizationUtils.GetStringFromTable("TabletLocaleTable", "Tablet.label.toOfflineScene");
+            _areYouSureWindow.ShowWindow(message, ToOfflineScene);
         }
 
-        private void StartDisconnection()
+        private void ToOfflineScene()
         {
             if (connection == null)
             {
                 return;
             }
 
-            if (NetworkServer.activeHost)
-            {
-                serverAPI.Hosts.RemoveHost();
-                connection.StopHost();
-            }
-            else
-            {
-                connection.StopClient();
-            }
-            
-            string menuScene = connection.NetworkStore.Scenes.MenuSceneName;
-            SceneManager.LoadScene(menuScene, LoadSceneMode.Single);
+            connection.DisconnectFromNetwork();
+            connection.StartOfflineScene();
         }
     }
 }

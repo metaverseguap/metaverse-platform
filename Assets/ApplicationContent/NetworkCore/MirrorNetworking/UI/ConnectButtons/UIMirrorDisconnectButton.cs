@@ -1,19 +1,18 @@
 ﻿using Global.UI.AreYouSureWindow;
 using Localization;
-using Mirror;
+using NetworkCore.MirrorNetworking.Utils;
 using NetworkCore.ServerInteraction.API;
-using OfflineScene;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-namespace NetworkCore.MirrorNetworking.UI
+namespace NetworkCore.MirrorNetworking.UI.ConnectButtons
 {
     /// <summary>
-    /// <para>Кнопка возвращения в офлайн сцену.</para>
+    /// <para>Кнопка отключения от mirror и возврата в главное меню.</para>
     /// </summary>
     [RequireComponent(typeof(Button))]
-    public sealed class UIBackToOfflineScene : MonoBehaviour
+    public sealed class UIMirrorDisconnectButton : MonoBehaviour
     {
         [SerializeField] private UIAreYouSureWindow _areYouSureWindow;
         
@@ -40,12 +39,8 @@ namespace NetworkCore.MirrorNetworking.UI
         {
             if (MVNetworkManager.IsOnline())
             {
+                button.interactable = true;
                 connection = MVNetworkManager.singleton;
-                
-                string offlineScene = connection.offlineScene;
-                string currentScene = SceneManager.GetActiveScene().path;
-                button.interactable = currentScene != offlineScene;
-                
                 serverAPI = connection.NetworkStore.FileServer;
             }
             else
@@ -61,30 +56,22 @@ namespace NetworkCore.MirrorNetworking.UI
 
         private void ShowWarning()
         {
-            string message = LocalizationUtils.GetStringFromTable("TabletLocaleTable", "Tablet.label.toOfflineScene");
-            _areYouSureWindow.ShowWindow(message, ToOfflineScene);
+            string message = LocalizationUtils.GetStringFromTable("TabletLocaleTable", "Tablet.label.exitMetaverse");
+            _areYouSureWindow.ShowWindow(message, StartDisconnection);
         }
 
-        private void ToOfflineScene()
+        private void StartDisconnection()
         {
             if (connection == null)
             {
                 return;
             }
 
-            if (NetworkServer.activeHost)
-            {
-                serverAPI.Hosts.RemoveHost();
-                connection.StopHost();
-            }
-            else
-            {
-                connection.StopClient();
-            }
+            connection.DisconnectFromNetwork();
             
-            connection.StartHost();
-            connection.NetworkStore.Scenes.CurrentScene = OfflineSceneConstants.SCENE_INFO;
-            connection.ServerChangeScene(connection.offlineScene);
+            string menuScene = connection.NetworkStore.Scenes.MenuSceneName;
+            connection.NetworkStore.Scenes.CurrentScene = null;
+            SceneManager.LoadScene(menuScene, LoadSceneMode.Single);
         }
     }
 }

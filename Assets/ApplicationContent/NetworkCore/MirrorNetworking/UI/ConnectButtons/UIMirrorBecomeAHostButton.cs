@@ -1,12 +1,11 @@
 ﻿using MainMenu.Containers;
-using Mirror;
+using NetworkCore.MirrorNetworking.Utils;
 using NetworkCore.ServerInteraction.API;
-using NetworkCore.Utils;
 using Player.Tablet.PC.UI;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace NetworkCore.MirrorNetworking.UI
+namespace NetworkCore.MirrorNetworking.UI.ConnectButtons
 {
     /// <summary>
     /// <para>Кнопка становления хостом.</para>
@@ -66,20 +65,9 @@ namespace NetworkCore.MirrorNetworking.UI
             {
                 return;
             }
-            
-            if (NetworkServer.activeHost)
-            {
-                serverAPI.Hosts.RemoveHost();
-            }
-            else
-            {
-                connection.StartHost();
-            }
-            
-            connection.NetworkStore.Scenes.CurrentScene = connectedScene;
-            connection.ServerChangeScene(connectedScene.Name);
-            
-            serverAPI.Hosts.BecomeAHost(IPUtils.GetIpAsUrl(), connectedScene.Name);
+
+            connection.DisconnectFromNetwork();
+            connection.BecomeHost(connectedScene);
         }
     }
 }

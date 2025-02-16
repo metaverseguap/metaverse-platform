@@ -4,6 +4,7 @@ using Global.UI;
 using Global.UI.ScrollList;
 using MainMenu.Containers;
 using NetworkCore.MirrorNetworking;
+using NetworkCore.MirrorNetworking.Containers;
 using NetworkCore.ServerInteraction.API;
 using Player.Tablet.UI.ScrollListItems;
 using TMPro;
@@ -31,6 +32,7 @@ namespace Player.Tablet.PC.UI
         [SerializeField] private Button _connectToHostButton;
 
         private APIContainer serverAPI;
+        private NetworkDataStore store;
 
         private IList<SceneInfo> sceneInfo = new List<SceneInfo>();
         private IList<HostInfo> hosts = new List<HostInfo>();
@@ -38,7 +40,7 @@ namespace Player.Tablet.PC.UI
 
         private void OnEnable()
         {
-            serverAPI = EnsureServerAPI();
+            EnsureNetwork();
             currentUser = EnsureUserInfo(serverAPI);
             RefreshMenu();
         }
@@ -48,20 +50,20 @@ namespace Player.Tablet.PC.UI
             _hostsList.OnItemChangeValue -= ActivateConnectButton;
         }
 
-        private APIContainer EnsureServerAPI()
+        private void EnsureNetwork()
         {
             if (serverAPI == null)
             {
                 if (MVNetworkManager.IsOffline())
                 {
                     AppLogger.Error(string.Format("Attempting to use online functions ({0}) in offline mode", SCRIPT_FUNCTION));
-                    return null;
+                    return;
                 }
 
-                return MVNetworkManager.singleton.NetworkStore.FileServer;
+                MVNetworkManager connection = MVNetworkManager.singleton;
+                store = connection.NetworkStore;
+                serverAPI = store.FileServer;
             }
-
-            return serverAPI;
         }
 
         private UserInfo EnsureUserInfo(APIContainer serverAPI)
@@ -81,6 +83,11 @@ namespace Player.Tablet.PC.UI
 
         private void RefreshMenu()
         {
+            if (serverAPI == null)
+            {
+                return;
+            }
+            
             RefreshSceneInfo();
             RefreshHostsList();
             RefreshButtons();
@@ -89,17 +96,42 @@ namespace Player.Tablet.PC.UI
         private void RefreshSceneInfo()
         {
             _sceneDropdown.ClearOptions();
-            sceneInfo = serverAPI.Scene.GetAllSceneInfo();
+            sceneInfo.Clear();
+            sceneInfo = GetSceneInfo();
 
-            foreach (SceneInfo sceneInfo in sceneInfo)
+            foreach (SceneInfo info in sceneInfo)
             {
                 TMP_Dropdown.OptionData option = new TMP_Dropdown.OptionData();
-                option.text = sceneInfo.DisplayName.ToString();
-                option.image = sceneInfo.Image;
+                option.text = info.DisplayName.ToString();
+                option.image = info.Image;
                 _sceneDropdown.options.Add(option);
             }
 
             _sceneDropdown.Reset();
+        }
+
+        private IList<SceneInfo> GetSceneInfo()
+        {
+            IList<SceneInfo> result = new List<SceneInfo>();
+
+            Dictionary<string, SceneInfo> cachedScenes = new Dictionary<string, SceneInfo>();
+            foreach (SceneInfo scene in store.Scenes.SceneInfos)
+            {
+                cachedScenes.Add(scene.Name, scene);
+            }
+
+            IList<SceneInfo> remoteScenes = serverAPI.Scene.GetAllSceneInfo();
+            foreach (SceneInfo scene in remoteScenes)
+            {
+                if (cachedScenes.ContainsKey(scene.Name))
+                {
+                    scene.CachedPath = cachedScenes[scene.Name].CachedPath;
+                }
+
+                result.Add(scene);
+            }
+
+            return result;
         }
 
         private void RefreshHostsList()
