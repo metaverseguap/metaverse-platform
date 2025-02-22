@@ -54,9 +54,9 @@ namespace MainMenu.UI.AdminMenu
             return serverAPI;
         }
 
-        private async void RefreshAvatarAssetList()
+        private void RefreshAvatarAssetList()
         {
-            await _loadingForm.EnableLoading();
+            _loadingForm.EnableLoading();
             
             _avatarAssetsList.Clear();
             avatarInfos.Clear();
@@ -157,9 +157,9 @@ namespace MainMenu.UI.AdminMenu
         /// <summary>
         /// <para>Загрузить выбранные ассеты аватаров на сервер.</para>
         /// </summary>
-        public async void UploadAvatarAssets()
+        public void UploadAvatarAssets()
         {
-            await _loadingForm.EnableLoading();
+            _loadingForm.EnableLoading();
             
             IList<GameObject> selected = _avatarAssetsList.GetSelectedItems();
             if (selected.Count == 0)
@@ -234,9 +234,9 @@ namespace MainMenu.UI.AdminMenu
         /// <summary>
         /// <para>Удалить выбранные ассеты аватаров с сервера.</para>
         /// </summary>
-        public async void DeleteSelectedAssetsFromServer()
+        public void DeleteSelectedAssetsFromServer()
         {
-            await _loadingForm.EnableLoading();
+            _loadingForm.EnableLoading();
             
             IList<GameObject> selected = _avatarAssetsList.GetSelectedItems();
             if (selected.Count == 0)

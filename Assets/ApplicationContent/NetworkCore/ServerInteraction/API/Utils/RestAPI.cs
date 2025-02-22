@@ -4,6 +4,7 @@ using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Global.Files;
 using Global.Logger;
@@ -40,6 +41,15 @@ namespace NetworkCore.ServerInteraction.API.Utils
         {
             client.DefaultRequestHeaders.Authorization = AuthenticationHeaderValue.Parse(token);
         }
+        
+        /// <summary>
+        /// <para>Задать url сервера.</para>
+        /// </summary>
+        /// <param name="baseUrl">основной url сервера. Он будет подставляться в начало конкретных запросов</param>
+        public void SetBaseUrl(string baseUrl)
+        {
+            client.BaseAddress = new Uri(baseUrl);
+        }
 
         /// <summary>
         /// <para>Осуществляет GET запрос на сервер.</para>
@@ -74,6 +84,68 @@ namespace NetworkCore.ServerInteraction.API.Utils
             {
                 string message = $"Error when trying to execute GET request: {exception.Message}";
                 AppLogger.Error(message);
+
+                return ErrorResponse<R>(message);
+            }
+        }
+
+        /// <summary>
+        /// <para>Осуществляет асинхронный GET запрос на сервер.</para>
+        /// Данный метод используется, когда приложение должно продолжать свою работу параллельно выполнению запроса на сервер
+        /// </summary>
+        /// <param name="url">url запроса</param>
+        /// <param name="token">CancellationToken для отмены выполнения запроса из другого потока</param>
+        /// <param name="parameters">параметры запроса в виде <see cref="GetParam"/></param>
+        /// <typeparam name="R">тип к которому будет преобразован ответ на запрос. Данный тип должен наследоваться от <see cref="ResponseDetails"/> и иметь конструктор по умолчанию</typeparam>
+        /// <returns>ответ на запрос обернутый в тип R или <see cref="ResponseDetails"/> с сообщением об ошибке</returns>
+        public async Task<R> AsyncGetRequest<R>(string url, CancellationToken token, params GetParam[] parameters)
+            where R : ResponseDetails, new()
+        {
+            return await AsyncGetRequest<R>(url, token, true, parameters);
+        }
+
+        /// <summary>
+        /// <para>Осуществляет асинхронный GET запрос на сервер.</para>
+        /// Данный метод используется, когда приложение должно продолжать свою работу параллельно выполнению запроса на сервер
+        /// </summary>
+        /// <param name="url">url запроса</param>
+        /// <param name="token">CancellationToken для отмены выполнения запроса из другого потока</param>
+        /// <param name="log">нужно ли логгировать ошибки</param>
+        /// <param name="parameters">параметры запроса в виде <see cref="GetParam"/></param>
+        /// <typeparam name="R">тип к которому будет преобразован ответ на запрос. Данный тип должен наследоваться от <see cref="ResponseDetails"/> и иметь конструктор по умолчанию</typeparam>
+        /// <returns>ответ на запрос обернутый в тип R или <see cref="ResponseDetails"/> с сообщением об ошибке</returns>
+        public async Task<R> AsyncGetRequest<R>(string url, CancellationToken token, bool log, params GetParam[] parameters)
+            where R : ResponseDetails, new()
+        {
+            var urlWithParams = URLWithParams(url, parameters);
+
+            try
+            {
+                var response = await client.GetAsync(urlWithParams, token);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string strResult = await response.Content.ReadAsStringAsync();
+                    return JsonConvert.DeserializeObject<R>(strResult);
+                }
+                else
+                {
+                    string message = $"GET request failed. Code: {response.StatusCode}";
+                    if (log)
+                    {
+                        AppLogger.Error(message);
+                    }
+
+                    return ErrorResponse<R>(message);
+                }
+            }
+            catch (Exception exception)
+            {
+                string message = $"Error when trying to execute GET request: {exception.Message}";
+                if (log)
+                {
+                    AppLogger.Error(message);
+                }
 
                 return ErrorResponse<R>(message);
             }

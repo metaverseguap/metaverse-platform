@@ -55,9 +55,9 @@ namespace MainMenu.UI.AdminMenu
             return serverAPI;
         }
 
-        private async void RefreshSceneAssetList()
+        private void RefreshSceneAssetList()
         {
-            await _loadingForm.EnableLoading();
+            _loadingForm.EnableLoading();
             
             _sceneAssetsList.Clear();
             sceneInfos.Clear();
@@ -160,9 +160,9 @@ namespace MainMenu.UI.AdminMenu
         /// <summary>
         /// <para>Загрузить выбранные ассеты сцен на сервер.</para>
         /// </summary>
-        public async void UploadSceneAssets()
+        public void UploadSceneAssets()
         {
-            await _loadingForm.EnableLoading();
+             _loadingForm.EnableLoading();
             
             IList<GameObject> selected = _sceneAssetsList.GetSelectedItems();
             if (selected.Count == 0)
@@ -230,9 +230,9 @@ namespace MainMenu.UI.AdminMenu
         /// <summary>
         /// <para>Удалить выбранные ассеты сцен с сервера.</para>
         /// </summary>
-        public async void DeleteSelectedAssetsFromServer()
+        public void DeleteSelectedAssetsFromServer()
         {
-            await _loadingForm.EnableLoading();
+            _loadingForm.EnableLoading();
             
             IList<GameObject> selected = _sceneAssetsList.GetSelectedItems();
             if (selected.Count == 0)
