@@ -46,5 +46,20 @@ namespace NetworkCore.Utils
         {
             return $"kcp://{ip}";
         }
+
+        /// <summary>
+        /// <para>Проверяет, является ли URL валидным.</para>
+        /// </summary>
+        /// <param name="url">url</param>
+        /// <returns>true, если url является валидным</returns>
+        public static bool IsURLValid(string url)
+        {
+            if (Uri.TryCreate(url, UriKind.Absolute, out Uri uriResult))
+            {
+                return !string.IsNullOrEmpty(uriResult.Scheme);
+            }
+            
+            return false;
+        }
     }
 }

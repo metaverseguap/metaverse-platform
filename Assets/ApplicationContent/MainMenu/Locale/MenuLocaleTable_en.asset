@@ -304,6 +304,26 @@ MonoBehaviour:
     m_Metadata:
       m_Items:
       - rid: 5997839330276540435
+  - m_Id: 39812319632695296
+    m_Localized: Online
+    m_Metadata:
+      m_Items: []
+  - m_Id: 39812405049696256
+    m_Localized: Offline
+    m_Metadata:
+      m_Items: []
+  - m_Id: 39812914980593664
+    m_Localized: Set server address
+    m_Metadata:
+      m_Items: []
+  - m_Id: 39814523613618176
+    m_Localized: Server address
+    m_Metadata:
+      m_Items: []
+  - m_Id: 39826081446109184
+    m_Localized: Invalid url
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:

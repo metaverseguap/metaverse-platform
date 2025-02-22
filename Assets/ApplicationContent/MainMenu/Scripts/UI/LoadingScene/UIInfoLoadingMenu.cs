@@ -71,7 +71,7 @@ namespace MainMenu.UI.LoadingScene
             loadingText = LocalizationUtils.GetStringFromTable("MenuLocaleTable", "MainMenu.label.loading.scenes");
             yield return ExecuteThenAwaitFrame(() => _loadingText.text = loadingText);
 
-            yield return new WaitUntil(() => SceneInfoDownloading().IsCompleted);
+            SceneInfoDownloading();
 
             // Ждем один кадр
             yield return null;
@@ -167,7 +167,7 @@ namespace MainMenu.UI.LoadingScene
             }
         }
 
-        private async Task SceneInfoDownloading()
+        private void SceneInfoDownloading()
         {
             if (sceneStore.SceneInfos.Count == 0)
             {

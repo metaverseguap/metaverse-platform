@@ -28,5 +28,14 @@ namespace NetworkCore.ServerInteraction.API
         {
             restAPI.SetAuthorization(token);
         }
+        
+        /// <summary>
+        /// <para>Задать url сервера.</para>
+        /// </summary>
+        /// <param name="serverUrl">основной url сервера. Он будет подставляться в начало конкретных запросов</param>
+        public void SetServerUrl(string serverUrl)
+        {
+            restAPI.SetBaseUrl(serverUrl);
+        }
     }
 }

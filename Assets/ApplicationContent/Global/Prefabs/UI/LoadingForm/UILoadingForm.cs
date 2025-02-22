@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Global.UI.LoadingForm
@@ -30,13 +29,18 @@ namespace Global.UI.LoadingForm
 
         /// <summary>
         /// <para>Гарантированно показать форму загрузки.</para>
-        /// 
-        /// <remarks>Данный метод должен использоваться в методах async: <c>await EnableLoading();</c></remarks>
         /// </summary>
-        public async Task EnableLoading()
+        public void EnableLoading()
         {
+            StartCoroutine(AwaitFrameThenEnable());
+        }
+        
+        private IEnumerator AwaitFrameThenEnable()
+        {
+            // Ждем один кадр, чтобы форма загрузки отобразилась
+            yield return null;
+            
             gameObject.SetActive(true);
-            await Task.Delay(1);
         }
     }
 }

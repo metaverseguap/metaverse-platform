@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using NetworkCore.Utils;
+
 namespace NetworkCore.ServerInteraction.API
 {
     /// <summary>
@@ -5,45 +8,72 @@ namespace NetworkCore.ServerInteraction.API
     /// </summary>
     public sealed class APIContainer
     {
+        
+        private string serverAddress;
+        
+        /// <summary>
+        /// <para>Адрес файлового сервера.</para>
+        /// Данный <see cref="APIContainer"/> использует указанный адрес для подключения к файловому серверу
+        /// </summary>
+        public string ServerAddress
+        {
+            get => serverAddress;
+            set
+            {
+                if (IPUtils.IsURLValid(value))
+                {
+                    serverAddress = value;
+                    ChangeServerAddress(serverAddress);
+                }
+            }
+        }
+        
         /// <summary>
         /// <inheritdoc cref="AuthAPI"/>
         /// </summary>
-        public AuthAPI Auth { get; private set; }
+        public AuthAPI Auth { get; }
 
         /// <summary>
         /// <inheritdoc cref="RoleAPI"/>
         /// </summary>
-        public RoleAPI Role { get; private set; }
+        public RoleAPI Role { get; }
 
         /// <summary>
         /// <inheritdoc cref="LoginKeyAPI"/>
         /// </summary>
-        public LoginKeyAPI LoginKey { get; private set; }
+        public LoginKeyAPI LoginKey { get; }
 
         /// <summary>
         /// <inheritdoc cref="RegistrationKeyAPI"/>
         /// </summary>
-        public RegistrationKeyAPI RegistrationKey { get; private set; }
+        public RegistrationKeyAPI RegistrationKey { get; }
 
         /// <summary>
         /// <inheritdoc cref="SceneAPI"/>
         /// </summary>
-        public SceneAPI Scene { get; private set; }
+        public SceneAPI Scene { get; }
         
         /// <summary>
         /// <inheritdoc cref="AvatarAPI"/>
         /// </summary>
-        public AvatarAPI Avatar { get; private set; }
+        public AvatarAPI Avatar { get; }
         
         /// <summary>
         /// <inheritdoc cref="UserAPI"/>
         /// </summary>
-        public UserAPI User { get; private set; }
+        public UserAPI User { get; }
         
         /// <summary>
         /// <inheritdoc cref="HostsAPI"/>
         /// </summary>
-        public HostsAPI Hosts { get; private set; }
+        public HostsAPI Hosts { get; }
+        
+        /// <summary>
+        /// <inheritdoc cref="StatusAPI"/>
+        /// </summary>
+        public StatusAPI ServerStatus { get; }
+        
+        private IList<AbstractServerAPI> apiList;
 
         /// <summary>
         /// <para>Конструктор.</para>
@@ -51,6 +81,8 @@ namespace NetworkCore.ServerInteraction.API
         /// <param name="serverUri">uri файлового сервера</param>
         public APIContainer(string serverUri)
         {
+            serverAddress = serverUri;
+            
             this.Auth = new AuthAPI(serverUri, this);
             this.Role = new RoleAPI(serverUri);
             this.LoginKey = new LoginKeyAPI(serverUri);
@@ -59,6 +91,22 @@ namespace NetworkCore.ServerInteraction.API
             this.Avatar = new AvatarAPI(serverUri);
             this.User = new UserAPI(serverUri);
             this.Hosts = new HostsAPI(serverUri);
+            this.ServerStatus = new StatusAPI(serverUri);
+            
+            apiList = new List<AbstractServerAPI>()
+            {
+                Auth, Role, LoginKey, RegistrationKey,
+                Scene, Avatar, User, Hosts,
+                ServerStatus
+            };
+        }
+
+        private void ChangeServerAddress(string newServerAddress)
+        {
+            foreach (var api in apiList)
+            {
+                api.SetServerUrl(newServerAddress);
+            }
         }
 
         /// <summary>
@@ -67,14 +115,10 @@ namespace NetworkCore.ServerInteraction.API
         /// <param name="token">JSON Web Token</param>
         public void SetAuthToken(string token)
         {
-            this.Auth.SetAuthorization(token);
-            this.Role.SetAuthorization(token);
-            this.LoginKey.SetAuthorization(token);
-            this.RegistrationKey.SetAuthorization(token);
-            this.Scene.SetAuthorization(token);
-            this.Avatar.SetAuthorization(token);
-            this.User.SetAuthorization(token);
-            this.Hosts.SetAuthorization(token);
+            foreach (var api in apiList)
+            {
+                api.SetAuthorization(token);
+            }
         }
     }
 }

@@ -299,6 +299,26 @@ MonoBehaviour:
     m_Key: MainMenu.label.loading.scenes.assets
     m_Metadata:
       m_Items: []
+  - m_Id: 39812319632695296
+    m_Key: MainMenu.label.online
+    m_Metadata:
+      m_Items: []
+  - m_Id: 39812405049696256
+    m_Key: MainMenu.label.offline
+    m_Metadata:
+      m_Items: []
+  - m_Id: 39812914980593664
+    m_Key: MainMenu.button.serverAddresSet
+    m_Metadata:
+      m_Items: []
+  - m_Id: 39814523613618176
+    m_Key: MainMenu.placeholder.serverAddress
+    m_Metadata:
+      m_Items: []
+  - m_Id: 39826081446109184
+    m_Key: MainMenu.text.invalidUrl
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
