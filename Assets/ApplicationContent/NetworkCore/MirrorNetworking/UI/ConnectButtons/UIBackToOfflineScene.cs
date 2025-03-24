@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-namespace NetworkCore.MirrorNetworking.UI
+namespace NetworkCore.MirrorNetworking.UI.ConnectButtons
 {
     /// <summary>
     /// <para>Кнопка возвращения в офлайн сцену.</para>
@@ -39,7 +39,7 @@ namespace NetworkCore.MirrorNetworking.UI
             {
                 connection = MVNetworkManager.singleton;
                 
-                string offlineScene = connection.offlineScene;
+                string offlineScene = connection.onlineScene;
                 string currentScene = SceneManager.GetActiveScene().path;
                 button.interactable = currentScene != offlineScene;
             }
