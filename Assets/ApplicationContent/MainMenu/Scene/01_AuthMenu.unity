@@ -3405,8 +3405,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 20
-  m_fontSizeBase: 20
+  m_fontSize: 18
+  m_fontSizeBase: 18
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -7910,8 +7910,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 25
-  m_fontSizeBase: 25
+  m_fontSize: 18
+  m_fontSizeBase: 18
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -8779,7 +8779,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _device: 0
-  _serverUrl: http://localhost:5001
+  _serverUrl: http://26.31.64.100:8101
   _defaultScene: Assets/ApplicationContent/OfflineScene/Void.unity
   _menuScene: Assets/ApplicationContent/MainMenu/Scene/01_AuthMenu.unity
   _loadingScene: Assets/ApplicationContent/MainMenu/Scene/05_IntermediateLoadingScene.unity

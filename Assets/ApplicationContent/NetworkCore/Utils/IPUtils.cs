@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Net.Sockets;
 
 namespace NetworkCore.Utils
@@ -9,6 +12,14 @@ namespace NetworkCore.Utils
     /// </summary>
     public static class IPUtils
     {
+        /// <summary>
+        /// <para>Порт по умолчанию для запуска offline сцены.</para>
+        /// </summary>
+        public const int DEFAULT_PORT_FOR_OFFLINE = 10001;
+        
+        private const int MAX_AVAILABLE_PORT = 65535;
+        private const int MIN_AVAILABLE_PORT = 7777;
+        
         /// <summary>
         /// <para>Получить ip адрес машины в локальной сети.</para>
         /// </summary>
@@ -44,7 +55,17 @@ namespace NetworkCore.Utils
         /// <returns>Mirror url</returns>
         public static string UrlFromIP(string ip)
         {
-            return $"kcp://{ip}";
+            string urlPrefix = UrlPrefix();
+            return $"{urlPrefix}{ip}";
+        }
+
+        /// <summary>
+        /// <para>Получить URL префикс подключения к сети Mirror.</para>
+        /// </summary>
+        /// <returns>URL префикс подключения к сети Mirror</returns>
+        public static string UrlPrefix()
+        {
+            return "kcp://";
         }
 
         /// <summary>
@@ -60,6 +81,54 @@ namespace NetworkCore.Utils
             }
             
             return false;
+        }
+
+        /// <summary>
+        /// <para>Получает доступный порт из указанного количества.</para>
+        /// Доступные порты получаются из портов больших или меньших <see cref="DEFAULT_PORT_FOR_OFFLINE"/> 
+        /// </summary>
+        /// <param name="range">количество портов</param>
+        /// <returns>свободный порт или null, если все порты заняты</returns>
+        public static int? GetAvailableUDPPort(int range)
+        {
+            if ((range <= 0 || range > MAX_AVAILABLE_PORT)
+                || ((DEFAULT_PORT_FOR_OFFLINE + range >= MAX_AVAILABLE_PORT) || (DEFAULT_PORT_FOR_OFFLINE - range <= MIN_AVAILABLE_PORT)))
+            {
+                return null;
+            }
+
+            if (DEFAULT_PORT_FOR_OFFLINE + range <= MAX_AVAILABLE_PORT)
+            {
+                return GetAvailableUDPPort(DEFAULT_PORT_FOR_OFFLINE, DEFAULT_PORT_FOR_OFFLINE + range);
+            }
+
+            return GetAvailableUDPPort(DEFAULT_PORT_FOR_OFFLINE - range, DEFAULT_PORT_FOR_OFFLINE);
+        }
+        
+        /// <summary>
+        /// <para>Получает доступный порт в указанном диапазоне.</para>
+        /// </summary>
+        /// <param name="from">порт начала диапазона</param>
+        /// <param name="to">порт конца диапазона</param>
+        /// <returns>свободный порт из указанного диапазона или null, если все порты в диапазоне заняты</returns>
+        public static int? GetAvailableUDPPort(int from, int to)
+        {
+            ISet<int> occupiedPorts =
+                IPGlobalProperties.GetIPGlobalProperties()
+                    .GetActiveUdpListeners()
+                    .Select(p => p.Port)
+                    .OrderBy(p => p) // В debug проще смотреть на отсортированные значения 
+                    .ToHashSet();
+
+            for (int port = from; port <= to; port++)
+            {
+                if (!occupiedPorts.Contains(port))
+                {
+                    return port;
+                }
+            }
+
+            return null;
         }
     }
 }

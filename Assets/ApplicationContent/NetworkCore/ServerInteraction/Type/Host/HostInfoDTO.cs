@@ -8,9 +8,14 @@
     public sealed class HostInfoDTO
     {
         /// <summary>
-        /// Uri идентификатор хоста, для подключения к нему через Mirror.
+        /// IP хоста, для подключения к нему через Mirror.
         /// </summary>
-        public string uri { get; set; }
+        public string hostIP { get; set; }
+        
+        /// <summary>
+        /// Порт хоста.
+        /// </summary>
+        public int port { get; set; }
 
         /// <summary>
         /// Название файла сцены, хостом которой является данный хост.
