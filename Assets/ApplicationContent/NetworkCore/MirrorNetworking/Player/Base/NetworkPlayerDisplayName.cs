@@ -1,4 +1,5 @@
-﻿using TMPro;
+﻿using NetworkCore.MirrorNetworking.Player.AvatarPlayer;
+using TMPro;
 using UnityEngine;
 
 namespace NetworkCore.MirrorNetworking.Player.Base
@@ -9,7 +10,7 @@ namespace NetworkCore.MirrorNetworking.Player.Base
     [RequireComponent(typeof(RotateTowardsMainCamera))]
     public sealed class NetworkPlayerDisplayName : MonoBehaviour
     {
-        [SerializeField] private NetworkBasePlayer _networkPlayer;
+        [SerializeField] private NetworkAvatarPlayer _networkPlayer;
         [SerializeField] private TMP_Text _displayName;
 
         private void Start()

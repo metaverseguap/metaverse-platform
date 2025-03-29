@@ -1,5 +1,6 @@
 using AppAvatars.AvatarSetups;
 using NetworkCore.MirrorNetworking.Types.Devices;
+using Player.EmbeddedPlayers;
 using UnityEngine;
 
 namespace AppAvatars
@@ -14,23 +15,30 @@ namespace AppAvatars
     /// Затем, шкаф через данный компонент просто заменит аватар на нужный. Таким образом будет производиться внешняя обработка аватара.
     /// <remarks>данный класс должен иметь <see cref="PlayerAvatar"/> компонент среди своих потомков</remarks>
     /// </summary>
-    public abstract class AbstractPlayer : MonoBehaviour
+    public abstract class AbstractPlayerAvatar : MonoBehaviour
     {
         /// <summary>
         /// Устройство контролирующее игрока.
         /// </summary>
         public abstract Device PlayerControlDevice { get; }
 
-        private PlayerAvatar _avatarComponent;
+        private PlayerAvatar avatarComponent;
+        private AbstractPlayerController playerController;
 
         /// <summary>
         /// <see cref="PlayerAvatar">Компонент аватара игрока</see>.
         /// </summary>
-        public PlayerAvatar AvatarComponent => _avatarComponent;
+        public PlayerAvatar AvatarComponent => avatarComponent;
+        
+        /// <summary>
+        /// <see cref="AbstractPlayerController">Контроллер</see>.
+        /// </summary>
+        public AbstractPlayerController PlayerController => playerController;
 
         private void Awake()
         {
-            _avatarComponent = GetComponentInChildren<PlayerAvatar>();
+            avatarComponent = GetComponentInChildren<PlayerAvatar>();
+            playerController = GetComponentInChildren<AbstractPlayerController>();
         }
     }
 }

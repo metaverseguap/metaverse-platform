@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Cinemachine;
 using UnityEngine;
 
@@ -7,27 +8,22 @@ namespace Player.EmbeddedPlayers.PC
     /// <para>Компонент контролирующий перемещение игрока при помощи клавиатуры и мышки.</para>
     /// </summary>
     [RequireComponent(typeof(CharacterController))]
-    public sealed class PlayerControllerPC : MonoBehaviour
+    public sealed class PlayerControllerPC : AbstractPlayerController
     {
+        [SerializeField] private CinemachineBrain _mainCamera;
         [SerializeField] private CinemachineVirtualCamera _playerCamera;
         [SerializeField] private float _mouseSensitivity = 2f;
 
-        [Tooltip("Restriction imposed on turning the character's head up")] 
+        [Tooltip("Ограничение поворота головы персонажа вверх")] 
         [SerializeField] private float _lookUpRestriction = -50;
 
-        [Tooltip("Restriction imposed on turning the character's head down")] 
+        [Tooltip("Ограничение поворота головы персонажа вниз")] 
         [SerializeField] private float _lookDownRestriction = 50;
 
         [SerializeField] private float _walkingSpeed = 6f;
         [SerializeField] private float _jumpHeight = 1.0f;
-
-        /// <summary>
-        /// <para>Является ли данный контроллер активным.</para>
-        ///
-        /// <remarks>данное свойство необходимо, когда в одной сцене находиться несколько контроллеров игрока.
-        /// В этом случае нужно фиксировать пользовательский ввод только на активном контроллере.</remarks>
-        /// </summary>
-        public bool ActiveController { get; set; } = true;
+        
+        private List<CinemachineVirtualCamera> playerCameras = new List<CinemachineVirtualCamera>();
         
         /// <summary>
         /// Камера игрока.
@@ -49,11 +45,30 @@ namespace Player.EmbeddedPlayers.PC
         {
             characterController = GetComponent<CharacterController>();
             Cursor.visible = false;
+            
+            playerCameras.Add(_playerCamera);
+            playerCameras.AddRange(GetComponentsInChildren<CinemachineVirtualCamera>());
+        }
+        
+        /// <summary>
+        /// <inheritdoc cref="AbstractPlayerController.DeactivatePermanently"/>
+        /// </summary>
+        public override void DeactivatePermanently()
+        {
+            base.DeactivatePermanently();
+            // На компоненте CinemachineBrain находятся так же AudioListener и MainCamera.
+            // Их нужно отключить при отключении контроллера
+            _mainCamera.gameObject.SetActive(false);
+            _playerCamera.enabled = false;
+            foreach (CinemachineVirtualCamera playerCamera in playerCameras)
+            {
+                playerCamera.enabled = false;
+            }
         }
 
         private void Update()
         {
-            if (ActiveController)
+            if (isActiveController)
             {
                 Move4Direction();
                 Jump();

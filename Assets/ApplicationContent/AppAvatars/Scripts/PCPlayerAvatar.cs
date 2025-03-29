@@ -5,10 +5,10 @@ namespace AppAvatars
     /// <summary>
     /// <para>Класс игрока управляемого с компьютера.</para>
     /// </summary>
-    public sealed class PCPlayer : AbstractPlayer
+    public sealed class PCPlayerAvatar : AbstractPlayerAvatar
     {
         /// <summary>
-        /// <inheritdoc cref="AbstractPlayer.PlayerControlDevice"/>
+        /// <inheritdoc cref="AbstractPlayerAvatar.PlayerControlDevice"/>
         /// </summary>
         public override Device PlayerControlDevice => Device.PC;
     }

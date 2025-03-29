@@ -42,7 +42,8 @@ namespace Player.Tablet.PC
         public void SwitchTablet()
         {
             // Если предыдущее переключение еще идет
-            if (_cinemachineBrain.IsBlending)
+            if (!_cinemachineBrain.isActiveAndEnabled
+                || _cinemachineBrain.IsBlending)
             {
                 return;
             }
@@ -52,6 +53,7 @@ namespace Player.Tablet.PC
             if (isTabletActive)
             {
                 _tablet.gameObject.SetActive(true);
+                _tablet.ActiveController = true;
                 _playerCamera.Priority = CameraControlConstants.PRIORITY_CAMERA_OFF;
                 _tabletCamera.Priority = CameraControlConstants.PRIORITY_SELECTED_CAMERA;
                 _player.ActiveController = false;
@@ -59,6 +61,7 @@ namespace Player.Tablet.PC
             }
             else
             {
+                _tablet.ActiveController = false;
                 _tabletCamera.Priority = CameraControlConstants.PRIORITY_CAMERA_OFF;
                 _playerCamera.Priority = CameraControlConstants.PRIORITY_SELECTED_CAMERA;
                 _player.ActiveController = true;

@@ -9,7 +9,7 @@ namespace AppAvatars
     ///
     /// <remarks>данный компонент нужен для офлайн дебага</remarks>
     /// </summary>
-    [RequireComponent(typeof(AbstractPlayer))]
+    [RequireComponent(typeof(AbstractPlayerAvatar))]
     public sealed class OfflinePlayerAvatar : MonoBehaviour
     {
         [Tooltip("Префаб аватара игрока")] 
@@ -19,10 +19,10 @@ namespace AppAvatars
 
         private void Start()
         {
-            AbstractPlayer player = GetComponent<AbstractPlayer>();
+            AbstractPlayerAvatar playerAvatar = GetComponent<AbstractPlayerAvatar>();
             if (_forceAvatarSet || MVNetworkManager.IsOffline())
             {
-                player.AvatarComponent.CreatePlayerFromAvatar(_playerAvatar);
+                playerAvatar.AvatarComponent.CreatePlayerFromAvatar(_playerAvatar);
             }
         }
     }

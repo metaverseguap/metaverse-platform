@@ -4,9 +4,9 @@ using UnityEngine;
 namespace AppAvatars
 {
     /// <summary>
-    /// <inheritdoc cref="AbstractPlayer"/>
+    /// <inheritdoc cref="AbstractPlayerAvatar"/>
     /// </summary>
-    public sealed class CustomizablePlayer : AbstractPlayer
+    public sealed class CustomizablePlayerAvatar : AbstractPlayerAvatar
     {
         /// <summary>
         /// Устройство контролирующее игрока.
@@ -15,7 +15,7 @@ namespace AppAvatars
         [SerializeField] private Device _playerControlDevice;
 
         /// <summary>
-        /// <inheritdoc cref="AbstractPlayer.PlayerControlDevice"/>
+        /// <inheritdoc cref="AbstractPlayerAvatar.PlayerControlDevice"/>
         /// </summary>
         public override Device PlayerControlDevice => _playerControlDevice;
     }

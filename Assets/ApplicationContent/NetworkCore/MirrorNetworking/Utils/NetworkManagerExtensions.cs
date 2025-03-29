@@ -1,4 +1,5 @@
-﻿using Global.Logger;
+﻿using System.Collections.Generic;
+using Global.Logger;
 using kcp2k;
 using MainMenu.Containers;
 using Mirror;
@@ -7,6 +8,7 @@ using NetworkCore.ServerInteraction.API;
 using NetworkCore.ServerInteraction.Type.Host;
 using NetworkCore.Utils;
 using OfflineScene;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace NetworkCore.MirrorNetworking.Utils
@@ -177,6 +179,27 @@ namespace NetworkCore.MirrorNetworking.Utils
             // Загружаем сцену загрузки, из которой будет запущен клиент
             string loadingSceneName = store.Scenes.LoadingSceneName;
             SceneManager.LoadScene(loadingSceneName, LoadSceneMode.Single);
+        }
+
+        /// <summary>
+        /// <para>Зарегистрировать префаб, спавнемый в mirror.</para>
+        /// <para>
+        /// Mirror не позволяет просто спавнить любые объекты в сцене.
+        /// Объекты должны быть зарегистрированы в <c>NetworkManager.spawnPrefabs</c>.
+        /// Данный метод регистрирует префаб, если он еще не был зарегистрирован.
+        /// </para>
+        /// <para>Данный метод используется для заранее созданных префабов</para>
+        /// </summary>
+        /// <param name="connection"><see cref="MVNetworkManager"/></param>
+        /// <param name="prefab">спавнемый префаб</param>
+        public static void RegisterPrefab(this MVNetworkManager connection, GameObject prefab)
+        {
+            int prefabHash = prefab.gameObject.GetHashCode();
+            
+            if (connection.NetworkStore.RegisterPrefabsHash.Add(prefabHash))
+            {
+                connection.spawnPrefabs.Add(prefab.gameObject);
+            }
         }
     }
 }

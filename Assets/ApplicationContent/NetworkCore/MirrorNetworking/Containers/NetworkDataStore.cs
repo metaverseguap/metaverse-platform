@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using NetworkCore.MirrorNetworking.Player.AvatarPlayer;
 using NetworkCore.MirrorNetworking.Player.Base;
 using NetworkCore.MirrorNetworking.Types.HostMigration;
 using NetworkCore.ServerInteraction.API;
@@ -23,6 +24,16 @@ namespace NetworkCore.MirrorNetworking.Containers
         /// Ключем является connection id игрока
         /// </summary>
         public IDictionary<int, NetworkBasePlayer> GamePlayers { get; } = new Dictionary<int, NetworkBasePlayer>();
+        
+        /// <summary>
+        /// <para>Хеш-коды зарегистрированных префабов.</para>
+        ///
+        /// Mirror не позволяет просто спавнить любые объекты в сцене.
+        /// Объекты должны быть зарегистрированы в <c>NetworkManager.spawnPrefabs</c>.
+        /// В данном сете хранятся хеш-коды зарегистрированных префабов,
+        /// для быстрого поиска зарегистрированных префабов.
+        /// </summary>
+        public ISet<int> RegisterPrefabsHash { get; } = new HashSet<int>();
         
         /// <summary>
         /// Контейнер состояния игрока при миграции хоста.
@@ -58,7 +69,7 @@ namespace NetworkCore.MirrorNetworking.Containers
             {
                 if (prefab.ForDevice == setups.Device)
                 {
-                    Player.CurrentBuildPlayer = prefab.Prefab;
+                    Player.CurrentBuildPlayerAvatar = prefab.Prefab;
                     break;
                 }
             }

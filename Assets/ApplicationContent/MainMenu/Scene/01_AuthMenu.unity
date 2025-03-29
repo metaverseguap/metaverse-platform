@@ -8784,7 +8784,7 @@ MonoBehaviour:
   _menuScene: Assets/ApplicationContent/MainMenu/Scene/01_AuthMenu.unity
   _loadingScene: Assets/ApplicationContent/MainMenu/Scene/05_IntermediateLoadingScene.unity
   _maxConnections: 30
-  _networkPlayerPrefab: {fileID: 7598941787893235472, guid: a3e81b3006bee5040bffc7b93263a85f, type: 3}
+  _networkPlayerPrefab: {fileID: 5117285622651888741, guid: f7dc2dfd2cca75448858596a9ed72498, type: 3}
   _devicePrefabs:
   - ForDevice: 0
     Prefab: {fileID: 563657382684787115, guid: 2501d40b833f9864a85dab9868733f74, type: 3}
@@ -8809,7 +8809,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1510370054}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a2642f3936a75b4393f5e403bdb8164, type: 3}
+  m_Script: {fileID: 11500000, guid: e441e2838fd5414d8e272b70a36f1752, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1567041129

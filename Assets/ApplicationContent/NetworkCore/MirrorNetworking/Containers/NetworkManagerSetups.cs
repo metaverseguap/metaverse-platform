@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Mirror;
+using NetworkCore.MirrorNetworking.Player.AvatarPlayer;
 using NetworkCore.MirrorNetworking.Player.Base;
 using NetworkCore.MirrorNetworking.Types.Devices;
 using UnityEngine;
@@ -24,7 +25,7 @@ namespace NetworkCore.MirrorNetworking.Containers
         [SerializeField] [Scene] private string _loadingScene;
 
         [SerializeField] private int _maxConnections;
-        [SerializeField] private NetworkBasePlayer _networkPlayerPrefab;
+        [SerializeField] private NetworkAvatarPlayer _networkPlayerPrefab;
         [Tooltip("Контроллеры игрока для различных устройств")]
         [SerializeField] private List<DevicePlayerPrefab> _devicePrefabs;
 

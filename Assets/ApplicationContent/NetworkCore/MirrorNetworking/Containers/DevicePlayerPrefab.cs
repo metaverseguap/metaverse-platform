@@ -11,6 +11,6 @@ namespace NetworkCore.MirrorNetworking.Containers
     public sealed class DevicePlayerPrefab
     {
         public Device ForDevice;
-        public AbstractPlayer Prefab;
+        public AbstractPlayerAvatar Prefab;
     }
 }

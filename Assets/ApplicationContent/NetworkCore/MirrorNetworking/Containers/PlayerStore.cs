@@ -1,4 +1,5 @@
 ﻿using AppAvatars;
+using NetworkCore.MirrorNetworking.Player.AvatarPlayer;
 using NetworkCore.MirrorNetworking.Player.Base;
 
 namespace NetworkCore.MirrorNetworking.Containers
@@ -26,7 +27,7 @@ namespace NetworkCore.MirrorNetworking.Containers
         /// <summary>
         /// Префаб игрока для текущей сборки.
         /// </summary>
-        public AbstractPlayer CurrentBuildPlayer { get; set; }
+        public AbstractPlayerAvatar CurrentBuildPlayerAvatar { get; set; }
         
         /// <summary>
         /// Имя аватара игрока.
