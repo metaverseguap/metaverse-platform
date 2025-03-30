@@ -4,6 +4,7 @@ using NetworkCore.MirrorNetworking.ClientMessages;
 using NetworkCore.MirrorNetworking.Containers;
 using NetworkCore.MirrorNetworking.Player.AvatarPlayer;
 using NetworkCore.MirrorNetworking.Player.Base;
+using NetworkCore.MirrorNetworking.Types.Client;
 using UnityEngine;
 using UserSystem.Types;
 
@@ -108,7 +109,7 @@ namespace NetworkCore.MirrorNetworking.Player.Spawn
         private void OnAddPlayer(NetworkConnectionToClient conn, ClientRegistrationMessage message)
         {
             AppLogger.Log("Adding player from client request");
-            OnServerAddPlayer(conn);
+            OnServerAddPlayer(conn, message.SpawnData);
         }
 
 
@@ -119,9 +120,14 @@ namespace NetworkCore.MirrorNetworking.Player.Spawn
 
         private void OnServerAddPlayer(NetworkConnectionToClient conn)
         {
-            AppLogger.Warning("Server Add Player");
+            OnServerAddPlayer(conn, null);
+        }
+
+        private void OnServerAddPlayer(NetworkConnectionToClient conn, ClientSpawnData clientData)
+        {
+            AppLogger.Log("Server Add Player");
             
-            NetworkBasePlayer networkPlayer = CreateNetworkPlayer();
+            NetworkBasePlayer networkPlayer = CreateNetworkPlayer(clientData);
             
             MVNetworkManager.singleton.NetworkStore.GamePlayers.Add(conn.connectionId, networkPlayer);
             
@@ -136,19 +142,30 @@ namespace NetworkCore.MirrorNetworking.Player.Spawn
             }
         }
 
-        private NetworkBasePlayer CreateNetworkPlayer()
+        private NetworkBasePlayer CreateNetworkPlayer(ClientSpawnData clientData)
         {
             NetworkBasePlayer networkPlayerPrefab = networkStore.Player.NetworkPlayer;
             NetworkBasePlayer networkPlayer = Instantiate(networkPlayerPrefab);
-            
 
-            UserInfo userInfo = networkStore.FileServer.User.GetMyUser();
-            networkPlayer.SetDisplayName(userInfo.Nickname);
-            if(networkPlayer is NetworkAvatarPlayer avatarPlayer)
+            string displayName;
+            string avatarName;
+            if (clientData != null)
             {
-                avatarPlayer.SetAvatarName(networkStore.Player.AvatarName);
+                displayName = clientData.Nickname;
+                avatarName = clientData.Avatar;
+            }
+            else
+            {
+                UserInfo userInfo = networkStore.FileServer.User.GetMyUser();
+                displayName = userInfo.Nickname;
+                avatarName = networkStore.Player.AvatarName;
             }
             
+            networkPlayer.SetDisplayName(displayName);
+            if(networkPlayer is NetworkAvatarPlayer avatarPlayer)
+            {
+                avatarPlayer.SetAvatarName(avatarName);
+            }
             
             NetworkServer.Spawn(networkPlayer.gameObject);
     
@@ -183,7 +200,7 @@ namespace NetworkCore.MirrorNetworking.Player.Spawn
         /// Что бы запросить у сервера вызвать какой-либо метод у себя, используются сообщения <c>NetworkMessage</c>.
         /// Сообщения регистрируются на сервере вызовом метода <c>NetworkServer.RegisterHandler</c>.
         /// Сообщения отправляются на сервер при помощи метода <c>NetworkClient.Send</c>.
-        private static void SendRegistrationMessageToServer()
+        private void SendRegistrationMessageToServer()
         {
             if (NetworkServer.active)
             {
@@ -197,7 +214,12 @@ namespace NetworkCore.MirrorNetworking.Player.Spawn
             
             if (NetworkClient.isConnected)
             {
-                NetworkClient.Send(new ClientRegistrationMessage());
+                ClientSpawnData clientSpawnData = new ClientSpawnData();
+                UserInfo userInfo = networkStore.FileServer.User.GetMyUser();
+                clientSpawnData.Nickname = userInfo.Nickname;
+                clientSpawnData.Avatar = networkStore.Player.AvatarName;
+                
+                NetworkClient.Send(new ClientRegistrationMessage(clientSpawnData));
             }
         }
 

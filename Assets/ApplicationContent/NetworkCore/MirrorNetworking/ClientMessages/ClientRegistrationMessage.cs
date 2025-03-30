@@ -1,4 +1,5 @@
 ﻿using Mirror;
+using NetworkCore.MirrorNetworking.Types.Client;
 
 namespace NetworkCore.MirrorNetworking.ClientMessages
 {
@@ -11,13 +12,18 @@ namespace NetworkCore.MirrorNetworking.ClientMessages
     /// </summary>
     public struct ClientRegistrationMessage : NetworkMessage
     {
-        public readonly string Avatar;
-        public readonly string Nickname;
+        /// <summary>
+        /// <inheritdoc cref="ClientSpawnData"/>
+        /// </summary>
+        public readonly ClientSpawnData SpawnData;
         
-        public ClientRegistrationMessage(string avatar, string nickname)
+        /// <summary>
+        /// <para>Конструктор.</para>
+        /// </summary>
+        /// <param name="spawnData"><see cref="ClientSpawnData"/></param>
+        public ClientRegistrationMessage(ClientSpawnData spawnData)
         {
-            Avatar = avatar;
-            Nickname = nickname;
+            SpawnData = spawnData;
         }
     }
 }
