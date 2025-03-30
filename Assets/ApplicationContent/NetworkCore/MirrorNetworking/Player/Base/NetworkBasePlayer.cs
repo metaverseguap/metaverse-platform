@@ -5,7 +5,7 @@ using UnityEngine;
 namespace NetworkCore.MirrorNetworking.Player.Base
 {
     /// <summary>
-    /// <para>Базовый класс сетевого игрока.</para>
+    /// <para>Основной класс сетевого игрока.</para>
     /// </summary>
     [RequireComponent(typeof(NetworkIdentity))]
     public class NetworkBasePlayer : NetworkBehaviour
@@ -13,7 +13,8 @@ namespace NetworkCore.MirrorNetworking.Player.Base
         private AbstractPlayerController playerController;
 
         // Переменная синхронизирована с сервером
-        [SyncVar] private string displayName = "Loading...";
+        [SyncVar]
+        private string displayName = "Loading...";
 
         /// <summary>
         /// Отображаемое имя игрока.
@@ -53,7 +54,7 @@ namespace NetworkCore.MirrorNetworking.Player.Base
         /// <summary>
         /// <para>Обновить активацию контроллера данного сетевого игрока.</para>
         /// Если данный сетевой игрок относится к данной машине, то контроллер будет активирован и перехватит управление.
-        /// Иначе контроллер будет деактивирован и не будет мешать управлению другими контроллерами.
+        /// Иначе контроллер будет деактивирован и не будет мешать управлению другими контроллерами
         /// </summary>
         public void RefreshControllerActivation()
         {

@@ -4,7 +4,7 @@ using Global.UI;
 using Global.UI.ScrollList;
 using MainMenu.Containers;
 using NetworkCore.MirrorNetworking;
-using NetworkCore.MirrorNetworking.Containers;
+using NetworkCore.MirrorNetworking.Containers.Store;
 using NetworkCore.ServerInteraction.API;
 using Player.Tablet.UI.ScrollListItems;
 using TMPro;

@@ -89,7 +89,7 @@ namespace NetworkCore.Utils
         /// </summary>
         /// <param name="range">количество портов</param>
         /// <returns>свободный порт или null, если все порты заняты</returns>
-        public static int? GetAvailableUDPPort(int range)
+        public static int? GetAvailablePortUDP(int range)
         {
             if ((range <= 0 || range > MAX_AVAILABLE_PORT)
                 || ((DEFAULT_PORT_FOR_OFFLINE + range >= MAX_AVAILABLE_PORT) || (DEFAULT_PORT_FOR_OFFLINE - range <= MIN_AVAILABLE_PORT)))
@@ -99,10 +99,10 @@ namespace NetworkCore.Utils
 
             if (DEFAULT_PORT_FOR_OFFLINE + range <= MAX_AVAILABLE_PORT)
             {
-                return GetAvailableUDPPort(DEFAULT_PORT_FOR_OFFLINE, DEFAULT_PORT_FOR_OFFLINE + range);
+                return GetAvailablePortUDP(DEFAULT_PORT_FOR_OFFLINE, DEFAULT_PORT_FOR_OFFLINE + range);
             }
 
-            return GetAvailableUDPPort(DEFAULT_PORT_FOR_OFFLINE - range, DEFAULT_PORT_FOR_OFFLINE);
+            return GetAvailablePortUDP(DEFAULT_PORT_FOR_OFFLINE - range, DEFAULT_PORT_FOR_OFFLINE);
         }
         
         /// <summary>
@@ -111,13 +111,13 @@ namespace NetworkCore.Utils
         /// <param name="from">порт начала диапазона</param>
         /// <param name="to">порт конца диапазона</param>
         /// <returns>свободный порт из указанного диапазона или null, если все порты в диапазоне заняты</returns>
-        public static int? GetAvailableUDPPort(int from, int to)
+        public static int? GetAvailablePortUDP(int from, int to)
         {
             ISet<int> occupiedPorts =
                 IPGlobalProperties.GetIPGlobalProperties()
                     .GetActiveUdpListeners()
                     .Select(p => p.Port)
-                    .OrderBy(p => p) // В debug проще смотреть на отсортированные значения 
+                    // .OrderBy(p => p) // В debug проще смотреть на отсортированные значения 
                     .ToHashSet();
 
             for (int port = from; port <= to; port++)

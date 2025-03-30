@@ -5,7 +5,7 @@ using NetworkCore.MirrorNetworking.Player.Base;
 using NetworkCore.MirrorNetworking.Types.Devices;
 using UnityEngine;
 
-namespace NetworkCore.MirrorNetworking.Containers
+namespace NetworkCore.MirrorNetworking.Containers.ManagerSetups
 {
     /// <summary>
     /// <para>Класс настроек <see cref="MVNetworkManager"/>.</para>

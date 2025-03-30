@@ -1,6 +1,6 @@
 using MainMenu.Containers;
 using MainMenu.UI.AvatarSelectMenu;
-using NetworkCore.MirrorNetworking.Containers;
+using NetworkCore.MirrorNetworking.Containers.Store;
 using NetworkCore.MirrorNetworking.Utils;
 using UnityEngine;
 using UnityEngine.UI;

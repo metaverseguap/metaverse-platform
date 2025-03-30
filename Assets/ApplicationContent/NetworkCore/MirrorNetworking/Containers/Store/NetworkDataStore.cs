@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
+using NetworkCore.MirrorNetworking.Containers.ManagerSetups;
 using NetworkCore.MirrorNetworking.Player.Base;
 using NetworkCore.MirrorNetworking.Types.HostMigration;
 using NetworkCore.ServerInteraction.API;
 
-namespace NetworkCore.MirrorNetworking.Containers
+namespace NetworkCore.MirrorNetworking.Containers.Store
 {
     /// <summary>
     /// <para>Хранилище данных, используемых при сетевом взаимодействии.</para>
@@ -29,7 +30,7 @@ namespace NetworkCore.MirrorNetworking.Containers
         /// Mirror не позволяет просто спавнить любые объекты в сцене.
         /// Объекты должны быть зарегистрированы в <c>NetworkManager.spawnPrefabs</c>.
         /// В данном сете хранятся хеш-коды зарегистрированных префабов,
-        /// для быстрого поиска зарегистрированных префабов.
+        /// для быстрого поиска зарегистрированных префабов
         /// </summary>
         public ISet<int> RegisterPrefabsHash { get; } = new HashSet<int>();
         

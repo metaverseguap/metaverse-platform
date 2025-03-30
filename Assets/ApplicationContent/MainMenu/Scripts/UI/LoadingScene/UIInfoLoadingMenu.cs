@@ -12,7 +12,7 @@ using MainMenu.Containers;
 using MainMenu.Containers.Utils;
 using Mirror;
 using NetworkCore.MirrorNetworking;
-using NetworkCore.MirrorNetworking.Containers;
+using NetworkCore.MirrorNetworking.Containers.Store;
 using NetworkCore.ServerInteraction.API;
 using NetworkCore.ServerInteraction.Type.Avatar;
 using TMPro;

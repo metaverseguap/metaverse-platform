@@ -67,7 +67,7 @@ namespace NetworkCore.ServerInteraction.API
         /// <para>Сообщает серверу, что текущий пользователь становится хостом для указанной сцены.</para>
         /// </summary>
         /// <param name="sceneName">имя сцены, хостом которой стал пользователь</param>
-        /// <returns>адрес созданного хоста</returns>
+        /// <returns>адрес созданного хоста или null, если не получилось создать хоста</returns>
         public HostAddressDTO BecomeAHost(string sceneName)
         {
             CreateHostRequest request = new CreateHostRequest();

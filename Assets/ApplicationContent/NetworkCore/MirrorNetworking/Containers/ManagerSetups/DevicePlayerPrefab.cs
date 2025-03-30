@@ -2,7 +2,7 @@
 using AppAvatars;
 using NetworkCore.MirrorNetworking.Types.Devices;
 
-namespace NetworkCore.MirrorNetworking.Containers
+namespace NetworkCore.MirrorNetworking.Containers.ManagerSetups
 {
     /// <summary>
     /// <para>Контейнер хранящий префаб игрока и устройство для которого этот префаб применяется.</para>

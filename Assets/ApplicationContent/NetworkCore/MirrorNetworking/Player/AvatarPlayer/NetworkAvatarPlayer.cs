@@ -3,7 +3,7 @@ using AppAvatars.Containers;
 using Global.Logger;
 using MainMenu.Containers;
 using Mirror;
-using NetworkCore.MirrorNetworking.Containers;
+using NetworkCore.MirrorNetworking.Containers.Store;
 using NetworkCore.MirrorNetworking.Player.Base;
 using UnityEngine;
 
@@ -15,7 +15,8 @@ namespace NetworkCore.MirrorNetworking.Player.AvatarPlayer
     [RequireComponent(typeof(NetworkTransformReliable))]
     public class NetworkAvatarPlayer : NetworkBasePlayer
     {
-        [SyncVar] private string avatarName = "";
+        [SyncVar]
+        private string avatarName = "";
 
         /// <summary>
         /// <para>Установить имя аватара игрока.</para>
@@ -60,8 +61,8 @@ namespace NetworkCore.MirrorNetworking.Player.AvatarPlayer
             avatarPrefabInfo.ForGender = avatar.AvatarGender;
             playerAvatar.AvatarComponent.CreatePlayerFromAvatar(avatarPrefabInfo);
 
-            NetworkTransformReliable ntr = GetComponent<NetworkTransformReliable>();
-            ntr.target = playerAvatar.transform;
+            NetworkTransformReliable transformSync = GetComponent<NetworkTransformReliable>();
+            transformSync.target = playerAvatar.transform;
             
             // TODO: Синхронизация анимации
             

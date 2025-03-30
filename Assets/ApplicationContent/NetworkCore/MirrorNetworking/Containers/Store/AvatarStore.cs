@@ -4,7 +4,7 @@ using System.Threading;
 using MainMenu.Containers;
 using Unity.VisualScripting;
 
-namespace NetworkCore.MirrorNetworking.Containers
+namespace NetworkCore.MirrorNetworking.Containers.Store
 {
     /// <summary>
     /// <para>Хранилище аватаров.</para>

@@ -1,7 +1,7 @@
 ﻿using AppAvatars;
 using NetworkCore.MirrorNetworking.Player.Base;
 
-namespace NetworkCore.MirrorNetworking.Containers
+namespace NetworkCore.MirrorNetworking.Containers.Store
 {
     /// <summary>
     /// <para>Статус игрока при подключении к сцене.</para>

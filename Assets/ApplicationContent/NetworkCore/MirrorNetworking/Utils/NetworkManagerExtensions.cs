@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
-using Global.Logger;
+﻿using Global.Logger;
 using kcp2k;
 using MainMenu.Containers;
 using Mirror;
-using NetworkCore.MirrorNetworking.Containers;
+using NetworkCore.MirrorNetworking.Containers.Store;
 using NetworkCore.ServerInteraction.API;
 using NetworkCore.ServerInteraction.Type.Host;
 using NetworkCore.Utils;
@@ -126,7 +125,7 @@ namespace NetworkCore.MirrorNetworking.Utils
             if (scene.Name == OfflineSceneConstants.SCENE_INFO.Name)
             {
                 address = IPUtils.GetIpAsUrl();
-                int? availablePort = IPUtils.GetAvailableUDPPort(200);
+                int? availablePort = IPUtils.GetAvailablePortUDP(200);
                 if (!availablePort.HasValue)
                 {
                     AppLogger.Error("No available ports for new offline scene host");
@@ -143,6 +142,17 @@ namespace NetworkCore.MirrorNetworking.Utils
             else
             {
                 HostAddressDTO createdHostAddress = serverAPI.Hosts.BecomeAHost(scene.Name);
+                if (createdHostAddress == null)
+                {
+                    AppLogger.Error("Failed to create host");
+
+                    // Загружаем сцену меню
+                    string menuScene = connection.NetworkStore.Scenes.MenuSceneName;
+                    connection.NetworkStore.Scenes.CurrentScene = null;
+                    SceneManager.LoadScene(menuScene, LoadSceneMode.Single);
+                    return;
+                }
+                
                 address = createdHostAddress.hostIP;
                 port = createdHostAddress.port;
             }
@@ -191,7 +201,9 @@ namespace NetworkCore.MirrorNetworking.Utils
         /// <para>Данный метод используется для заранее созданных префабов</para>
         /// </summary>
         /// <param name="connection"><see cref="MVNetworkManager"/></param>
-        /// <param name="prefab">спавнемый префаб</param>
+        /// <param name="prefab">спавнемый префаб. Данный префаб должен быть заранее создан в Unity Editor
+        /// и в него заранее должен быть добавлен компонент <c>NetworkIdentity</c>
+        /// (не в Runtime, а в Unity Editor, перед сборкой проекта)</param>
         public static void RegisterPrefab(this MVNetworkManager connection, GameObject prefab)
         {
             int prefabHash = prefab.gameObject.GetHashCode();

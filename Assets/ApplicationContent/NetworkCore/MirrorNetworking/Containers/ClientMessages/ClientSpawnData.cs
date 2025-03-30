@@ -1,4 +1,4 @@
-﻿namespace NetworkCore.MirrorNetworking.Types.Client
+﻿namespace NetworkCore.MirrorNetworking.Containers.ClientMessages
 {
     /// <summary>
     /// <para>Контейнер для данных клиента необходимых для спавна клиента на сервере.</para>

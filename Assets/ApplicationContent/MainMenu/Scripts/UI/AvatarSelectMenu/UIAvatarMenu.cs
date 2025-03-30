@@ -2,7 +2,7 @@ using Global.UI;
 using Global.UI.LoadingForm;
 using MainMenu.Containers;
 using NetworkCore.MirrorNetworking;
-using NetworkCore.MirrorNetworking.Containers;
+using NetworkCore.MirrorNetworking.Containers.Store;
 using NetworkCore.ServerInteraction.API;
 using TMPro;
 using UnityEngine;

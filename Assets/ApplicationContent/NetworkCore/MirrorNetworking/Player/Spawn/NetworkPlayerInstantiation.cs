@@ -1,10 +1,9 @@
-﻿using Global.Logger;
-using Mirror;
+﻿using Mirror;
 using NetworkCore.MirrorNetworking.ClientMessages;
-using NetworkCore.MirrorNetworking.Containers;
+using NetworkCore.MirrorNetworking.Containers.ClientMessages;
+using NetworkCore.MirrorNetworking.Containers.Store;
 using NetworkCore.MirrorNetworking.Player.AvatarPlayer;
 using NetworkCore.MirrorNetworking.Player.Base;
-using NetworkCore.MirrorNetworking.Types.Client;
 using UnityEngine;
 using UserSystem.Types;
 
@@ -86,25 +85,25 @@ namespace NetworkCore.MirrorNetworking.Player.Spawn
                 networkManager.BeforeClientDisconnected -= OnClientDisconnected;
             }
         }
-
-        private void OnHostStarted()
-        {
-            AppLogger.Log("Host Started");
-            
-            OnServerAddPlayer(NetworkServer.localConnection);
-            NetworkServer.RegisterHandler<ClientRegistrationMessage>(OnAddPlayer);
-        }
-
-        private void OnAddPlayer(NetworkConnectionToClient conn, ClientRegistrationMessage message)
-        {
-            AppLogger.Log("Adding player from client request");
-            OnServerAddPlayer(conn, message.SpawnData);
-        }
-
-
+        
         private void OnClientStarted()
         {
-            AppLogger.Log("Client Started");
+        }
+        
+        private void OnHostStarted()
+        {
+            OnServerAddPlayer(NetworkServer.localConnection);
+            
+            // Регистрация клиентских сообщений
+            // Клиент не имеет прямого доступа к серверным методам и объектам.
+            // Что бы запросить у сервера вызвать какой-либо метод у себя, используются сообщения `NetworkMessage`.
+            // Сообщения регистрируются на сервере вызовом метода `NetworkServer#RegisterHandler`
+            NetworkServer.RegisterHandler<ClientRegistrationMessage>(OnClientConnectedToServer);
+        }
+
+        private void OnClientConnectedToServer(NetworkConnectionToClient conn, ClientRegistrationMessage message)
+        {
+            OnServerAddPlayer(conn, message.SpawnData);
         }
 
         private void OnServerAddPlayer(NetworkConnectionToClient conn)
@@ -114,21 +113,11 @@ namespace NetworkCore.MirrorNetworking.Player.Spawn
 
         private void OnServerAddPlayer(NetworkConnectionToClient conn, ClientSpawnData clientData)
         {
-            AppLogger.Log("Server Add Player");
-            
             NetworkBasePlayer networkPlayer = CreateNetworkPlayer(clientData);
             
             MVNetworkManager.singleton.NetworkStore.GamePlayers.Add(conn.connectionId, networkPlayer);
             
-            if (!NetworkClient.ready)
-            {
-                NetworkClient.Ready();
-            }
-
-            if (NetworkClient.ready)
-            {
-                NetworkServer.AddPlayerForConnection(conn, networkPlayer.gameObject);
-            }
+            AddClientToServer(conn, networkPlayer);
         }
 
         private NetworkBasePlayer CreateNetworkPlayer(ClientSpawnData clientData)
@@ -160,10 +149,21 @@ namespace NetworkCore.MirrorNetworking.Player.Spawn
             return networkPlayer;
         }
         
+        private static void AddClientToServer(NetworkConnectionToClient conn, NetworkBasePlayer networkPlayer)
+        {
+            if (!NetworkClient.ready)
+            {
+                NetworkClient.Ready();
+            }
+
+            if (NetworkClient.ready)
+            {
+                NetworkServer.AddPlayerForConnection(conn, networkPlayer.gameObject);
+            }
+        }
+        
         private void OnServerLostPlayer(NetworkConnectionToClient conn)
         {
-            AppLogger.Log("Server Lost Player");
-            
             if (conn.identity != null)
             {
                 MVNetworkManager.singleton.NetworkStore.GamePlayers.Remove(conn.connectionId);
@@ -172,22 +172,14 @@ namespace NetworkCore.MirrorNetworking.Player.Spawn
         
         private void OnServerStop()
         {
-            AppLogger.Log("Server Stop");
-            
             MVNetworkManager.singleton.NetworkStore.GamePlayers.Clear();
         }
         
         private void OnClientConnected()
         {
-            AppLogger.Log("Client Connected");
-            
             SendRegistrationMessageToServer();
         }
         
-        /// Клиент не имеет прямого доступа к серверным методам и объектам.
-        /// Что бы запросить у сервера вызвать какой-либо метод у себя, используются сообщения <c>NetworkMessage</c>.
-        /// Сообщения регистрируются на сервере вызовом метода <c>NetworkServer.RegisterHandler</c>.
-        /// Сообщения отправляются на сервер при помощи метода <c>NetworkClient.Send</c>.
         private void SendRegistrationMessageToServer()
         {
             if (NetworkServer.active)
@@ -207,13 +199,15 @@ namespace NetworkCore.MirrorNetworking.Player.Spawn
                 clientSpawnData.Nickname = userInfo.Nickname;
                 clientSpawnData.Avatar = networkStore.Player.AvatarName;
                 
+                // Клиент не имеет прямого доступа к серверным методам и объектам.
+                // Что бы запросить у сервера вызвать какой-либо метод у себя, используются сообщения NetworkMessage.
+                // Сообщения отправляются на сервер при помощи метода `NetworkClient#Send`
                 NetworkClient.Send(new ClientRegistrationMessage(clientSpawnData));
             }
         }
 
         private void OnClientDisconnected()
         {
-            AppLogger.Log("Client Disconnected");
         }
     }
 }

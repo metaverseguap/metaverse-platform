@@ -1,6 +1,6 @@
-using Global.Logger;
 using Mirror;
-using NetworkCore.MirrorNetworking.Containers;
+using NetworkCore.MirrorNetworking.Containers.ManagerSetups;
+using NetworkCore.MirrorNetworking.Containers.Store;
 using NetworkCore.MirrorNetworking.Utils;
 using NetworkCore.Utils;
 using UnityEngine;
@@ -154,7 +154,6 @@ namespace NetworkCore.MirrorNetworking
         public override void OnStartServer()
         {
             base.OnStartServer();
-            AppLogger.Log("After start server or host");
             AfterStartServerOrHost?.Invoke();
         }
 
@@ -166,7 +165,6 @@ namespace NetworkCore.MirrorNetworking
         public override void OnStartHost()
         {
             base.OnStartHost();
-            AppLogger.Log("After start host");
             AfterHostStarted?.Invoke();
         }
         
@@ -178,7 +176,6 @@ namespace NetworkCore.MirrorNetworking
         public override void OnStartClient()
         {
             base.OnStartClient();
-            AppLogger.Log("After start client");
             AfterStartClient?.Invoke();
         }
 
@@ -190,7 +187,6 @@ namespace NetworkCore.MirrorNetworking
         public override void OnClientConnect()
         {
             base.OnClientConnect();
-            AppLogger.Log("After client connect");
             AfterClientConnected?.Invoke();
         }
 
@@ -203,7 +199,6 @@ namespace NetworkCore.MirrorNetworking
         public override void OnServerAddPlayer(NetworkConnectionToClient conn)
         {
             base.OnServerAddPlayer(conn);
-            AppLogger.Log("After server add player");
             AfterServerAddPlayer?.Invoke(conn);
         }
 
@@ -218,7 +213,6 @@ namespace NetworkCore.MirrorNetworking
             BeforeServerChangeScene?.Invoke(newSceneName);
             
             base.ServerChangeScene(newSceneName);
-            AppLogger.Log("After server change scene");
             AfterServerChangeScene?.Invoke(newSceneName);
         }
 
@@ -230,7 +224,6 @@ namespace NetworkCore.MirrorNetworking
         public override void OnClientDisconnect()
         {
             BeforeClientDisconnected?.Invoke();
-            AppLogger.Log("Before client disconnect");
             base.OnClientDisconnect();
         }
 
@@ -244,7 +237,6 @@ namespace NetworkCore.MirrorNetworking
         {
             BeforeServerLostPlayer?.Invoke(conn);
             base.OnServerDisconnect(conn);
-            AppLogger.Log("After server lost player");
             AfterServerLostPlayer?.Invoke(conn);
         }
         
@@ -256,7 +248,6 @@ namespace NetworkCore.MirrorNetworking
         public override void OnStopServer()
         {
             BeforeServerStop?.Invoke();
-            AppLogger.Log("Before server stop");
             base.OnStopServer();
         }
     }
