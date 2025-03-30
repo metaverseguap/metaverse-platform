@@ -65,8 +65,9 @@ namespace MainMenu.UI.LoadingScene
 
             loadingText = LocalizationUtils.GetStringFromTable("MenuLocaleTable", "MainMenu.label.loading.avatars");
             yield return ExecuteThenAwaitFrame(() => _loadingText.text = loadingText);
-
-            yield return new WaitUntil(() => AvatarDownloading().IsCompleted);
+            
+            var avatarDownloading = AvatarDownloading();
+            yield return new WaitUntil(() => avatarDownloading.IsCompleted);
 
             loadingText = LocalizationUtils.GetStringFromTable("MenuLocaleTable", "MainMenu.label.loading.scenes");
             yield return ExecuteThenAwaitFrame(() => _loadingText.text = loadingText);
