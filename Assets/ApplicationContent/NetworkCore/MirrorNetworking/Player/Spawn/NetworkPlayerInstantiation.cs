@@ -67,9 +67,6 @@ namespace NetworkCore.MirrorNetworking.Player.Spawn
             // События клиента
             networkManager.AfterClientConnected += OnClientConnected;
             networkManager.BeforeClientDisconnected += OnClientDisconnected;
-            
-            // События сцен
-            networkManager.AfterServerChangeScene += OnServerChangeScene;
         }
 
         private void OnDestroy()
@@ -87,15 +84,7 @@ namespace NetworkCore.MirrorNetworking.Player.Spawn
                 // События клиента
                 networkManager.AfterClientConnected -= OnClientConnected;
                 networkManager.BeforeClientDisconnected -= OnClientDisconnected;
-                
-                // События сцен
-                networkManager.AfterServerChangeScene -= OnServerChangeScene;
             }
-        }
-        
-        private void OnServerChangeScene(string newSceneName)
-        {
-            
         }
 
         private void OnHostStarted()
@@ -144,8 +133,7 @@ namespace NetworkCore.MirrorNetworking.Player.Spawn
 
         private NetworkBasePlayer CreateNetworkPlayer(ClientSpawnData clientData)
         {
-            NetworkBasePlayer networkPlayerPrefab = networkStore.Player.NetworkPlayer;
-            NetworkBasePlayer networkPlayer = Instantiate(networkPlayerPrefab);
+            NetworkBasePlayer networkPlayer = Instantiate(networkStore.Player.NetworkPlayer);
 
             string displayName;
             string avatarName;

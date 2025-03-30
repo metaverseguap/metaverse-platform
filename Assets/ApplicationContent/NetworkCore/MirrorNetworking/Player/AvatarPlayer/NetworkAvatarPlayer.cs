@@ -62,6 +62,11 @@ namespace NetworkCore.MirrorNetworking.Player.AvatarPlayer
 
             NetworkTransformReliable ntr = GetComponent<NetworkTransformReliable>();
             ntr.target = playerAvatar.transform;
+            
+            // TODO: Синхронизация анимации
+            
+            NetworkPlayerDisplayName displayNameObject = Instantiate(networkStore.Player.DisplayName, playerAvatar.transform, false);
+            displayNameObject.NetworkPlayer = this;
 
             PlayerController = playerAvatar.PlayerController;
         }

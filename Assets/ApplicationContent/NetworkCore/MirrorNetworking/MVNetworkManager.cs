@@ -143,6 +143,7 @@ namespace NetworkCore.MirrorNetworking
             
             // Регистрируем спавнемые в сцене префабы
             this.RegisterPrefab(NetworkStore.Player.NetworkPlayer.gameObject);
+            this.RegisterPrefab(NetworkStore.Player.DisplayName.gameObject);
         }
         
         /// <summary>

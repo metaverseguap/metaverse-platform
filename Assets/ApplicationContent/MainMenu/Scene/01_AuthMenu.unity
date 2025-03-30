@@ -8785,6 +8785,7 @@ MonoBehaviour:
   _loadingScene: Assets/ApplicationContent/MainMenu/Scene/05_IntermediateLoadingScene.unity
   _maxConnections: 30
   _networkPlayerPrefab: {fileID: 5117285622651888741, guid: f7dc2dfd2cca75448858596a9ed72498, type: 3}
+  _displayNamePrefab: {fileID: 2953563925868422277, guid: da64d2955086e8244a30878861672021, type: 3}
   _devicePrefabs:
   - ForDevice: 0
     Prefab: {fileID: 563657382684787115, guid: 2501d40b833f9864a85dab9868733f74, type: 3}

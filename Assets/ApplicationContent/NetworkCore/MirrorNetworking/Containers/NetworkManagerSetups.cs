@@ -20,12 +20,16 @@ namespace NetworkCore.MirrorNetworking.Containers
         [SerializeField] private string _serverUrl;
 
         [Header("Application Settings")] 
+        [Tooltip("Сцена, в которой игрок появляется после выбора аватара - она же Offline Scene")] 
         [SerializeField] [Scene] private string _defaultScene;
+        [Tooltip("Сцена, в которой игрок появляется после выхода из метавселенной")] 
         [SerializeField] [Scene] private string _menuScene;
+        [Tooltip("Промежуточная сцена, которая подгружает необходимые ресурсы с сервера. В данную сцену переходит игрок при смене комнаты")] 
         [SerializeField] [Scene] private string _loadingScene;
 
         [SerializeField] private int _maxConnections;
         [SerializeField] private NetworkAvatarPlayer _networkPlayerPrefab;
+        [SerializeField] private NetworkPlayerDisplayName _displayNamePrefab;
         [Tooltip("Контроллеры игрока для различных устройств")]
         [SerializeField] private List<DevicePlayerPrefab> _devicePrefabs;
 
@@ -63,6 +67,11 @@ namespace NetworkCore.MirrorNetworking.Containers
         /// Префаб сетевого игрока.
         /// </summary>
         public NetworkBasePlayer NetworkPlayerPrefab => _networkPlayerPrefab;
+        
+        /// <summary>
+        /// Префаб отображаемого имени игрока.
+        /// </summary>
+        public NetworkPlayerDisplayName DisplayNamePrefab => _displayNamePrefab;
 
         /// <summary>
         /// Префабы игрока для различных устройств.

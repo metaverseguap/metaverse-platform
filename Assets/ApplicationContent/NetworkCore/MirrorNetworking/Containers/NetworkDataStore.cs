@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
-using NetworkCore.MirrorNetworking.Player.AvatarPlayer;
 using NetworkCore.MirrorNetworking.Player.Base;
 using NetworkCore.MirrorNetworking.Types.HostMigration;
 using NetworkCore.ServerInteraction.API;
-using UserSystem.RoleSystem.Types;
 
 namespace NetworkCore.MirrorNetworking.Containers
 {
@@ -63,6 +61,7 @@ namespace NetworkCore.MirrorNetworking.Containers
         {
             FileServer = new APIContainer(setups.ServerUrl);
             Player.NetworkPlayer = setups.NetworkPlayerPrefab;
+            Player.DisplayName = setups.DisplayNamePrefab;
             Scenes.MenuSceneName = setups.MenuScene;
             Scenes.LoadingSceneName = setups.LoadingScene;
             foreach (var prefab in setups.DevicePrefabs)
