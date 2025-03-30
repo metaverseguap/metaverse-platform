@@ -70,7 +70,7 @@ namespace MainMenu.UI.AdminMenu
             AddLocalScenesToList(sceneAssets, ref serverScenes);
             AddServerSceneToList(serverScenes);
             
-            _loadingForm.gameObject.SetActive(false);
+            _loadingForm.DisableLoading();
         }
 
         private Dictionary<string, SceneInfo> GetServerScenes()
@@ -174,7 +174,7 @@ namespace MainMenu.UI.AdminMenu
 
             bool success = serverAPI.Scene.UploadScenes(uploadingScenes);
             
-            _loadingForm.gameObject.SetActive(false);
+            _loadingForm.DisableLoading();
             
             if (!success)
             {
@@ -249,7 +249,7 @@ namespace MainMenu.UI.AdminMenu
             
             bool success = serverAPI.Scene.DeleteManyScenes(removedAssetNames);
             
-            _loadingForm.gameObject.SetActive(false);
+            _loadingForm.DisableLoading();
             
             if (!success)
             {

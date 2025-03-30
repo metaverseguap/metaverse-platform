@@ -2,6 +2,7 @@
 using Global.Logger;
 using MainMenu.Containers;
 using NetworkCore.ServerInteraction.API.Utils;
+using NetworkCore.ServerInteraction.Type.Host;
 using NetworkCore.ServerInteraction.Type.Host.Request;
 using NetworkCore.ServerInteraction.Type.Host.Response;
 using NetworkCore.ServerInteraction.Type.Request;
@@ -45,7 +46,8 @@ namespace NetworkCore.ServerInteraction.API
                     HostInfo info = new HostInfo();
                     info.Login = infoRO.login;
                     info.DisplayName = infoRO.name;
-                    info.Uri = infoRO.uri;
+                    info.HostIP = infoRO.hostIP;
+                    info.Port = infoRO.port;
                     info.SceneName = infoRO.sceneName;
 
                     result.Add(info);
@@ -64,24 +66,22 @@ namespace NetworkCore.ServerInteraction.API
         /// <summary>
         /// <para>Сообщает серверу, что текущий пользователь становится хостом для указанной сцены.</para>
         /// </summary>
-        /// <param name="url">url подключения к хосту</param>
         /// <param name="sceneName">имя сцены, хостом которой стал пользователь</param>
-        /// <returns>true, если запрос завершился успешно</returns>
-        public bool BecomeAHost(string url, string sceneName)
+        /// <returns>адрес созданного хоста или null, если не получилось создать хоста</returns>
+        public HostAddressDTO BecomeAHost(string sceneName)
         {
             CreateHostRequest request = new CreateHostRequest();
-            request.uri = url;
             request.sceneName = sceneName;
 
-            ResponseDetails response = restAPI.PostRequest<CreateHostRequest, ResponseDetails>(CREATE_HOSTS_URL, request);
+            HostAddressResponse response = restAPI.PostRequest<CreateHostRequest, HostAddressResponse>(CREATE_HOSTS_URL, request);
 
             if (!response.success)
             {
                 AppLogger.Warning($"Create Host request ended with error: {ResponseUtils.GetErrorMessagesAsString(response)}");
-                return false;
+                return null;
             }
 
-            return true;
+            return response.hostAddress;
         }
 
         /// <summary>

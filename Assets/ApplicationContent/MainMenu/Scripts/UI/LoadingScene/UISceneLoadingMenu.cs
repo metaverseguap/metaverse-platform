@@ -10,7 +10,7 @@ using Global.Logger;
 using Localization;
 using MainMenu.Containers;
 using NetworkCore.MirrorNetworking;
-using NetworkCore.MirrorNetworking.Containers;
+using NetworkCore.MirrorNetworking.Containers.Store;
 using NetworkCore.MirrorNetworking.Utils;
 using NetworkCore.ServerInteraction.API;
 using NetworkCore.ServerInteraction.Type.Scene;

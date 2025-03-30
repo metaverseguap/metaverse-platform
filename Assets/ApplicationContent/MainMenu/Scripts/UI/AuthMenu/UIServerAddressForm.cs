@@ -1,6 +1,6 @@
 ﻿using Localization;
 using NetworkCore.MirrorNetworking;
-using NetworkCore.MirrorNetworking.Containers;
+using NetworkCore.MirrorNetworking.Containers.Store;
 using NetworkCore.ServerInteraction.API;
 using NetworkCore.Utils;
 using TMPro;

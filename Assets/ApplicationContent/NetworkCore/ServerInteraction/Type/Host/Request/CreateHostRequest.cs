@@ -8,11 +8,6 @@
     public sealed class CreateHostRequest
     {
         /// <summary>
-        /// Uri идентификатор хоста, для подключения к нему через Mirror
-        /// </summary>
-        public string uri { get; set; }
-
-        /// <summary>
         /// Название файла сцены, хостом которой является создаваемый хост
         /// </summary>
         public string sceneName { get; set; }

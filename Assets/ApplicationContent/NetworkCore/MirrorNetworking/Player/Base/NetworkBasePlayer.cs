@@ -1,6 +1,5 @@
-using AppAvatars;
-using AppAvatars.AvatarSetups;
-using Mirror;
+﻿using Mirror;
+using Player.EmbeddedPlayers;
 using UnityEngine;
 
 namespace NetworkCore.MirrorNetworking.Player.Base
@@ -11,15 +10,11 @@ namespace NetworkCore.MirrorNetworking.Player.Base
     [RequireComponent(typeof(NetworkIdentity))]
     public class NetworkBasePlayer : NetworkBehaviour
     {
+        private AbstractPlayerController playerController;
+
         // Переменная синхронизирована с сервером
-        [SyncVar] 
-        private string displayName = "Loading...";
-        [SyncVar] 
-        private string avatarName = "";
         [SyncVar]
-        private int connectionId = 0;
-        
-        private AbstractPlayer playerController;
+        private string displayName = "Loading...";
 
         /// <summary>
         /// Отображаемое имя игрока.
@@ -27,25 +22,9 @@ namespace NetworkCore.MirrorNetworking.Player.Base
         public string DisplayName => displayName;
 
         /// <summary>
-        /// Ссылка на контроллер игрока.
-        /// </summary>
-        public AbstractPlayer PlayerController
-        {
-            get => playerController;
-            set
-            {
-                playerController = value;
-                
-                transform.SetParent(playerController.transform);
-                MoveObjectToBoneSetup.MoveObjectToBone(transform, playerController.AvatarComponent.SpawnedAvatar.Prefab, HumanBodyBones.Head);
-                transform.position += new Vector3(0, 0.5f, 0);
-            }
-        }
-
-        /// <summary>
         /// <para>Установить отображаемое имя игрока.</para>
-        ///
-        /// <remarks>метод вызывается только на сервере</remarks>
+        /// <remarks>данный метод выполняется на сервере.
+        /// Это нужно, что бы локальная машина не затирала значения переменной других игроков своим локальным значением</remarks>
         /// </summary>
         /// <param name="displayName">отображаемое имя игрока</param>
         [Server]
@@ -53,39 +32,63 @@ namespace NetworkCore.MirrorNetworking.Player.Base
         {
             this.displayName = displayName;
         }
-        
+
         /// <summary>
-        /// <para>Установить имя аватара игрока.</para>
-        ///
-        /// <remarks>метод вызывается только на сервере</remarks>
+        /// Ссылка на контроллер игрока.
         /// </summary>
-        /// <param name="avatarName">имя аватара игрока</param>
-        [Server]
-        public void SetAvatarName(string avatarName)
+        public AbstractPlayerController PlayerController { get; set; }
+
+        private void Start()
         {
-            this.avatarName = avatarName;
+            OnStart();
         }
 
         /// <summary>
-        /// Имя аватара игрока.
+        /// <para>Метод выполняющийся в первый кадр присутствия объекта в сцене.</para>
         /// </summary>
-        public string AvatarName => avatarName;
-
-        /// <summary>
-        /// <para>Установить id подключения.</para>
-        ///
-        /// <remarks>метод вызывается только на сервере</remarks>
-        /// </summary>
-        /// <param name="id">id подключения</param>
-        [Server]
-        public void SetConnectedId(int id)
+        protected virtual void OnStart()
         {
-            this.connectionId = id;
+            RefreshControllerActivation();
         }
 
         /// <summary>
-        /// ID подключения.
+        /// <para>Обновить активацию контроллера данного сетевого игрока.</para>
+        /// Если данный сетевой игрок относится к данной машине, то контроллер будет активирован и перехватит управление.
+        /// Иначе контроллер будет деактивирован и не будет мешать управлению другими контроллерами
         /// </summary>
-        public int ConnectionId => connectionId;
+        public void RefreshControllerActivation()
+        {
+            if (PlayerController != null)
+            {
+                bool isCurrentPlayerController = isClient && isLocalPlayer;
+                AbstractPlayerController[] controllers = PlayerController.gameObject.GetComponentsInChildren<AbstractPlayerController>();
+                if (isCurrentPlayerController)
+                {
+                    ActivateController(controllers);
+                }
+                else
+                {
+                    DeactivateController(controllers);
+                }
+            }
+        }
+
+        private void ActivateController(AbstractPlayerController[] controllers)
+        {
+            foreach (AbstractPlayerController controller in controllers)
+            {
+                controller.ActiveController = false;
+            }
+            PlayerController.ActiveController = true;
+        }
+
+        private void DeactivateController(AbstractPlayerController[] controllers)
+        {
+            PlayerController.DeactivatePermanently();
+            foreach (AbstractPlayerController controller in controllers)
+            {
+                controller.DeactivatePermanently();
+            }
+        }
     }
 }

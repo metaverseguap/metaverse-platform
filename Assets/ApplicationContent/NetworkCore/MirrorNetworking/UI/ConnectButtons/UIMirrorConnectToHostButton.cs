@@ -70,7 +70,7 @@ namespace NetworkCore.MirrorNetworking.UI.ConnectButtons
             }
 
             connection.DisconnectFromNetwork();
-            connection.BecomeAClient(hostInfo.Uri, connectedScene);
+            connection.BecomeAClient(hostInfo.HostIP, hostInfo.Port, connectedScene);
         }
     }
 }

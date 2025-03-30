@@ -6,9 +6,14 @@
     public sealed class HostInfo
     {
         /// <summary>
-        /// Uri идентификатор хоста, для подключения к нему через Mirror.
+        /// IP хоста, для подключения к нему через Mirror.
         /// </summary>
-        public string Uri { get; set; }
+        public string HostIP { get; set; }
+        
+        /// <summary>
+        /// Порт хоста.
+        /// </summary>
+        public int Port { get; set; }
 
         /// <summary>
         /// Название файла сцены, хостом которой является данный хост.

@@ -69,7 +69,7 @@ namespace MainMenu.UI.AdminMenu
             AddLocalAvatarsToList(avatarAssets, ref serverAvatars);
             AddServerAvatarToList(serverAvatars);
             
-            _loadingForm.gameObject.SetActive(false);
+            _loadingForm.DisableLoading();
         }
 
         private Dictionary<string, AvatarInfo> GetServerAvatars()
@@ -171,7 +171,7 @@ namespace MainMenu.UI.AdminMenu
 
             bool success = serverAPI.Avatar.UploadAvatars(uploadingAvatars);
             
-            _loadingForm.gameObject.SetActive(false);
+            _loadingForm.DisableLoading();
             
             if (!success)
             {
@@ -253,7 +253,7 @@ namespace MainMenu.UI.AdminMenu
             
             bool success = serverAPI.Avatar.DeleteManyAvatars(removedAssetNames);
             
-            _loadingForm.gameObject.SetActive(false);
+            _loadingForm.DisableLoading();
             
             if (!success)
             {

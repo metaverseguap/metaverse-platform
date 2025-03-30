@@ -1,5 +1,7 @@
 using Mirror;
-using NetworkCore.MirrorNetworking.Containers;
+using NetworkCore.MirrorNetworking.Containers.ManagerSetups;
+using NetworkCore.MirrorNetworking.Containers.Store;
+using NetworkCore.MirrorNetworking.Utils;
 using NetworkCore.Utils;
 using UnityEngine;
 using UnityEngine.Events;
@@ -20,6 +22,16 @@ namespace NetworkCore.MirrorNetworking
     public sealed class MVNetworkManager : NetworkManager
     {
         /// <summary>
+        /// Событие происходящие после запуска сервера или хоста.
+        /// </summary>
+        public event UnityAction AfterStartServerOrHost;
+        
+        /// <summary>
+        /// Событие происходящие после подключения клиента.
+        /// </summary>
+        public event UnityAction AfterStartClient;
+        
+        /// <summary>
         /// Событие происходящие после подключения игрока к серверу.
         /// </summary>
         public event UnityAction AfterClientConnected;
@@ -28,6 +40,11 @@ namespace NetworkCore.MirrorNetworking
         /// Событие происходящие после подключения к серверу нового игрока.
         /// </summary>
         public event UnityAction<NetworkConnectionToClient> AfterServerAddPlayer;
+        
+        /// <summary>
+        /// Событие происходящие перед отключением игрока от сервера.
+        /// </summary>
+        public event UnityAction<NetworkConnectionToClient> BeforeServerLostPlayer;
         
         /// <summary>
         /// Событие происходящие после отключения игрока от сервера.
@@ -53,6 +70,11 @@ namespace NetworkCore.MirrorNetworking
         /// Событие происходящие после того, как сервер изменил сцену.
         /// </summary>
         public event UnityAction<string> AfterServerChangeScene;
+        
+        /// <summary>
+        /// Событие происходящие перед остановкой сервера.
+        /// </summary>
+        public event UnityAction BeforeServerStop;
 
         /// <summary>
         /// Настройки менеджера, устанавливаемые через редактор Unity.
@@ -117,10 +139,24 @@ namespace NetworkCore.MirrorNetworking
             offlineScene = null;
             onlineScene = networkManagerSetups.DefaultScene;
             maxConnections = networkManagerSetups.MaxConnections;
-            playerPrefab = NetworkStore.Player.NetworkPlayer.gameObject;
             networkAddress = IPUtils.GetIpAsUrl();
+            
+            // Регистрируем спавнемые в сцене префабы
+            this.RegisterPrefab(NetworkStore.Player.NetworkPlayer.gameObject);
+            this.RegisterPrefab(NetworkStore.Player.DisplayName.gameObject);
         }
         
+        /// <summary>
+        /// <para><inheritdoc cref="NetworkManager.OnStartServer"/></para>
+        ///
+        /// <remarks>метод, вызываемый при запуске сервера или хоста</remarks>
+        /// </summary>
+        public override void OnStartServer()
+        {
+            base.OnStartServer();
+            AfterStartServerOrHost?.Invoke();
+        }
+
         /// <summary>
         /// <para><inheritdoc cref="NetworkManager.OnStartHost"/></para>
         ///
@@ -130,6 +166,17 @@ namespace NetworkCore.MirrorNetworking
         {
             base.OnStartHost();
             AfterHostStarted?.Invoke();
+        }
+        
+        /// <summary>
+        /// <para><inheritdoc cref="NetworkManager.OnStartClient"/></para>
+        ///
+        /// <remarks>метод, вызываемый при запуске клиента</remarks>
+        /// </summary>
+        public override void OnStartClient()
+        {
+            base.OnStartClient();
+            AfterStartClient?.Invoke();
         }
 
         /// <summary>
@@ -166,7 +213,6 @@ namespace NetworkCore.MirrorNetworking
             BeforeServerChangeScene?.Invoke(newSceneName);
             
             base.ServerChangeScene(newSceneName);
-            
             AfterServerChangeScene?.Invoke(newSceneName);
         }
 
@@ -189,8 +235,20 @@ namespace NetworkCore.MirrorNetworking
         /// <param name="conn">сведенья об отключаемом игроке</param>
         public override void OnServerDisconnect(NetworkConnectionToClient conn)
         {
+            BeforeServerLostPlayer?.Invoke(conn);
             base.OnServerDisconnect(conn);
             AfterServerLostPlayer?.Invoke(conn);
+        }
+        
+        /// <summary>
+        /// <para><inheritdoc cref="NetworkManager.OnStopServer"/></para>
+        ///
+        /// <remarks>метод, вызываемый при остановке сервера или хоста</remarks>
+        /// </summary>
+        public override void OnStopServer()
+        {
+            BeforeServerStop?.Invoke();
+            base.OnStopServer();
         }
     }
 }

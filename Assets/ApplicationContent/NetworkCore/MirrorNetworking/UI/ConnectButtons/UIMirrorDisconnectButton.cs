@@ -1,7 +1,6 @@
 ﻿using Global.UI.AreYouSureWindow;
 using Localization;
 using NetworkCore.MirrorNetworking.Utils;
-using NetworkCore.ServerInteraction.API;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -18,7 +17,6 @@ namespace NetworkCore.MirrorNetworking.UI.ConnectButtons
         
         private Button button;
         private MVNetworkManager connection;
-        private APIContainer serverAPI;
 
         private void OnEnable()
         {
@@ -41,7 +39,6 @@ namespace NetworkCore.MirrorNetworking.UI.ConnectButtons
             {
                 button.interactable = true;
                 connection = MVNetworkManager.singleton;
-                serverAPI = connection.NetworkStore.FileServer;
             }
             else
             {

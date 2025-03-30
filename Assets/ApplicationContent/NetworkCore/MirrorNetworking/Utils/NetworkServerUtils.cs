@@ -25,9 +25,6 @@ namespace NetworkCore.MirrorNetworking.Utils
         public static void SwapPlayerPrefab(NetworkConnectionToClient conn, NetworkBasePlayer newPrefab, string playerName, string avatarName = "")
         {
             var basePlayerInstance = Instantiate(newPrefab);
-            basePlayerInstance.SetDisplayName(playerName);
-            basePlayerInstance.SetAvatarName(avatarName);
-            basePlayerInstance.SetConnectedId(conn.connectionId);
                 
             NetworkServer.Destroy(conn.identity.gameObject);
             
