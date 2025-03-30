@@ -8,13 +8,20 @@ namespace Global.UI.LoadingForm
     /// </summary>
     public sealed class UILoadingForm : MonoBehaviour
     {
+        [SerializeField] private GameObject _loadingForm;
+
+        private void Start()
+        {
+            _loadingForm.SetActive(false);
+        }
+
         /// <summary>
         /// <para>Включить форму загрузки, а затем перейти к загрузке указанного объекта.</para>
         /// </summary>
         /// <param name="enablingObject">загружаемый объект</param>
         public void EnableAfterLoading(GameObject enablingObject)
         {
-            gameObject.SetActive(true);
+            _loadingForm.gameObject.SetActive(true);
             StartCoroutine(EnableAfterLoadingShowup(enablingObject));
         }
         
@@ -24,7 +31,7 @@ namespace Global.UI.LoadingForm
             yield return null;
             
             enablingObject.SetActive(true);
-            gameObject.SetActive(false);
+            _loadingForm.gameObject.SetActive(false);
         }
 
         /// <summary>
@@ -40,7 +47,23 @@ namespace Global.UI.LoadingForm
             // Ждем один кадр, чтобы форма загрузки отобразилась
             yield return null;
             
-            gameObject.SetActive(true);
+            _loadingForm.gameObject.SetActive(true);
+        }
+        
+        /// <summary>
+        /// <para>Гарантированно скрыть форму загрузки.</para>
+        /// </summary>
+        public void DisableLoading()
+        {
+            StartCoroutine(AwaitFrameThenDisable());
+        }
+        
+        private IEnumerator AwaitFrameThenDisable()
+        {
+            // Ждем один кадр, чтобы форма загрузки скрылась
+            yield return null;
+            
+            _loadingForm.gameObject.SetActive(false);
         }
     }
 }
