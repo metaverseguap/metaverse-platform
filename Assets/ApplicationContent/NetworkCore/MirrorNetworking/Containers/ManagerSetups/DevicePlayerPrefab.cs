@@ -1,6 +1,6 @@
 ﻿using System;
-using AppAvatars;
 using NetworkCore.MirrorNetworking.Types.Devices;
+using Player.EmbeddedPlayers;
 
 namespace NetworkCore.MirrorNetworking.Containers.ManagerSetups
 {
@@ -11,6 +11,6 @@ namespace NetworkCore.MirrorNetworking.Containers.ManagerSetups
     public sealed class DevicePlayerPrefab
     {
         public Device ForDevice;
-        public AbstractPlayerAvatar Prefab;
+        public AbstractPlayer Prefab;
     }
 }

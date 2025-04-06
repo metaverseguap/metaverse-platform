@@ -1,4 +1,3 @@
-using AppAvatars.Containers;
 using UnityEngine;
 
 namespace AppAvatars.AvatarSetups
@@ -22,7 +21,7 @@ namespace AppAvatars.AvatarSetups
         /// <summary>
         /// <para>Настройка заспавненного аватара.</para>
         /// </summary>
-        /// <param name="avatarPrefabInfo">заспавненный аватар</param>
-        public abstract void SetUp(ref AvatarPrefabInfo avatarPrefabInfo);
+        /// <param name="avatarPrefab">заспавненный аватар</param>
+        public abstract void SetUp(ref Animator avatarPrefab);
     }
 }

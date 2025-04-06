@@ -1,6 +1,4 @@
 using System.Collections.Generic;
-using AppAvatars.Containers;
-using Global.Logger;
 using UnityEngine;
 
 namespace AppAvatars.AvatarSetups
@@ -21,12 +19,12 @@ namespace AppAvatars.AvatarSetups
         /// <summary>
         /// Аниматор префаба аватара игрока.
         /// </summary>
-        protected AvatarPrefabInfo spawnedAvatar;
+        protected Animator spawnedAvatar;
 
         /// <summary>
         /// Аниматор префаба аватара игрока.
         /// </summary>
-        public AvatarPrefabInfo SpawnedAvatar => spawnedAvatar;
+        public Animator SpawnedAvatar => spawnedAvatar;
 
         private bool isPlayerSpawned;
 
@@ -38,8 +36,8 @@ namespace AppAvatars.AvatarSetups
         /// <summary>
         /// <para>Создает аватар игрока из выбранного аниматора префаба игрока.</para>
         /// </summary>
-        /// <param name="avatarPrefabInfo">выбранный <see cref="AvatarPrefabInfo">префаб игрока</see></param>
-        public void CreatePlayerFromAvatar(AvatarPrefabInfo avatarPrefabInfo)
+        /// <param name="avatarPrefab">выбранный префаб игрока имеющий аниматор</param>
+        public void CreatePlayerFromAvatar(Animator avatarPrefab)
         {
             if (_autoCollectSetupsFromCurrentObject)
             {
@@ -51,15 +49,7 @@ namespace AppAvatars.AvatarSetups
                 return;
             }
 
-            if (!avatarPrefabInfo.Prefab.avatar.isHuman)
-            {
-                AppLogger.Error("The avatar's skeleton is not humanoid");
-                return;
-            }
-
-            spawnedAvatar = new AvatarPrefabInfo();
-            spawnedAvatar.Prefab = SpawnPlayer(avatarPrefabInfo.Prefab);
-            spawnedAvatar.ForGender = avatarPrefabInfo.ForGender;
+            spawnedAvatar = SpawnPlayer(avatarPrefab);
             
             AvatarSetup(ref spawnedAvatar);
             isPlayerSpawned = true;
@@ -100,11 +90,11 @@ namespace AppAvatars.AvatarSetups
             return Instantiate(avatarPrefab, transform, false);
         }
 
-        private void AvatarSetup(ref AvatarPrefabInfo avatarPrefabInfo)
+        private void AvatarSetup(ref Animator avatarPrefab)
         {
             foreach (var avatarSetup in _avatarSetups)
             {
-                avatarSetup.SetUp(ref avatarPrefabInfo);
+                avatarSetup.SetUp(ref avatarPrefab);
             }
         }
 
@@ -113,9 +103,9 @@ namespace AppAvatars.AvatarSetups
         /// </summary>
         public void DestroyPlayerAvatar()
         {
-            if (spawnedAvatar?.Prefab != null)
+            if (spawnedAvatar != null)
             {
-                Destroy(spawnedAvatar.Prefab.gameObject);
+                Destroy(spawnedAvatar.gameObject);
                 spawnedAvatar = null;
             }
         }

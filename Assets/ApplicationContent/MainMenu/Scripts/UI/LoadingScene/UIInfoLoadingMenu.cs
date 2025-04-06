@@ -116,7 +116,7 @@ namespace MainMenu.UI.LoadingScene
             AvatarInfoDTO dto = new AvatarInfoDTO();
             dto.name = avatarInfo.Name;
             dto.displayName = avatarInfo.DisplayName;
-            dto.gender = avatarInfo.AvatarGender.ToString();
+            dto.animationControllerType = avatarInfo.AvatarAnimationControllerType.ToString();
             dto.imageData = DataConverter.SpriteToRowData(avatarInfo.Image);
 
             return dto;
@@ -153,7 +153,7 @@ namespace MainMenu.UI.LoadingScene
                     avatarFile.Name = newAvatar.Name;
                     avatarFile.DisplayName = newAvatar.DisplayName;
                     avatarFile.Image = newAvatar.Image;
-                    avatarFile.AvatarGender = newAvatar.AvatarGender;
+                    avatarFile.AvatarAnimationControllerType = newAvatar.AvatarAnimationControllerType;
                     avatarFile.Model = AssetBundleUtils.GetMainGameObject(assetBundle);
                     if (avatarFile.Model == null)
                     {

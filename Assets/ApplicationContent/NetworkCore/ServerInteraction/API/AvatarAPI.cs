@@ -54,9 +54,9 @@ namespace NetworkCore.ServerInteraction.API
                     AvatarInfo info = new AvatarInfo();
                     info.Name = infoRO.name;
                     info.DisplayName = infoRO.displayName;
-                    if (Enum.TryParse(infoRO.gender, out Gender avatarGender))
+                    if (Enum.TryParse(infoRO.animationControllerType, out AnimationControllerType avatarAnimationControllerType))
                     {
-                        info.AvatarGender = avatarGender;
+                        info.AvatarAnimationControllerType = avatarAnimationControllerType;
                     }
                     info.Image = DataConverter.SpriteFromRowData(infoRO.imageData);
 
@@ -101,7 +101,7 @@ namespace NetworkCore.ServerInteraction.API
             var formData = new MultipartFormDataContent();
 
             formData.Add(new StringContent(avatar.DisplayName), "displayName");
-            formData.Add(new StringContent(avatar.AvatarGender.ToString()), "gender");
+            formData.Add(new StringContent(avatar.AvatarAnimationControllerType.ToString()), "animationControllerType");
 
             byte[] imgFileData = DataConverter.SpriteToRowData(avatar.Image);
             var imgFileContent = new ByteArrayContent(imgFileData);

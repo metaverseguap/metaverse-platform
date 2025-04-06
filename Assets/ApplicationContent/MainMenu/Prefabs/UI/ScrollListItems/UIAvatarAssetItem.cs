@@ -11,7 +11,7 @@ namespace MainMenu.UI.ScrollListItems
     {
         [SerializeField] private TMP_Text _name;
         [SerializeField] private TMP_InputField _displayName;
-        [SerializeField] private TMP_Dropdown _gender;
+        [SerializeField] private TMP_Dropdown _animationControllerType;
         [SerializeField] private UILoadImageButton _loadImage;
         [SerializeField] private TMP_Text _status;
 
@@ -28,7 +28,7 @@ namespace MainMenu.UI.ScrollListItems
         /// <summary>
         /// Пол аватара.
         /// </summary>
-        public TMP_Dropdown Gender => _gender;
+        public TMP_Dropdown AvatarAnimationControllerType => _animationControllerType;
 
         /// <summary>
         /// Изображение аватара.

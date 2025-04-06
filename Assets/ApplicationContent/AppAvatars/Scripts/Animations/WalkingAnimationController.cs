@@ -10,14 +10,10 @@ namespace AppAvatars.Animations
     {
         private static readonly int IS_WALKING = Animator.StringToHash("isWalking");
         private static readonly int WALKING_SPEED_MULTIPLIER = Animator.StringToHash("walkSpeedMultiplier");
-        private static readonly int FORWARD_DIRECTION = Animator.StringToHash("forwardDirection");
-        private static readonly int RIGHT_DIRECTION = Animator.StringToHash("rightDirection");
 
         [SerializeField] private Transform _playerPosition;
         [SerializeField] private float _speedThreshold = 0.4f;
 
-        // [Range(0.0f, 1.0f)]
-        // [SerializeField] private float _smoothAnimation = 0.3f;
         [Range(0.1f, 5.0f)] 
         [SerializeField] private float _animationSpeedMultiplier = 1.25f;
 
@@ -42,15 +38,6 @@ namespace AppAvatars.Animations
             get => _speedThreshold;
             set => _speedThreshold = value;
         }
-
-        // /// <summary>
-        // /// Плавность изменения анимации с бездействия на бег.
-        // /// </summary>
-        // public float SmoothAnimation
-        // {
-        //     get => _smoothAnimation;
-        //     set => _smoothAnimation = value;
-        // }
 
         /// <summary>
         /// Множитель скорости анимации.
@@ -92,13 +79,8 @@ namespace AppAvatars.Animations
 
         private void SetAnimatorParameters(Vector3 speed)
         {
-            // float previousForwardDirection = animator.GetFloat(FORWARD_DIRECTION);
-            // float previousRightDirection = animator.GetFloat(RIGHT_DIRECTION);
-
             animator.SetBool(IS_WALKING, speed.magnitude > _speedThreshold);
             animator.SetFloat(WALKING_SPEED_MULTIPLIER, _animationSpeedMultiplier);
-            // animator.SetFloat(FORWARD_DIRECTION, Mathf.Lerp(previousForwardDirection, Mathf.Clamp(speed.z, -1, 1), _smoothAnimation));
-            // animator.SetFloat(RIGHT_DIRECTION, Mathf.Lerp(previousRightDirection, Mathf.Clamp(speed.x, -1, 1), _smoothAnimation));
         }
     }
 }

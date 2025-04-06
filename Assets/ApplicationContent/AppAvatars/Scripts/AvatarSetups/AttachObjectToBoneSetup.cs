@@ -1,4 +1,3 @@
-using AppAvatars.Containers;
 using Global.Logger;
 using UnityEngine;
 
@@ -23,9 +22,15 @@ namespace AppAvatars.AvatarSetups
             return false;
         }
 
-        public override void SetUp(ref AvatarPrefabInfo avatarPrefabInfo)
+        public override void SetUp(ref Animator avatarPrefab)
         {
-            Transform boneTransform = avatarPrefabInfo.Prefab.GetBoneTransform(_bone);
+            if (!avatarPrefab.isHuman)
+            {
+                AppLogger.Error("Spawn avatar is not humanoid.");
+                return;
+            }
+            
+            Transform boneTransform = avatarPrefab.GetBoneTransform(_bone);
             _object.SetParent(boneTransform);
         }
     }

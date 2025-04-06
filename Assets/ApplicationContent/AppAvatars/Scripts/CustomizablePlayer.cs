@@ -1,12 +1,13 @@
 using NetworkCore.MirrorNetworking.Types.Devices;
+using Player.EmbeddedPlayers;
 using UnityEngine;
 
 namespace AppAvatars
 {
     /// <summary>
-    /// <inheritdoc cref="AbstractPlayerAvatar"/>
+    /// <inheritdoc cref="AbstractPlayer"/>
     /// </summary>
-    public sealed class CustomizablePlayerAvatar : AbstractPlayerAvatar
+    public sealed class CustomizablePlayer : AbstractPlayer
     {
         /// <summary>
         /// Устройство контролирующее игрока.
@@ -15,7 +16,7 @@ namespace AppAvatars
         [SerializeField] private Device _playerControlDevice;
 
         /// <summary>
-        /// <inheritdoc cref="AbstractPlayerAvatar.PlayerControlDevice"/>
+        /// <inheritdoc cref="AbstractPlayer.PlayerControlDevice"/>
         /// </summary>
         public override Device PlayerControlDevice => _playerControlDevice;
     }

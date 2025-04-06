@@ -95,7 +95,7 @@ namespace MainMenu.UI.AdminMenu
                 if (serverAvatars.TryGetValue(avatarAsset, out var avatarInfo))
                 {
                     _assetItemPrefab.DisplayName.text = avatarInfo.DisplayName;
-                    SetupDropDown(_assetItemPrefab.Gender, avatarInfo.AvatarGender);
+                    SetupDropDown(_assetItemPrefab.AvatarAnimationControllerType, avatarInfo.AvatarAnimationControllerType);
                     _assetItemPrefab.LoadImage.LoadedImage = avatarInfo.Image;
                     _assetItemPrefab.Status.text = LocalizationUtils.GetStringFromTable("MenuLocaleTable", SERVER_KEY);
 
@@ -105,7 +105,7 @@ namespace MainMenu.UI.AdminMenu
                 else
                 {
                     _assetItemPrefab.DisplayName.text = "";
-                    SetupDropDown(_assetItemPrefab.Gender, Gender.MALE);
+                    SetupDropDown(_assetItemPrefab.AvatarAnimationControllerType, AnimationControllerType.MALE);
                     _assetItemPrefab.LoadImage.LoadedImage = null;
                     _assetItemPrefab.Status.text = LocalizationUtils.GetStringFromTable("MenuLocaleTable", LOCAL_KEY);
 
@@ -129,7 +129,7 @@ namespace MainMenu.UI.AdminMenu
                 _assetItemPrefab.Name.color = Color.grey;
 
                 _assetItemPrefab.DisplayName.text = onlyServerAvatar.DisplayName;
-                SetupDropDown(_assetItemPrefab.Gender, onlyServerAvatar.AvatarGender);
+                SetupDropDown(_assetItemPrefab.AvatarAnimationControllerType, onlyServerAvatar.AvatarAnimationControllerType);
                 _assetItemPrefab.LoadImage.LoadedImage = onlyServerAvatar.Image;
                 _assetItemPrefab.Status.text = LocalizationUtils.GetStringFromTable("MenuLocaleTable", SERVER_KEY);
 
@@ -138,18 +138,18 @@ namespace MainMenu.UI.AdminMenu
             }
         }
         
-        private static void SetupDropDown(TMP_Dropdown genderDropDown, Gender currentGender)
+        private static void SetupDropDown(TMP_Dropdown animationTypeDropDown, AnimationControllerType currentAnimationControllerType)
         {
-            genderDropDown.ClearOptions();
-            foreach (Gender gender in Enum.GetValues(typeof(Gender)))
+            animationTypeDropDown.ClearOptions();
+            foreach (AnimationControllerType animationControllerType in Enum.GetValues(typeof(AnimationControllerType)))
             {
                 TMP_Dropdown.OptionData option = new TMP_Dropdown.OptionData();
-                option.text = gender.ToString();
-                genderDropDown.options.Add(option);
-                if (gender == currentGender)
+                option.text = animationControllerType.ToString();
+                animationTypeDropDown.options.Add(option);
+                if (animationControllerType == currentAnimationControllerType)
                 {
-                    int currentIndex = genderDropDown.options.Count - 1;
-                    genderDropDown.ForceSetValue(currentIndex);
+                    int currentIndex = animationTypeDropDown.options.Count - 1;
+                    animationTypeDropDown.ForceSetValue(currentIndex);
                 }
             }
         }
@@ -219,10 +219,10 @@ namespace MainMenu.UI.AdminMenu
             UploadAvatarInfo avatarInfo = new UploadAvatarInfo();
             avatarInfo.Name = avatarAsset.Name.text;
             avatarInfo.DisplayName = avatarAsset.DisplayName.text;
-            string genderStr = avatarAsset.Gender.options[avatarAsset.Gender.value].text;
-            if (Enum.TryParse(genderStr, out Gender gender))
+            string animationControllerTypeStr = avatarAsset.AvatarAnimationControllerType.options[avatarAsset.AvatarAnimationControllerType.value].text;
+            if (Enum.TryParse(animationControllerTypeStr, out AnimationControllerType animationControllerType))
             {
-                avatarInfo.AvatarGender = gender;
+                avatarInfo.AvatarAnimationControllerType = animationControllerType;
             }
 
             avatarInfo.Image = avatarAsset.LoadImage.LoadedImage;

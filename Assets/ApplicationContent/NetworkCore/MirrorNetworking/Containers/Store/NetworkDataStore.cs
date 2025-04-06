@@ -65,11 +65,12 @@ namespace NetworkCore.MirrorNetworking.Containers.Store
             Player.DisplayName = setups.DisplayNamePrefab;
             Scenes.MenuSceneName = setups.MenuScene;
             Scenes.LoadingSceneName = setups.LoadingScene;
+            Avatars.AnimatorControllers = setups.AvatarAnimationControllers;
             foreach (var prefab in setups.DevicePrefabs)
             {
                 if (prefab.ForDevice == setups.Device)
                 {
-                    Player.CurrentBuildPlayerAvatar = prefab.Prefab;
+                    Player.CurrentBuildPlayer = prefab.Prefab;
                     break;
                 }
             }

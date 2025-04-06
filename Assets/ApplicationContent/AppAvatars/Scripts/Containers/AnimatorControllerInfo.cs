@@ -13,11 +13,11 @@ namespace AppAvatars.Containers
         /// <summary>
         /// Контроллер анимации.
         /// </summary>
-        public RuntimeAnimatorController Controller;
+        public AnimatorOverrideController Controller;
 
         /// <summary>
         /// Пол анимациями которого управляет данный контроллер.
         /// </summary>
-        public Gender ForGender;
+        public AnimationControllerType AnimationControllerType;
     }
 }

@@ -1,4 +1,3 @@
-using AppAvatars.Containers;
 using Global.Logger;
 using UnityEngine;
 
@@ -23,9 +22,9 @@ namespace AppAvatars.AvatarSetups
             return false;
         }
 
-        public override void SetUp(ref AvatarPrefabInfo avatarPrefabInfo)
+        public override void SetUp(ref Animator avatarPrefab)
         {
-            MoveObjectToBone(_object, avatarPrefabInfo.Prefab, _bone);
+            MoveObjectToBone(_object, avatarPrefab, _bone);
         }
 
         /// <summary>

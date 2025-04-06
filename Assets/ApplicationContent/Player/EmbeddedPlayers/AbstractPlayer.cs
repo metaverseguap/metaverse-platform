@@ -1,9 +1,8 @@
 using AppAvatars.AvatarSetups;
 using NetworkCore.MirrorNetworking.Types.Devices;
-using Player.EmbeddedPlayers;
 using UnityEngine;
 
-namespace AppAvatars
+namespace Player.EmbeddedPlayers
 {
     /// <summary>
     /// <para>Класс объекта игрока.</para>
@@ -15,7 +14,7 @@ namespace AppAvatars
     /// Затем, шкаф через данный компонент просто заменит аватар на нужный. Таким образом будет производиться внешняя обработка аватара.
     /// <remarks>данный класс должен иметь <see cref="PlayerAvatar"/> компонент среди своих потомков</remarks>
     /// </summary>
-    public abstract class AbstractPlayerAvatar : MonoBehaviour
+    public abstract class AbstractPlayer : MonoBehaviour
     {
         /// <summary>
         /// Устройство контролирующее игрока.

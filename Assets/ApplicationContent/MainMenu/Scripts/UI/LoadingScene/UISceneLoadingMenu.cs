@@ -250,7 +250,7 @@ namespace MainMenu.UI.LoadingScene
                 yield break;
             }
 
-            // Добавляем AssetBundle в кэш
+            // Добавляем AssetBundle в кеш
             AssetBundleCache.AddBundle(assetBundle);
         }
 

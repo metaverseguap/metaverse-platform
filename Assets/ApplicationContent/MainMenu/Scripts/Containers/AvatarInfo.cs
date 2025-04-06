@@ -20,9 +20,9 @@ namespace MainMenu.Containers
         public string DisplayName { get; set; }
         
         /// <summary>
-        /// Пол аватара.
+        /// Тип контроллера анимации.
         /// </summary>
-        public Gender AvatarGender { get; set; }
+        public AnimationControllerType AvatarAnimationControllerType { get; set; }
 
         /// <summary>
         /// Изображение аватара.
