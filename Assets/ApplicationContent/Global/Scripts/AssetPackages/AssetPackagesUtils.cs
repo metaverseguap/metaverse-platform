@@ -48,11 +48,10 @@ namespace Global.AssetPackages
 
             foreach (var sceneName in names)
             {
-                var bundleAsset = ToBundleAsset(sceneName);
+                var assetLabel = GetBundleLabel(sceneName);
 
-                if (bundleAsset != null && !string.IsNullOrEmpty(bundleAsset.assetBundleName))
+                if (assetLabel != null)
                 {
-                    string assetLabel = AssetDatabase.GetImplicitAssetBundleName(bundleAsset.assetPath);
                     assetNames.Add(assetLabel);
                 }
             }
@@ -60,6 +59,23 @@ namespace Global.AssetPackages
             return assetNames.ToArray();
         }
 
+        /// <summary>
+        /// <para>Получить имя бандла по имени ассета.</para>
+        /// </summary>
+        /// <param name="asset">имя ассета</param>
+        /// <returns>имя бандла или null, если не существует бандла для данного ассета</returns>
+        public static string GetBundleLabel(string asset)
+        {
+            var bundleAsset = ToBundleAsset(asset);
+
+            if (bundleAsset != null && !string.IsNullOrEmpty(bundleAsset.assetBundleName))
+            {
+                return AssetDatabase.GetImplicitAssetBundleName(bundleAsset.assetPath);
+            }
+
+            return null;
+        } 
+        
         private static AssetImporter ToBundleAsset(string name)
         {
             string path = AssetDatabase.GUIDToAssetPath(name);
@@ -107,7 +123,7 @@ namespace Global.AssetPackages
             AssetBundleBuild[] builds = new[] { build };
 
             FileUtils.EnsureDirectoryExists(outputPath);
-            BuildPipeline.BuildAssetBundles(outputPath, builds, BuildAssetBundleOptions.None, EditorUserBuildSettings.activeBuildTarget);
+            BuildPipeline.BuildAssetBundles(outputPath, builds, BuildAssetBundleOptions.ForceRebuildAssetBundle, EditorUserBuildSettings.activeBuildTarget);
         }
 
         /// <summary>

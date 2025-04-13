@@ -259,6 +259,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7251822076036564301}
   - component: {fileID: 7932319953595114159}
+  - component: {fileID: 5402849080881921020}
   m_Layer: 0
   m_Name: AnimatedButton
   m_TagString: Untagged
@@ -273,7 +274,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8063824244805378039}
-  m_LocalRotation: {x: -0.70710665, y: -0, z: -0, w: 0.707107}
+  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: -16.47, z: 19.68}
   m_LocalScale: {x: 0.01, y: 0.01, z: 0.01}
   m_ConstrainProportionsScale: 1
@@ -306,6 +307,22 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &5402849080881921020
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8063824244805378039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eac363001fff4564850ccba9a2663518, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _syncObject: 1
+  _animatedObject: 1
+  _transformObject: 0
+  _physicObject: 0
 --- !u!1 &8984717882872367826
 GameObject:
   m_ObjectHideFlags: 0
