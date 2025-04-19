@@ -4,7 +4,6 @@ using System.Linq;
 using Global.Logger;
 using Mirror;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace NetworkCore.MirrorNetworking.Animations
 {
@@ -13,10 +12,12 @@ namespace NetworkCore.MirrorNetworking.Animations
     /// </summary>
     public sealed class MVNetworkAnimator : NetworkBehaviour
     {
-        private Animator animator;
         [SerializeField] private AnimatorParameterListener parameterListener;
+        [Tooltip("Если данный флаг поднят, то активировать анимацию может только локальный игрок, иначе любой игрок в комнате")]
         [SerializeField] private bool _clientAuthority;
-
+        
+        private Animator animator;
+        
         [SyncVar]
         private bool animatingNow = false;
         [SyncVar]
@@ -133,7 +134,10 @@ namespace NetworkCore.MirrorNetworking.Animations
         [ClientRpc]
         private void RpcSetAnimatorParameter(string paramName, bool value)
         {
-            animator.SetBool(paramName, value);
+            if (!isServer)
+            {
+                animator.SetBool(paramName, value);
+            }
         }
 
         [Command(requiresAuthority = false)]
@@ -146,7 +150,10 @@ namespace NetworkCore.MirrorNetworking.Animations
         [ClientRpc]
         private void RpcSetAnimatorParameter(string paramName, float value)
         {
-            animator.SetFloat(paramName, value);
+            if (!isServer)
+            {
+                animator.SetFloat(paramName, value);
+            }
         }
 
         [Command(requiresAuthority = false)]
@@ -159,7 +166,10 @@ namespace NetworkCore.MirrorNetworking.Animations
         [ClientRpc]
         private void RpcSetAnimatorParameter(string paramName, int value)
         {
-            animator.SetInteger(paramName, value);
+            if (!isServer)
+            {
+                animator.SetInteger(paramName, value);
+            }
         }
 
         [Command(requiresAuthority = false)]
@@ -172,7 +182,10 @@ namespace NetworkCore.MirrorNetworking.Animations
         [ClientRpc]
         private void RpcSetAnimatorSetTrigger(string paramName)
         {
-            animator.SetTrigger(paramName);
+            if (!isServer)
+            {
+                animator.SetTrigger(paramName);
+            }
         }
 
         private void EndAnimation(Animator usedAnimator)
@@ -221,7 +234,10 @@ namespace NetworkCore.MirrorNetworking.Animations
         [ClientRpc]
         private void RpcPlayExternalAnimation(string externalAnimationPlaceholderName, List<string> clipsIds)
         {
-            PlayExternalAnimation(externalAnimationPlaceholderName, clipsIds);
+            if (!isServer)
+            {
+                PlayExternalAnimation(externalAnimationPlaceholderName, clipsIds);
+            }
         }
     }
 }

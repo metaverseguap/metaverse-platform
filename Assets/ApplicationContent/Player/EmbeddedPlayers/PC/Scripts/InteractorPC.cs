@@ -1,5 +1,5 @@
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Player.EmbeddedPlayers.PC
 {
@@ -8,23 +8,29 @@ namespace Player.EmbeddedPlayers.PC
     /// </summary>
     public sealed class InteractorPC : MonoBehaviour
     {
-        [Header("Key")] 
+        [Header("Key")]
         [SerializeField] private KeyCode _interactKey = KeyCode.F;
 
-        [Header("Owner")] [Tooltip("От чьего имени осуществляется взаимодействие")]
+        [Header("Owner")]
+        [Tooltip("От чьего имени осуществляется взаимодействие")]
         [SerializeField] private AbstractPlayer _owner;
-        
+
         [Header("Setups")]
         [Tooltip("Точка из которой буде запущен луч взаимодействия по оси Z")]
         [SerializeField] private Transform _direction;
 
         [Tooltip("Максимальное расстояние, на котором будет работать взаимодействие с объектом")]
         [Range(0.1f, 10f)]
-        [SerializeField] private float _range = 1f;
+        [SerializeField]
+        private float _range = 1f;
 
-        private ITooltip lastTooltip;
+        private ISet<ITooltip> lastTooltip = new HashSet<ITooltip>();
+        private GameObject lastTooltipObject = null;
+        private GameObject lastInteractableObject = null;
+        private IInteractable[] currentInteractables = null;
+        private bool isKeyDown = false;
 
-        private void Update()
+        private void FixedUpdate()
         {
             if (_owner != null && !_owner.PlayerController.ActiveController)
             {
@@ -37,46 +43,145 @@ namespace Player.EmbeddedPlayers.PC
         private void CastInteractRay()
         {
             Ray ray = new Ray(_direction.position, _direction.forward);
-            if (Physics.Raycast(ray, out RaycastHit hitInfo, _range))
+
+            bool hasHit = Physics.Raycast(ray, out RaycastHit hitInfo, _range);
+
+            DrawDebugRay(hasHit, hitInfo, ray);
+
+            if (hasHit)
             {
-                if (Input.GetKeyDown(_interactKey))
+                GameObject hitObject = hitInfo.collider.gameObject;
+
+                if (Input.GetKey(_interactKey))
                 {
-                    InteractWithHitObject(hitInfo);
+                    if (!isKeyDown)
+                    {
+                        isKeyDown = true;
+                        InteractWithHitObject(hitObject);
+                    }
+                    else
+                    {
+                        HoldInteractWithHitObject(hitObject);
+                    }
                 }
                 else
                 {
-                    ShowHitObjectTooltip(hitInfo);
+                    isKeyDown = false;
+                    lastInteractableObject = null;
+                    if (currentInteractables != null)
+                    {
+                        foreach (IInteractable interactable in currentInteractables)
+                        {
+                            interactable.StopInteraction();
+                        }
+                    }
+                    currentInteractables = null;
                 }
+                
+                ShowHitObjectTooltip(hitObject);
             }
             else
             {
-                if (lastTooltip != null)
-                {
-                    lastTooltip.HideTooltip();
-                    lastTooltip = null;
-                }
+                ClearLastTooltip();
             }
         }
 
-        private void InteractWithHitObject(RaycastHit hitInfo)
+        private void InteractWithHitObject(GameObject hitObject)
         {
-            if (hitInfo.collider.gameObject.TryGetComponent(out IInteractable interactable))
+            IInteractable[] interactComponents = hitObject.GetComponents<IInteractable>();
+            if (interactComponents != null && interactComponents.Length > 0)
+            {
+                lastInteractableObject = hitObject;
+            }
+            else
+            {
+                lastInteractableObject = null;
+                return;
+            }
+
+            currentInteractables = interactComponents;
+            
+            foreach (IInteractable interactable in currentInteractables)
             {
                 interactable.Interact(_owner.AvatarComponent.SpawnedAvatar);
             }
         }
-
-        private void ShowHitObjectTooltip(RaycastHit hitInfo)
+        
+        private void HoldInteractWithHitObject(GameObject hitObject)
         {
-            if (hitInfo.collider.gameObject.TryGetComponent(out ITooltip tooltip))
+            if (lastInteractableObject == null || currentInteractables == null || lastInteractableObject != hitObject)
             {
-                if (lastTooltip == null || tooltip != lastTooltip)
+                return;
+            }
+            
+            foreach (IInteractable interactable in currentInteractables)
+            {
+                if (interactable.AllowHoldInteraction)
                 {
-                    lastTooltip = tooltip;
+                    interactable.Interact(_owner.AvatarComponent.SpawnedAvatar);
+                }
+            }
+        }
+
+        private void ShowHitObjectTooltip(GameObject hitObject)
+        {
+            ITooltip[] tooltips = hitObject.GetComponents<ITooltip>();
+
+            if (lastTooltipObject != hitObject)
+            {
+                ClearLastTooltip();
+                if (tooltips != null && tooltips.Length > 0)
+                {
+                    lastTooltipObject = hitObject;
+                }
+            }
+
+            foreach (ITooltip tooltip in tooltips)
+            {
+                if (lastTooltip.Add(tooltip))
+                {
+                    tooltip.ShowTooltip();
+                }
+            }
+        }
+
+        private void ClearLastTooltip()
+        {
+            if (lastTooltip.Count > 0)
+            {
+                foreach (ITooltip tooltip in lastTooltip)
+                {
+                    tooltip.HideTooltip();
                 }
 
-                lastTooltip.ShowTooltip();
+                lastTooltip.Clear();
             }
+
+            lastTooltipObject = null;
+        }
+
+        private void DrawDebugRay(bool hasHit, RaycastHit hitInfo, Ray ray)
+        {
+#if UNITY_EDITOR
+            Color debugColor = Color.red;
+            if (hasHit)
+            {
+                debugColor = Color.green;
+                GameObject hitObject = hitInfo.collider.gameObject;
+                IInteractable[] interactableObject = hitObject.GetComponents<IInteractable>();
+                if (interactableObject != null && interactableObject.Length > 0)
+                {
+                    if (hitObject != lastInteractableObject)
+                    {
+                        lastInteractableObject = hitObject;
+                    }
+
+                    debugColor = Color.magenta;
+                }
+            }
+
+            Debug.DrawRay(ray.origin, ray.direction * _range, debugColor, 0.1f);
+#endif
         }
     }
 }

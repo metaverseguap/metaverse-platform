@@ -14,7 +14,7 @@ public sealed class NetworkObject : MonoBehaviour
     [Tooltip("Объект должен изменять свое положение в сети.")]
     [SerializeField] private bool _transformObject;
 
-    [Tooltip("Объект должен использовать rigidBody в сети.")]
+    [Tooltip("Объект должен использовать RigidBody в сети.")]
     [SerializeField] private bool _physicObject;
 
     /// <summary>

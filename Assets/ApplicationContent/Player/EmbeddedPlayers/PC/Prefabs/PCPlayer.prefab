@@ -65,7 +65,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _playerAvatar: {fileID: 5866666021909216657, guid: 93b3695cca109d24f87d61056e289857, type: 3}
-  _animatorController: {fileID: 9100000, guid: a59b50ef335517544ba10298b72b78b5, type: 2}
+  _animatorController: {fileID: 22100000, guid: 8f72548cfe79d1045b2f788dff100ad6, type: 2}
   _forceAvatarSet: 0
 --- !u!143 &563657382684787119
 CharacterController:

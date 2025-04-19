@@ -6,6 +6,11 @@
 public interface IInteractable
 {
     /// <summary>
+    /// Разрешить взаимодействие через удержание клавиши.
+    /// </summary>
+    bool AllowHoldInteraction => false;
+
+    /// <summary>
     /// <para>Метод вызываемый при взаимодействии игрока с интерактивным объектом.</para>
     /// </summary>
     void Interact();
@@ -22,5 +27,13 @@ public interface IInteractable
     void Interact(Animator owner)
     {
         Interact();
+    }
+
+    /// <summary>
+    /// <para>Метод вызываемый при прекращении взаимодействия игрока с интерактивным объектом.</para>
+    /// </summary>
+    void StopInteraction()
+    {
+        // Ничего по умолчанию
     }
 }

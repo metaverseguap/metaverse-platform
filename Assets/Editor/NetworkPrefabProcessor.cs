@@ -5,6 +5,8 @@ using Global.Bundles;
 using Global.Files;
 using Mirror;
 using NetworkCore.MirrorNetworking.Animations;
+using NetworkCore.MirrorNetworking.Offline;
+using NetworkCore.MirrorNetworking.Position;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -67,11 +69,21 @@ public static class NetworkPrefabProcessor
         GameObject instance = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
         bool updated = false;
 
-        if (networkObject.SyncObject && instance.GetComponent<NetworkIdentity>() == null)
+        if (networkObject.SyncObject)
         {
-            Debug.Log($"Add NetworkIdentity to {prefab}");
-            instance.AddComponent<NetworkIdentity>();
-            updated = true;
+            if (instance.GetComponent<OfflineModeObject>() == null)
+            {
+                Debug.Log($"Add OfflineModeObject to {prefab}");
+                instance.AddComponent<OfflineModeObject>();
+                updated = true;
+            }
+            
+            if (instance.GetComponent<NetworkIdentity>() == null)
+            {
+                Debug.Log($"Add NetworkIdentity to {prefab}");
+                instance.AddComponent<NetworkIdentity>();
+                updated = true;
+            }
         }
 
         if (networkObject.AnimatedObject && instance.GetComponent<MVNetworkAnimator>() == null)
@@ -89,12 +101,11 @@ public static class NetworkPrefabProcessor
         }
 
         if (networkObject.TransformObject
-            && instance.GetComponent<NetworkTransformReliable>() == null
-            && instance.GetComponent<NetworkTransformUnreliable>() == null)
+            && instance.GetComponent<MVNetworkTransform>() == null)
         {
-            Debug.Log($"Add NetworkTransform to {path}");
-            NetworkTransformReliable networkTransform = instance.AddComponent<NetworkTransformReliable>();
-            networkTransform.target = networkObject.transform;
+            Debug.Log($"Add MVNetworkTransform to {path}");
+            MVNetworkTransform networkTransform = instance.AddComponent<MVNetworkTransform>();
+            networkTransform.Target = networkObject.transform;
             updated = true;
         }
 
