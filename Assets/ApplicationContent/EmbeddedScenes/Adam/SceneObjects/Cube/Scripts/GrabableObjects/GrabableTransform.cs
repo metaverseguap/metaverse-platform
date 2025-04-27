@@ -123,7 +123,7 @@ namespace EmbeddedScenes.Adam.SceneObjects.Cube.GrabableObjects
             if (targetPosition != null)
             {
                 Gizmos.color = Color.magenta;
-                Gizmos.DrawSphere(targetPosition, 0.2f);
+                Gizmos.DrawSphere(targetPosition, 0.1f);
                 Handles.Label(targetPosition + Vector3.up * 0.3f, $"Local_{gameObject.name}");
             }
         }

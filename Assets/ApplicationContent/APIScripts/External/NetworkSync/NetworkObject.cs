@@ -50,5 +50,19 @@ public sealed class NetworkObject : MonoBehaviour
                 _animatedObject = false;
             }
         }
+
+        // Нельзя одновременно Transform и Rigidbody синхронизацию
+        if (_transformObject)
+        {
+            _physicObject = false;
+        }
+        else
+        {
+            // Нельзя поставить checkbox, если на объекте нет Rigidbody
+            if (GetComponent<Rigidbody>() == null)
+            {
+                _physicObject = false;
+            }
+        }
     }
 }

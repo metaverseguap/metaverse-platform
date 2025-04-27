@@ -347,9 +347,10 @@ GameObject:
   - component: {fileID: 2921940849818187574}
   - component: {fileID: 308529829186133133}
   - component: {fileID: 4490623179510435889}
-  - component: {fileID: 3946106279509892078}
-  - component: {fileID: 7765077065517904021}
-  - component: {fileID: 198865096829634077}
+  - component: {fileID: 2371190679038972314}
+  - component: {fileID: 7702023372053200026}
+  - component: {fileID: 5134054994555601836}
+  - component: {fileID: 2158450912994999523}
   m_Layer: 0
   m_Name: PhysicCube
   m_TagString: Untagged
@@ -481,9 +482,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _syncObject: 1
   _animatedObject: 0
-  _transformObject: 1
-  _physicObject: 0
---- !u!114 &3946106279509892078
+  _transformObject: 0
+  _physicObject: 1
+--- !u!114 &2371190679038972314
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -495,7 +496,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d48dfe3bbbaf4ba9af5e5e40add28218, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &7765077065517904021
+--- !u!114 &7702023372053200026
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -512,7 +513,7 @@ MonoBehaviour:
   serverOnly: 0
   visibility: 0
   hasSpawned: 0
---- !u!114 &198865096829634077
+--- !u!114 &5134054994555601836
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -521,13 +522,29 @@ MonoBehaviour:
   m_GameObject: {fileID: 4463715181486452239}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 894960ac38554769b8d5acc75b4f936a, type: 3}
+  m_Script: {fileID: 11500000, guid: c687357d77914cd798ed675ba477ff63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _target: {fileID: 3388018014843537656}
+  _ownershipTime: 0.2
+--- !u!114 &2158450912994999523
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4463715181486452239}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3a726c6881a4a01911300b5a7d281b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _positionThreshold: 0.001
   _rotationThreshold: 0.1
-  _ownershipTime: 0.2
+  _ownershipDeviationThreshold: 0.003
+  _target: {fileID: 308529829186133133}

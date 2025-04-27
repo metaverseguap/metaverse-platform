@@ -5,8 +5,8 @@ using Global.Bundles;
 using Global.Files;
 using Mirror;
 using NetworkCore.MirrorNetworking.Animations;
+using NetworkCore.MirrorNetworking.Objects;
 using NetworkCore.MirrorNetworking.Offline;
-using NetworkCore.MirrorNetworking.Position;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -103,19 +103,30 @@ public static class NetworkPrefabProcessor
         if (networkObject.TransformObject
             && instance.GetComponent<MVNetworkTransform>() == null)
         {
+            // Не допускаем одновременной синхронизации Transform и Rigidbody
+            MVNetworkRigidBody rigidBodySync = instance.GetComponent<MVNetworkRigidBody>();
+            GameObject.DestroyImmediate(rigidBodySync);
+            
             Debug.Log($"Add MVNetworkTransform to {path}");
             MVNetworkTransform networkTransform = instance.AddComponent<MVNetworkTransform>();
             networkTransform.Target = networkObject.transform;
+            
+
+            
             updated = true;
         }
 
         if (networkObject.PhysicObject
-            && instance.GetComponent<NetworkRigidbodyReliable>() == null
-            && instance.GetComponent<NetworkRigidbodyUnreliable>() == null)
+            && instance.GetComponent<MVNetworkRigidBody>() == null)
         {
-            Debug.Log($"Add NetworkRigidbody to {path}");
-            NetworkRigidbodyReliable networkRigidbody = instance.AddComponent<NetworkRigidbodyReliable>();
-            networkRigidbody.target = networkObject.transform;
+            // Не допускаем одновременной синхронизации Transform и Rigidbody
+            MVNetworkTransform transformSync = instance.GetComponent<MVNetworkTransform>();
+            GameObject.DestroyImmediate(transformSync);
+            
+            Debug.Log($"Add MVNetworkRigidBody to {path}");
+            MVNetworkRigidBody networkRigidbody = instance.AddComponent<MVNetworkRigidBody>();
+            networkRigidbody.Target = networkObject.GetComponent<Rigidbody>();
+            
             updated = true;
         }
 

@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 563657382684787112}
   - component: {fileID: 7986448919372775742}
   - component: {fileID: 5307093665177394435}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: PCPlayer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -199,7 +199,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 563657383153081900}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.9271349, y: -16.405, z: 11.241677}
+  m_LocalPosition: {x: -11.296467, y: -13.941999, z: -29.157959}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -337,7 +337,7 @@ GameObject:
   - component: {fileID: 563657383539260756}
   - component: {fileID: 563657383539260763}
   - component: {fileID: 563657383539260762}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: CharacterModel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
