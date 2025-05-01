@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace NetworkCore.MirrorNetworking.Animations
+namespace NetworkCore.MirrorNetworking.Synchronization.Animations
 {
     /// <summary>
     /// <para>Компонент хранящий в себе все анимации, воспроизводимые в сети.</para>

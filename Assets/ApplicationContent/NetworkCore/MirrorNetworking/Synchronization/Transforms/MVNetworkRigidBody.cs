@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace NetworkCore.MirrorNetworking.Objects
+namespace NetworkCore.MirrorNetworking.Synchronization.Transforms
 {
     /// <summary>
     /// <para>Компонент синхронизирующий положение объекта с сервером.</para>

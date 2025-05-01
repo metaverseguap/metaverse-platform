@@ -17,13 +17,20 @@ namespace Adam.SceneObjects.Button.ButtonExecution
             // Базовая интерактивность
         }
 
-        public void Interact(Animator owner)
+        public void Interact(GameObject owner)
         {
             // Вызов базой интерактивности
             Interact();
 
             // Интерактивность специфическая для вызывающего игрока
-            StartCoroutine(AnimationUtils.PlayExternalAnimation(owner, AnimatorConstants.PLAYER_EXTERNAL_ANIMATION_CLIP, _playAnimations));
+            if (owner.TryGetComponent(out Animator playerAnimator))
+            {
+                StartCoroutine(AnimationUtils.PlayExternalAnimation(playerAnimator, AnimatorConstants.PLAYER_EXTERNAL_ANIMATION_CLIP, _playAnimations));
+            }
+            else
+            {
+                Debug.LogWarning($"[{gameObject.name}]: Not found animator in interactor '{owner.name}'.");
+            }
         }
     }
 }

@@ -13,10 +13,10 @@ GameObject:
   - component: {fileID: 6111901144676616589}
   - component: {fileID: 191988680170499884}
   - component: {fileID: -1240690610661604018}
-  - component: {fileID: 5351649185024712863}
-  - component: {fileID: 6885557388672136881}
-  - component: {fileID: 6157372244101517191}
-  - component: {fileID: 7199090144891656042}
+  - component: {fileID: 3431471875535588307}
+  - component: {fileID: 6327195100001923733}
+  - component: {fileID: 9167026530000558697}
+  - component: {fileID: 9015153140960573288}
   m_Layer: 0
   m_Name: TransformableCube
   m_TagString: Untagged
@@ -118,7 +118,8 @@ MonoBehaviour:
   _animatedObject: 0
   _transformObject: 1
   _physicObject: 0
---- !u!114 &5351649185024712863
+  _canBeOwned: 0
+--- !u!114 &3431471875535588307
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -130,7 +131,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d48dfe3bbbaf4ba9af5e5e40add28218, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &6885557388672136881
+--- !u!114 &6327195100001923733
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -147,7 +148,7 @@ MonoBehaviour:
   serverOnly: 0
   visibility: 0
   hasSpawned: 0
---- !u!114 &6157372244101517191
+--- !u!114 &9167026530000558697
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -163,7 +164,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _ownershipTime: 0.2
---- !u!114 &7199090144891656042
+--- !u!114 &9015153140960573288
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -180,5 +181,4 @@ MonoBehaviour:
   syncInterval: 0
   _positionThreshold: 0.001
   _rotationThreshold: 0.1
-  _ownershipDeviationThreshold: 0.003
   _target: {fileID: 9195615848736169351}

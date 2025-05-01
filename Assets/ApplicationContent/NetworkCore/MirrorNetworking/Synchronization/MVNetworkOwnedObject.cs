@@ -1,7 +1,7 @@
 ﻿using Mirror;
 using UnityEngine;
 
-namespace NetworkCore.MirrorNetworking.Objects
+namespace NetworkCore.MirrorNetworking.Synchronization
 {
     /// <summary>
     /// <para>Класс объекта имеющего владельца в сети Mirror.</para>

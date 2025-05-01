@@ -103,7 +103,7 @@ namespace Player.EmbeddedPlayers.PC
             
             foreach (IInteractable interactable in currentInteractables)
             {
-                interactable.Interact(_owner.AvatarComponent.SpawnedAvatar);
+                interactable.Interact(_owner.AvatarComponent.SpawnedAvatar.gameObject);
             }
         }
         
@@ -118,7 +118,7 @@ namespace Player.EmbeddedPlayers.PC
             {
                 if (interactable.AllowHoldInteraction)
                 {
-                    interactable.Interact(_owner.AvatarComponent.SpawnedAvatar);
+                    interactable.Interact(_owner.AvatarComponent.SpawnedAvatar.gameObject);
                 }
             }
         }

@@ -5,7 +5,7 @@ using Global.Logger;
 using Mirror;
 using UnityEngine;
 
-namespace NetworkCore.MirrorNetworking.Animations
+namespace NetworkCore.MirrorNetworking.Synchronization.Animations
 {
     /// <summary>
     /// <para>Компонент синхронизирующий анимацию с сервером.</para>

@@ -24,7 +24,7 @@ public interface IInteractable
     /// заставит его воспроизвести нужную анимацию и изменит его модель.
     /// </summary>
     /// <param name="owner">объект игрока, вызвавший взаимодействие</param>
-    void Interact(Animator owner)
+    void Interact(GameObject owner)
     {
         Interact();
     }
@@ -35,5 +35,14 @@ public interface IInteractable
     void StopInteraction()
     {
         // Ничего по умолчанию
+    }
+
+    /// <summary>
+    /// <para>Метод сбрасывающий взаимодействие.</para>
+    /// Данный метод необходим для реализации прерывания взаимодействия с интерактивным объектом
+    /// </summary>
+    void ResetInteraction()
+    {
+        // Ничего по умолчанию 
     }
 }

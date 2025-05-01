@@ -4,9 +4,10 @@ using Global.AssetPackages;
 using Global.Bundles;
 using Global.Files;
 using Mirror;
-using NetworkCore.MirrorNetworking.Animations;
-using NetworkCore.MirrorNetworking.Objects;
 using NetworkCore.MirrorNetworking.Offline;
+using NetworkCore.MirrorNetworking.Synchronization;
+using NetworkCore.MirrorNetworking.Synchronization.Animations;
+using NetworkCore.MirrorNetworking.Synchronization.Transforms;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -127,6 +128,14 @@ public static class NetworkPrefabProcessor
             MVNetworkRigidBody networkRigidbody = instance.AddComponent<MVNetworkRigidBody>();
             networkRigidbody.Target = networkObject.GetComponent<Rigidbody>();
             
+            updated = true;
+        }
+
+        if (networkObject.CanBeOwned
+            && instance.GetComponent<MVNetworkInteractionAccess>() == null)
+        {
+            Debug.Log($"Add MVNetworkInteractionAccess to {prefab}");
+            instance.AddComponent<MVNetworkInteractionAccess>();
             updated = true;
         }
 

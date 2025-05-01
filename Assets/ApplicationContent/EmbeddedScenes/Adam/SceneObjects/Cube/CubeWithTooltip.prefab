@@ -14,10 +14,10 @@ GameObject:
   - component: {fileID: 3400849189935462107}
   - component: {fileID: 6164637122758147006}
   - component: {fileID: 4850381783757757625}
-  - component: {fileID: 1407085004677184118}
-  - component: {fileID: 7940270559682205343}
-  - component: {fileID: 1601580175924584532}
-  - component: {fileID: 6559858954457498726}
+  - component: {fileID: 1017554247062077132}
+  - component: {fileID: 6015079587634261121}
+  - component: {fileID: 8245130647326942076}
+  - component: {fileID: 4442710391885581825}
   m_Layer: 0
   m_Name: CubeWithTooltip
   m_TagString: Untagged
@@ -33,7 +33,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4680273807912886919}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 9.973, y: -15.028, z: 0.076371826}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -135,7 +135,8 @@ MonoBehaviour:
   _animatedObject: 0
   _transformObject: 1
   _physicObject: 0
---- !u!114 &1407085004677184118
+  _canBeOwned: 0
+--- !u!114 &1017554247062077132
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -147,7 +148,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d48dfe3bbbaf4ba9af5e5e40add28218, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &7940270559682205343
+--- !u!114 &6015079587634261121
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -164,7 +165,7 @@ MonoBehaviour:
   serverOnly: 0
   visibility: 0
   hasSpawned: 0
---- !u!114 &1601580175924584532
+--- !u!114 &8245130647326942076
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -180,7 +181,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _ownershipTime: 0.2
---- !u!114 &6559858954457498726
+--- !u!114 &4442710391885581825
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -197,7 +198,6 @@ MonoBehaviour:
   syncInterval: 0
   _positionThreshold: 0.001
   _rotationThreshold: 0.1
-  _ownershipDeviationThreshold: 0.003
   _target: {fileID: 5910210466246640752}
 --- !u!1 &7246561983071675922
 GameObject:

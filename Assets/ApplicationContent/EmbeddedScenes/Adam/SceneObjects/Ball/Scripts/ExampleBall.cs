@@ -1,4 +1,3 @@
-using Global.Logger;
 using Player.EmbeddedPlayers;
 using UnityEngine;
 
@@ -31,7 +30,6 @@ namespace Adam.SceneObjects.Ball
                 AbstractPlayer player = hit.GetComponent<AbstractPlayer>();
                 if (player != null)
                 {
-                    AppLogger.Log($"Kicked by {player.name}");
                     Vector3 direction = (transform.position - hit.transform.position).normalized;
 
                     targetBody.AddForce(direction * bounceForce, ForceMode.Impulse);

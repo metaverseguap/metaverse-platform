@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace NetworkCore.MirrorNetworking.Animations
+namespace NetworkCore.MirrorNetworking.Synchronization.Animations
 {
     /// <summary>
     /// <para>Компонент отслеживающий состояние параметров аниматора.</para>

@@ -1,9 +1,9 @@
 using Global.Logger;
 using MainMenu.Containers;
 using Mirror;
-using NetworkCore.MirrorNetworking.Animations;
 using NetworkCore.MirrorNetworking.Containers.Store;
 using NetworkCore.MirrorNetworking.Player.Base;
+using NetworkCore.MirrorNetworking.Synchronization.Animations;
 using Player.EmbeddedPlayers;
 using UnityEngine;
 

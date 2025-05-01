@@ -4,7 +4,7 @@ using System.Reflection;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace NetworkCore.MirrorNetworking.Animations
+namespace NetworkCore.MirrorNetworking.Synchronization.Animations
 {
     /// <summary>
     /// <para>Компонент регистрирующий анимации внутри сцен.</para>

@@ -16,6 +16,9 @@ public sealed class NetworkObject : MonoBehaviour
 
     [Tooltip("Объект должен использовать RigidBody в сети.")]
     [SerializeField] private bool _physicObject;
+    
+    [Tooltip("Объект может иметь владельца. Пока объектом владеет один пользователь, остальные не могут с ним взаимодействовать.")]
+    [SerializeField] private bool _canBeOwned;
 
     /// <summary>
     /// Добавлять ли на объект NetworkIdentity.
@@ -23,19 +26,24 @@ public sealed class NetworkObject : MonoBehaviour
     public bool SyncObject => _syncObject;
 
     /// <summary>
-    /// Добавлять ли на объект NetworkAnimator.
+    /// Добавлять ли на объект синхронизацию анимации.
     /// </summary>
     public bool AnimatedObject => _animatedObject;
 
     /// <summary>
-    /// Добавлять ли на объект NetworkTransform.
+    /// Добавлять ли на объект синхронизацию положения.
     /// </summary>
     public bool TransformObject => _transformObject;
 
     /// <summary>
-    /// Добавлять ли на объект NetworkRigidbody.
+    /// Добавлять ли на объект синхронизацию положения Rigidbody.
     /// </summary>
     public bool PhysicObject => _physicObject;
+    
+    /// <summary>
+    /// Добавлять ли компонент синхронизации владельца объекта.
+    /// </summary>
+    public bool CanBeOwned => _canBeOwned;
 
     private void OnValidate()
     {

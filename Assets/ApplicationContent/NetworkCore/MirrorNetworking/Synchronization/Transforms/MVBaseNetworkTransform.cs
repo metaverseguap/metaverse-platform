@@ -1,11 +1,10 @@
-﻿using System;
-using Mirror;
+﻿using Mirror;
 using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
-namespace NetworkCore.MirrorNetworking.Objects
+namespace NetworkCore.MirrorNetworking.Synchronization.Transforms
 {
     /// <summary>
     /// <para>Базовый класс синхронизации изменения положения на сервере.</para>
@@ -76,17 +75,23 @@ namespace NetworkCore.MirrorNetworking.Objects
         
         private void UpdateTransform()
         {
-            if (NeedTransformSync() && (ownership.ObjectHasNoOwner() || ownership.AmIOwner()))
+            if (NeedTransformSync())
             {
-                ownership.CmdRequestOwnership();
-
-                ownership.ExtendOwnership();
-
-                if (ownership.AmIOwner())
+                if (ownership.ObjectHasNoOwner() || ownership.AmIOwner())
                 {
-                    lastSentPosition = lastUpdatePosition;
-                    lastSentRotation = lastUpdateRotation;
-                    CmdRequestMove(lastUpdatePosition, lastUpdateRotation);
+                    if (!ownership.AmIOwner())
+                    {
+                        ownership.CmdRequestOwnership();
+                    }
+
+                    ownership.ExtendOwnership();
+
+                    if (ownership.AmIOwner())
+                    {
+                        lastSentPosition = lastUpdatePosition;
+                        lastSentRotation = lastUpdateRotation;
+                        CmdRequestMove(lastUpdatePosition, lastUpdateRotation);
+                    }
                 }
             }
             else
