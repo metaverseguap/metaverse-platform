@@ -1,3 +1,4 @@
+using LDR.SUAI_Metaverse.SDK.NetworkSync;
 using Mirror;
 using NetworkCore.MirrorNetworking.Containers.ManagerSetups;
 using NetworkCore.MirrorNetworking.Containers.Store;
@@ -21,6 +22,11 @@ namespace NetworkCore.MirrorNetworking
     [RequireComponent(typeof(NetworkManagerSetups))]
     public sealed class MVNetworkManager : NetworkManager
     {
+        /// <summary>
+        /// Событие происходящее на сервере после подключения к нему нового клиента.
+        /// </summary>
+        public event UnityAction<NetworkConnectionToClient> AfterNewClientConnectedToServer;
+        
         /// <summary>
         /// Событие происходящие после запуска сервера или хоста.
         /// </summary>
@@ -149,8 +155,23 @@ namespace NetworkCore.MirrorNetworking
             // Регистрируем спавнемые в сцене префабы
             this.RegisterPrefab(NetworkStore.Player.NetworkPlayer.gameObject);
             this.RegisterPrefab(NetworkStore.Player.DisplayName.gameObject);
+            
+            // Подключаем сетевые функции к внешним разработкам
+            NetworkEnvironment.NetworkProvider = NetworkStore.NetworkProvider;
         }
         
+        /// <summary>
+        ///<para><inheritdoc cref="NetworkManager.OnServerConnect"/></para>
+        /// 
+        /// <remarks>cобытие происходящее на сервере после подключения к нему нового клиента</remarks>
+        /// </summary>
+        /// <param name="conn">сведенья о подключенном игроке</param>
+        public override void OnServerConnect(NetworkConnectionToClient conn)
+        {
+            base.OnServerConnect(conn);
+            AfterNewClientConnectedToServer?.Invoke(conn);
+        }
+
         /// <summary>
         /// <para><inheritdoc cref="NetworkManager.OnStartServer"/></para>
         ///

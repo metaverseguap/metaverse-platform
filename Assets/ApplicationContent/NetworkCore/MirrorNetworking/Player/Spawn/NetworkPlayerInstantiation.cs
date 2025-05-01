@@ -1,9 +1,11 @@
-﻿using Mirror;
+﻿using System;
+using Mirror;
 using NetworkCore.MirrorNetworking.ClientMessages;
 using NetworkCore.MirrorNetworking.Containers.ClientMessages;
 using NetworkCore.MirrorNetworking.Containers.Store;
 using NetworkCore.MirrorNetworking.Player.AvatarPlayer;
 using NetworkCore.MirrorNetworking.Player.Base;
+using NetworkCore.MirrorNetworking.Synchronization;
 using UnityEngine;
 using UserSystem.Types;
 
@@ -59,6 +61,7 @@ namespace NetworkCore.MirrorNetworking.Player.Spawn
             networkManager.AfterStartServerOrHost += OnHostStarted;
             networkManager.AfterStartClient += OnClientStarted;
             networkManager.AfterServerAddPlayer += OnServerAddPlayer;
+            networkManager.AfterNewClientConnectedToServer += OnNewClientConnectedToServer;
             
             networkManager.BeforeServerLostPlayer += OnServerLostPlayer;
             networkManager.BeforeServerStop += OnServerStop;
@@ -76,6 +79,7 @@ namespace NetworkCore.MirrorNetworking.Player.Spawn
                 networkManager.BeforeClientDisconnected -= OnHostStarted;
                 networkManager.AfterStartClient -= OnClientStarted;
                 networkManager.AfterServerAddPlayer -= OnServerAddPlayer;
+                networkManager.AfterNewClientConnectedToServer -= OnNewClientConnectedToServer;
                 
                 networkManager.BeforeServerLostPlayer -= OnServerLostPlayer;
                 networkManager.BeforeServerStop -= OnServerStop;
@@ -85,9 +89,25 @@ namespace NetworkCore.MirrorNetworking.Player.Spawn
                 networkManager.BeforeClientDisconnected -= OnClientDisconnected;
             }
         }
-        
+
         private void OnClientStarted()
         {
+            // Регистрация серверных сообщений для клиента
+            NetworkClient.RegisterHandler<RoomStateMessage>(SetRoomState);
+        }
+
+        private void SetRoomState(RoomStateMessage message)
+        {
+            networkStore.Room.RoomStartTime = message.RoomStartTime;
+            networkStore.Room.Initialized = message.Initialized;
+            networkStore.NetworkProvider.NotifyRoomConnection();
+        }
+        
+        private void OnNewClientConnectedToServer(NetworkConnectionToClient conn)
+        {
+            // Отправляем текущее состояние комнаты хоста подключившемуся клиенту
+            var roomStateMessage = new RoomStateMessage(networkStore.Room.Initialized, networkStore.Room.RoomStartTime);
+            conn.Send(roomStateMessage);
         }
         
         private void OnHostStarted()
@@ -99,6 +119,15 @@ namespace NetworkCore.MirrorNetworking.Player.Spawn
             // Что бы запросить у сервера вызвать какой-либо метод у себя, используются сообщения `NetworkMessage`.
             // Сообщения регистрируются на сервере вызовом метода `NetworkServer#RegisterHandler`
             NetworkServer.RegisterHandler<ClientRegistrationMessage>(OnClientConnectedToServer);
+
+            InitRoomState();
+        }
+
+        private void InitRoomState()
+        {
+            networkStore.Room.RoomStartTime = DateTime.UtcNow;
+            networkStore.Room.Initialized = true;
+            networkStore.NetworkProvider.NotifyRoomConnection();
         }
 
         private void OnClientConnectedToServer(NetworkConnectionToClient conn, ClientRegistrationMessage message)
@@ -166,6 +195,12 @@ namespace NetworkCore.MirrorNetworking.Player.Spawn
         {
             if (conn.identity != null)
             {
+                MVNetworkInteractionAccess[] accesses = FindObjectsByType<MVNetworkInteractionAccess>(FindObjectsSortMode.None);
+                foreach (var access in accesses)
+                {
+                    access.ReleaseControlFrom(conn);
+                }
+                
                 MVNetworkManager.singleton.NetworkStore.GamePlayers.Remove(conn.connectionId);
             }
         }
@@ -208,6 +243,13 @@ namespace NetworkCore.MirrorNetworking.Player.Spawn
 
         private void OnClientDisconnected()
         {
+            ClearRoomState();
+        }
+
+        private void ClearRoomState()
+        {
+            networkStore.Room.Initialized = false;
+            networkStore.Room.RoomStartTime = DateTime.UtcNow;
         }
     }
 }

@@ -348,11 +348,11 @@ GameObject:
   - component: {fileID: 4948423440727981102}
   - component: {fileID: 4675944606595997862}
   - component: {fileID: 9130396394007572626}
-  - component: {fileID: 681737926484355587}
-  - component: {fileID: 4436385941656766380}
-  - component: {fileID: 8329994368155237180}
-  - component: {fileID: 7704718088784970449}
-  - component: {fileID: 7717702579418145695}
+  - component: {fileID: 2273392893684994315}
+  - component: {fileID: 3844496208940230863}
+  - component: {fileID: 2339390921325070121}
+  - component: {fileID: 2180219240111752015}
+  - component: {fileID: 7081437107772432745}
   m_Layer: 0
   m_Name: GrabablePhysicCube
   m_TagString: Untagged
@@ -504,7 +504,8 @@ MonoBehaviour:
   _transformObject: 0
   _physicObject: 1
   _canBeOwned: 1
---- !u!114 &681737926484355587
+  _canvas: 0
+--- !u!114 &2273392893684994315
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -516,7 +517,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d48dfe3bbbaf4ba9af5e5e40add28218, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &4436385941656766380
+--- !u!114 &3844496208940230863
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -533,7 +534,7 @@ MonoBehaviour:
   serverOnly: 0
   visibility: 0
   hasSpawned: 0
---- !u!114 &8329994368155237180
+--- !u!114 &2339390921325070121
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -549,7 +550,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _ownershipTime: 0.2
---- !u!114 &7704718088784970449
+--- !u!114 &2180219240111752015
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -567,7 +568,7 @@ MonoBehaviour:
   _positionThreshold: 0.001
   _rotationThreshold: 0.1
   _target: {fileID: 4948423440727981102}
---- !u!114 &7717702579418145695
+--- !u!114 &7081437107772432745
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -579,3 +580,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7c614742bae4ed4b58c0dee65c5f3f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0

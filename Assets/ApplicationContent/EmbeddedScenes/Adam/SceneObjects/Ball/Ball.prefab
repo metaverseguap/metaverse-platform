@@ -14,10 +14,10 @@ GameObject:
   - component: {fileID: 5834091247010114144}
   - component: {fileID: 1781749843927196806}
   - component: {fileID: -4334892181520885375}
-  - component: {fileID: 322281642260943050}
-  - component: {fileID: 5946257313198955945}
-  - component: {fileID: 5997129750351548054}
-  - component: {fileID: 2418623586520632152}
+  - component: {fileID: 7514929423081887477}
+  - component: {fileID: 8249298804787427263}
+  - component: {fileID: 5925126843410475316}
+  - component: {fileID: 532197146499949664}
   m_Layer: 0
   m_Name: Ball
   m_TagString: Untagged
@@ -136,7 +136,8 @@ MonoBehaviour:
   _transformObject: 0
   _physicObject: 1
   _canBeOwned: 0
---- !u!114 &322281642260943050
+  _canvas: 0
+--- !u!114 &7514929423081887477
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -148,7 +149,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d48dfe3bbbaf4ba9af5e5e40add28218, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &5946257313198955945
+--- !u!114 &8249298804787427263
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -165,7 +166,7 @@ MonoBehaviour:
   serverOnly: 0
   visibility: 0
   hasSpawned: 0
---- !u!114 &5997129750351548054
+--- !u!114 &5925126843410475316
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -181,7 +182,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _ownershipTime: 0.2
---- !u!114 &2418623586520632152
+--- !u!114 &532197146499949664
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

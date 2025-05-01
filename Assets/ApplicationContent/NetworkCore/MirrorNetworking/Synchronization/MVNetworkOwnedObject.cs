@@ -19,6 +19,15 @@ namespace NetworkCore.MirrorNetworking.Synchronization
         private int? myConnectionId = null;
 
         /// <summary>
+        /// Время, на которое происходит передача владения объектом по запросу.
+        /// </summary>
+        public float OwnershipTime
+        {
+            get => _ownershipTime;
+            set => _ownershipTime = value;
+        }
+        
+        /// <summary>
         /// <para>Использовать собственный отсчет таймера владения объектом.</para>
         /// По умолчанию, данный компонент сам отсчитывает время владения объектом,
         /// но если наследник имеет собственные критерии изменения таймера владения,
@@ -206,6 +215,16 @@ namespace NetworkCore.MirrorNetworking.Synchronization
         public bool AmILastOwner()
         {
             return myConnectionId != null && ownerId == myConnectionId;
+        }
+
+        /// <summary>
+        /// <para>Является ли указанный пользователь последним, кто владел данным объектом.</para>
+        /// </summary>
+        /// <param name="connectionId">connection id пользователя</param>
+        /// <returns>true, если указанный пользователь последним, кто владел данным объектом</returns>
+        public bool IsLastOwnerConnectionId(int connectionId)
+        {
+            return connectionId == ownerId;
         }
     }
 }

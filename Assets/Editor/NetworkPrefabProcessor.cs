@@ -3,11 +3,14 @@ using System.IO;
 using Global.AssetPackages;
 using Global.Bundles;
 using Global.Files;
+using LDR.SUAI_Metaverse.SDK.NetworkSync;
 using Mirror;
 using NetworkCore.MirrorNetworking.Offline;
 using NetworkCore.MirrorNetworking.Synchronization;
 using NetworkCore.MirrorNetworking.Synchronization.Animations;
 using NetworkCore.MirrorNetworking.Synchronization.Transforms;
+using NetworkCore.MirrorNetworking.Synchronization.UI;
+using TMPro;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -70,74 +73,17 @@ public static class NetworkPrefabProcessor
         GameObject instance = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
         bool updated = false;
 
-        if (networkObject.SyncObject)
-        {
-            if (instance.GetComponent<OfflineModeObject>() == null)
-            {
-                Debug.Log($"Add OfflineModeObject to {prefab}");
-                instance.AddComponent<OfflineModeObject>();
-                updated = true;
-            }
-            
-            if (instance.GetComponent<NetworkIdentity>() == null)
-            {
-                Debug.Log($"Add NetworkIdentity to {prefab}");
-                instance.AddComponent<NetworkIdentity>();
-                updated = true;
-            }
-        }
+        updated = SyncIdentity(prefab, networkObject, instance);
 
-        if (networkObject.AnimatedObject && instance.GetComponent<MVNetworkAnimator>() == null)
-        {
-            Debug.Log($"Add MVNetworkAnimator to {path}");
-            AnimatorParameterListener parameterListener = instance.AddComponent<AnimatorParameterListener>();
-            MVNetworkAnimator networkAnimator = instance.AddComponent<MVNetworkAnimator>();
-            networkAnimator.enabled = false;
-            
-            networkAnimator.ParameterListener = parameterListener;
+        updated = SyncAnimation(networkObject, path, instance) || updated;
 
-            networkAnimator.enabled = true;
-            
-            updated = true;
-        }
+        updated = SyncTransform(networkObject, path, instance) || updated;
 
-        if (networkObject.TransformObject
-            && instance.GetComponent<MVNetworkTransform>() == null)
-        {
-            // Не допускаем одновременной синхронизации Transform и Rigidbody
-            MVNetworkRigidBody rigidBodySync = instance.GetComponent<MVNetworkRigidBody>();
-            GameObject.DestroyImmediate(rigidBodySync);
-            
-            Debug.Log($"Add MVNetworkTransform to {path}");
-            MVNetworkTransform networkTransform = instance.AddComponent<MVNetworkTransform>();
-            networkTransform.Target = networkObject.transform;
-            
+        updated = SyncRigidBody(networkObject, path, instance) || updated;
 
-            
-            updated = true;
-        }
+        updated = SyncAccess(prefab, networkObject, instance) || updated;
 
-        if (networkObject.PhysicObject
-            && instance.GetComponent<MVNetworkRigidBody>() == null)
-        {
-            // Не допускаем одновременной синхронизации Transform и Rigidbody
-            MVNetworkTransform transformSync = instance.GetComponent<MVNetworkTransform>();
-            GameObject.DestroyImmediate(transformSync);
-            
-            Debug.Log($"Add MVNetworkRigidBody to {path}");
-            MVNetworkRigidBody networkRigidbody = instance.AddComponent<MVNetworkRigidBody>();
-            networkRigidbody.Target = networkObject.GetComponent<Rigidbody>();
-            
-            updated = true;
-        }
-
-        if (networkObject.CanBeOwned
-            && instance.GetComponent<MVNetworkInteractionAccess>() == null)
-        {
-            Debug.Log($"Add MVNetworkInteractionAccess to {prefab}");
-            instance.AddComponent<MVNetworkInteractionAccess>();
-            updated = true;
-        }
+        updated = SyncUI(prefab, networkObject, instance) || updated;
 
         if (updated)
         {
@@ -148,6 +94,191 @@ public static class NetworkPrefabProcessor
         GameObject.DestroyImmediate(instance);
 
         return updated;
+    }
+
+    private static bool SyncIdentity(GameObject prefab, NetworkObject networkObject, GameObject instance)
+    {
+        bool updated = false;
+        if (networkObject.SyncObject)
+        {
+            if (instance.GetComponent<OfflineModeObject>() == null)
+            {
+                Debug.Log($"Add OfflineModeObject to {prefab}");
+                instance.AddComponent<OfflineModeObject>();
+                updated = true;
+            }
+
+            if (instance.GetComponent<NetworkIdentity>() == null)
+            {
+                Debug.Log($"Add NetworkIdentity to {prefab}");
+                instance.AddComponent<NetworkIdentity>();
+                updated = true;
+            }
+        }
+
+        return updated;
+    }
+
+    private static bool SyncAnimation(NetworkObject networkObject, string path, GameObject instance)
+    {
+        bool updated = false;
+        if (networkObject.AnimatedObject
+            && instance.GetComponent<MVNetworkAnimator>() == null)
+        {
+            Debug.Log($"Add MVNetworkAnimator to {path}");
+            AnimatorParameterListener parameterListener = instance.AddComponent<AnimatorParameterListener>();
+            MVNetworkAnimator networkAnimator = instance.AddComponent<MVNetworkAnimator>();
+            networkAnimator.enabled = false;
+
+            networkAnimator.ParameterListener = parameterListener;
+
+            networkAnimator.enabled = true;
+
+            updated = true;
+        }
+
+        return updated;
+    }
+
+    private static bool SyncTransform(NetworkObject networkObject, string path, GameObject instance)
+    {
+        bool updated = false;
+        if (networkObject.TransformObject
+            && instance.GetComponent<MVNetworkTransform>() == null)
+        {
+            // Не допускаем одновременной синхронизации Transform и Rigidbody
+            MVNetworkRigidBody rigidBodySync = instance.GetComponent<MVNetworkRigidBody>();
+            GameObject.DestroyImmediate(rigidBodySync);
+
+            Debug.Log($"Add MVNetworkTransform to {path}");
+            MVNetworkTransform networkTransform = instance.AddComponent<MVNetworkTransform>();
+            networkTransform.Target = networkObject.transform;
+            
+            updated = true;
+        }
+
+        return updated;
+    }
+
+    private static bool SyncRigidBody(NetworkObject networkObject, string path, GameObject instance)
+    {
+        bool updated = false;
+        if (networkObject.PhysicObject
+            && instance.GetComponent<MVNetworkRigidBody>() == null)
+        {
+            // Не допускаем одновременной синхронизации Transform и Rigidbody
+            MVNetworkTransform transformSync = instance.GetComponent<MVNetworkTransform>();
+            GameObject.DestroyImmediate(transformSync);
+
+            Debug.Log($"Add MVNetworkRigidBody to {path}");
+            MVNetworkRigidBody networkRigidbody = instance.AddComponent<MVNetworkRigidBody>();
+            networkRigidbody.Target = networkObject.GetComponent<Rigidbody>();
+
+            updated = true;
+        }
+
+        return updated;
+    }
+
+    private static bool SyncAccess(GameObject prefab, NetworkObject networkObject, GameObject instance)
+    {
+        bool updated = false;
+        if (networkObject.CanBeOwned
+            && instance.GetComponent<MVNetworkInteractionAccess>() == null)
+        {
+            Debug.Log($"Add MVNetworkInteractionAccess to {prefab}");
+            instance.AddComponent<MVNetworkInteractionAccess>();
+            updated = true;
+        }
+
+        return updated;
+    }
+
+    private static bool SyncUI(GameObject prefab, NetworkObject networkObject, GameObject instance)
+    {
+        bool updated = false;
+        if (networkObject.IsCanvas
+            && instance.GetComponent<MVNetworkUI>() == null)
+        {
+            Debug.Log($"Add MVNetworkUI to {prefab}");
+            MVNetworkUI networkUI = instance.AddComponent<MVNetworkUI>();
+            Canvas uiParent = networkUI.gameObject.GetComponent<Canvas>();
+
+            List<Component> components = new List<Component>();
+            components.AddRange(uiParent.GetComponentsInChildren<TMP_Text>(true));
+
+            Dictionary<Canvas, List<Component>> canvasComponents = ComponentsGroupedByCanvas(components);
+
+            if (canvasComponents.TryGetValue(uiParent, out var canvasChildren))
+            {
+                List<TMP_Text> texts = new List<TMP_Text>();
+                foreach (var component in canvasChildren)
+                {
+                    if (component.TryGetComponent(out TMP_Text textComponent))
+                    {
+                        texts.Add(textComponent);
+                    }
+                }
+
+                networkUI.Texts = texts;
+            }
+
+            updated = true;
+        }
+
+        return updated;
+    }
+
+    private static Dictionary<Canvas, List<Component>> ComponentsGroupedByCanvas(List<Component> components)
+    {
+        var uniqueTransforms = UniqueTransforms(components);
+
+        var result = new Dictionary<Canvas, List<Component>>();
+        foreach (var currentUi in uniqueTransforms)
+        {
+            Canvas parentCanvas = GetParentCanvas(currentUi);
+            if (parentCanvas == null)
+            {
+                Debug.LogWarning($"Canvas not found parent canvas for: {currentUi.gameObject.name}");
+                continue;
+            }
+
+            if (!result.ContainsKey(parentCanvas))
+            {
+                result.Add(parentCanvas, new List<Component>());
+            }
+
+            result[parentCanvas].Add(currentUi);
+        }
+
+        return result;
+    }
+
+    private static HashSet<Transform> UniqueTransforms(List<Component> components)
+    {
+        var uniqueTransforms = new HashSet<Transform>();
+        foreach (var component in components)
+        {
+            uniqueTransforms.Add(component.transform);
+        }
+
+        return uniqueTransforms;
+    }
+
+    private static Canvas GetParentCanvas(Transform currentTransform)
+    {
+        while (currentTransform != null)
+        {
+            Canvas canvas = currentTransform.GetComponent<Canvas>();
+            if (canvas != null)
+            {
+                return canvas;
+            }
+
+            currentTransform = currentTransform.parent;
+        }
+
+        return null;
     }
 
     private static void UpdateScenesWithPrefabs(ISet<GameObject> modifiedPrefabs)

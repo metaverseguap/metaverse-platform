@@ -1,4 +1,5 @@
-﻿using Mirror;
+﻿using LDR.SUAI_Metaverse.SDK.Interactions;
+using Mirror;
 using UnityEngine;
 
 namespace NetworkCore.MirrorNetworking.Synchronization
@@ -28,7 +29,7 @@ namespace NetworkCore.MirrorNetworking.Synchronization
 
         public bool HasInteractionControl(GameObject controller)
         {
-            return ownership.AmIOwner()
+            return ownership.AmILastOwner()
                    && hasControl
                    && currentController != null && controller == currentController;
         }
@@ -51,6 +52,20 @@ namespace NetworkCore.MirrorNetworking.Synchronization
             ownership.CmdStopOwnership();
             currentController = null;
             CmdSetHasControl(false);
+        }
+
+        /// <summary>
+        /// <para>Метод вызываемый при потере контроля над объектом указанным игроком.</para>
+        /// </summary>
+        /// <param name="owner">игрок потерявший контроль над объектом</param>
+        public void ReleaseControlFrom(NetworkConnectionToClient owner)
+        {
+            ownership.CmdStopOwnership(owner);
+            if (ownership.IsLastOwnerConnectionId(owner.connectionId))
+            {
+                currentController = null;
+                CmdSetHasControl(false);
+            }
         }
 
         [Command(requiresAuthority = false)]
