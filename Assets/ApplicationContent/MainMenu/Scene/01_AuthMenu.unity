@@ -8667,6 +8667,7 @@ GameObject:
   - component: {fileID: 1510370057}
   - component: {fileID: 1510370059}
   - component: {fileID: 1510370061}
+  - component: {fileID: 1510370062}
   - component: {fileID: 1510370060}
   - component: {fileID: 1510370058}
   - component: {fileID: 1510370055}
@@ -8714,7 +8715,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1510370054}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 407.37558, y: 454.47327, z: 1.563087}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -8789,6 +8790,11 @@ MonoBehaviour:
   _devicePrefabs:
   - ForDevice: 0
     Prefab: {fileID: 563657382684787115, guid: 2501d40b833f9864a85dab9868733f74, type: 3}
+  _avatarAnimationControllers:
+  - Controller: {fileID: 22100000, guid: 8f72548cfe79d1045b2f788dff100ad6, type: 2}
+    AnimationControllerType: 0
+  - Controller: {fileID: 22100000, guid: f3a614cbd6afe1a47ad667cbe218fcf2, type: 2}
+    AnimationControllerType: 1
 --- !u!114 &1510370060
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8811,6 +8817,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e441e2838fd5414d8e272b70a36f1752, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1510370062
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1510370054}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb6825a4926a43f5b6afb27c0d5379aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1567041129

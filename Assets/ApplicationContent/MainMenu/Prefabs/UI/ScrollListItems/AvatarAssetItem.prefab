@@ -699,7 +699,7 @@ GameObject:
   - component: {fileID: 1605761267891032686}
   - component: {fileID: 8184097788407479050}
   m_Layer: 5
-  m_Name: GenderDropdown
+  m_Name: AnimationControllerTypeDropdown
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1920,7 +1920,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: {fileID: 4487876522359277361}
   _displayName: {fileID: 3942104754410910373}
-  _gender: {fileID: 8184097788407479050}
+  _animationControllerType: {fileID: 8184097788407479050}
   _loadImage: {fileID: 2248719070118017587}
   _status: {fileID: 5055603874454211100}
 --- !u!1 &4188207207509870905

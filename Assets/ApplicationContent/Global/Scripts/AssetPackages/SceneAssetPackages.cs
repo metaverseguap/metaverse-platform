@@ -21,7 +21,10 @@ namespace Global.AssetPackages
         /// Директория хранения ассетов.
         /// </summary>
         public static readonly string ASSETS_DIRECTORY = Path.Combine(Application.streamingAssetsPath, "Scenes");
-        private static readonly string INFO_FILE_PATH = Path.Combine(ASSETS_DIRECTORY, "scenesInfo.json");
+        /// <summary>
+        /// Путь до файла информации о сценах.
+        /// </summary>
+        public static readonly string INFO_FILE_PATH = Path.Combine(ASSETS_DIRECTORY, "scenesInfo.json");
 
         /// <summary>
         /// <para>Сохранить список информации о сценах в файл.</para>

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using AppAvatars.Containers;
 using Mirror;
 using NetworkCore.MirrorNetworking.Player.AvatarPlayer;
 using NetworkCore.MirrorNetworking.Player.Base;
@@ -32,6 +33,9 @@ namespace NetworkCore.MirrorNetworking.Containers.ManagerSetups
         [SerializeField] private NetworkPlayerDisplayName _displayNamePrefab;
         [Tooltip("Контроллеры игрока для различных устройств")]
         [SerializeField] private List<DevicePlayerPrefab> _devicePrefabs;
+
+        [Tooltip("Контроллеры анимаций для аватаров")] 
+        [SerializeField] private List<AnimatorControllerInfo> _avatarAnimationControllers;
 
         /// <summary>
         /// Устройство для которого производиться сборка проекта.
@@ -77,5 +81,10 @@ namespace NetworkCore.MirrorNetworking.Containers.ManagerSetups
         /// Префабы игрока для различных устройств.
         /// </summary>
         public List<DevicePlayerPrefab> DevicePrefabs => _devicePrefabs;
+        
+        /// <summary>
+        /// Контроллеры анимации аватаров игрока.
+        /// </summary>
+        public List<AnimatorControllerInfo> AvatarAnimationControllers => _avatarAnimationControllers;
     }
 }

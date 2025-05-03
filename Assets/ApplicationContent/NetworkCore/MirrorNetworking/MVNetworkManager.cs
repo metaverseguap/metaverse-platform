@@ -1,3 +1,4 @@
+using LDR.SUAI_Metaverse.SDK.NetworkSync;
 using Mirror;
 using NetworkCore.MirrorNetworking.Containers.ManagerSetups;
 using NetworkCore.MirrorNetworking.Containers.Store;
@@ -21,6 +22,11 @@ namespace NetworkCore.MirrorNetworking
     [RequireComponent(typeof(NetworkManagerSetups))]
     public sealed class MVNetworkManager : NetworkManager
     {
+        /// <summary>
+        /// Событие происходящее на сервере после подключения к нему нового клиента.
+        /// </summary>
+        public event UnityAction<NetworkConnectionToClient> AfterNewClientConnectedToServer;
+        
         /// <summary>
         /// Событие происходящие после запуска сервера или хоста.
         /// </summary>
@@ -70,6 +76,11 @@ namespace NetworkCore.MirrorNetworking
         /// Событие происходящие после того, как сервер изменил сцену.
         /// </summary>
         public event UnityAction<string> AfterServerChangeScene;
+        
+        /// <summary>
+        /// Событие происходящие на клиенте после того, как клиент изменил сцену.
+        /// </summary>
+        public event UnityAction AfterClientChangeScene;
         
         /// <summary>
         /// Событие происходящие перед остановкой сервера.
@@ -144,8 +155,23 @@ namespace NetworkCore.MirrorNetworking
             // Регистрируем спавнемые в сцене префабы
             this.RegisterPrefab(NetworkStore.Player.NetworkPlayer.gameObject);
             this.RegisterPrefab(NetworkStore.Player.DisplayName.gameObject);
+            
+            // Подключаем сетевые функции к внешним разработкам
+            NetworkEnvironment.NetworkProvider = NetworkStore.NetworkProvider;
         }
         
+        /// <summary>
+        ///<para><inheritdoc cref="NetworkManager.OnServerConnect"/></para>
+        /// 
+        /// <remarks>cобытие происходящее на сервере после подключения к нему нового клиента</remarks>
+        /// </summary>
+        /// <param name="conn">сведенья о подключенном игроке</param>
+        public override void OnServerConnect(NetworkConnectionToClient conn)
+        {
+            base.OnServerConnect(conn);
+            AfterNewClientConnectedToServer?.Invoke(conn);
+        }
+
         /// <summary>
         /// <para><inheritdoc cref="NetworkManager.OnStartServer"/></para>
         ///
@@ -211,9 +237,28 @@ namespace NetworkCore.MirrorNetworking
         public override void ServerChangeScene(string newSceneName)
         {
             BeforeServerChangeScene?.Invoke(newSceneName);
-            
             base.ServerChangeScene(newSceneName);
-            AfterServerChangeScene?.Invoke(newSceneName);
+        }
+
+        /// <summary>
+        /// <para><inheritdoc cref="NetworkManager.OnServerSceneChanged"/></para>
+        /// <remarks>метод, вызываемый на сервере после того как сервер перешел на новую сцену</remarks>
+        /// </summary>
+        /// <param name="sceneName">имя загруженной сцены</param>
+        public override void OnServerSceneChanged(string sceneName)
+        {
+            base.OnServerSceneChanged(sceneName);
+            AfterServerChangeScene?.Invoke(sceneName);
+        }
+
+        /// <summary>
+        /// <para><inheritdoc cref="NetworkManager.OnClientSceneChanged"/></para>
+        /// <remarks>метод, вызываемый на клиенте после того как клиент перешел на новую сцену</remarks>
+        /// </summary>
+        public override void OnClientSceneChanged()
+        {
+            base.OnClientSceneChanged();
+            AfterClientChangeScene?.Invoke();
         }
 
         /// <summary>

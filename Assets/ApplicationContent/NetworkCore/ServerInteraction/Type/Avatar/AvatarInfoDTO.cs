@@ -18,9 +18,9 @@
         public string displayName { get; set; }
         
         /// <summary>
-        /// Пол аватара.
+        /// Тип контроллера анимации.
         /// </summary>
-        public string gender { get; set; }
+        public string animationControllerType { get; set; }
 
         /// <summary>
         /// Путь до файла изображения аватара на сервере.

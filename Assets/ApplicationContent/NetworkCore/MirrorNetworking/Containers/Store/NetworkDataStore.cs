@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using NetworkCore.MirrorNetworking.Containers.ManagerSetups;
+using NetworkCore.MirrorNetworking.NetworkProvider;
 using NetworkCore.MirrorNetworking.Player.Base;
 using NetworkCore.MirrorNetworking.Types.HostMigration;
 using NetworkCore.ServerInteraction.API;
@@ -11,6 +12,10 @@ namespace NetworkCore.MirrorNetworking.Containers.Store
     /// </summary>
     public sealed class NetworkDataStore
     {
+        /// <summary>
+        /// Провайдер сетевых функций <see cref="MVNetworkManager"/> для внешних систем.
+        /// </summary>
+        public MVNetworkProvider NetworkProvider { get; } = new MVNetworkProvider();
 
         /// <summary>
         /// Хранилище данных об игроке.
@@ -55,6 +60,11 @@ namespace NetworkCore.MirrorNetworking.Containers.Store
         public SceneStore Scenes { get; } = new SceneStore();
 
         /// <summary>
+        /// Данные состояния текущей комнаты.
+        /// </summary>
+        public RoomState Room { get; } = new RoomState();
+        
+        /// <summary>
         /// <para>Конструктор.</para>
         /// </summary>
         /// <param name="setups"><see cref="NetworkManagerSetups"/></param>
@@ -65,11 +75,12 @@ namespace NetworkCore.MirrorNetworking.Containers.Store
             Player.DisplayName = setups.DisplayNamePrefab;
             Scenes.MenuSceneName = setups.MenuScene;
             Scenes.LoadingSceneName = setups.LoadingScene;
+            Avatars.AnimatorControllers = setups.AvatarAnimationControllers;
             foreach (var prefab in setups.DevicePrefabs)
             {
                 if (prefab.ForDevice == setups.Device)
                 {
-                    Player.CurrentBuildPlayerAvatar = prefab.Prefab;
+                    Player.CurrentBuildPlayer = prefab.Prefab;
                     break;
                 }
             }

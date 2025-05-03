@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7217513256523216297}
   - component: {fileID: 6613061905414051498}
   - component: {fileID: 6866928723777379703}
+  - component: {fileID: 6994585769547394302}
   - component: {fileID: 5117285622651888741}
   m_Layer: 0
   m_Name: BasePlayer
@@ -118,6 +119,23 @@ MonoBehaviour:
   rotationSensitivity: 0.01
   positionPrecision: 0.01
   scalePrecision: 0.01
+--- !u!114 &6994585769547394302
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4087220480987460542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e36ce225d594ea0b1bea5271cffaf2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  parameterListener: {fileID: 0}
+  _clientAuthority: 1
 --- !u!114 &5117285622651888741
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -82,9 +82,9 @@ namespace Global.AssetPackages
             AvatarInfo avatarInfo = new AvatarInfo();
             avatarInfo.Name = dto.name;
             avatarInfo.DisplayName = dto.displayName;
-            if (Enum.TryParse(dto.gender, out Gender avatarGender))
+            if (Enum.TryParse(dto.animationControllerType, out AnimationControllerType controllerType))
             {
-                avatarInfo.AvatarGender = avatarGender;
+                avatarInfo.AvatarAnimationControllerType = controllerType;
             }
             avatarInfo.Image = DataConverter.SpriteFromRowData(dto.imageData);
                     

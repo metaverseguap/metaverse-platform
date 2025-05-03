@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using AppAvatars.Containers;
 using MainMenu.Containers;
 using Unity.VisualScripting;
 
@@ -53,5 +54,10 @@ namespace NetworkCore.MirrorNetworking.Containers.Store
         /// Ключом служит имя файла
         /// </summary>
         public IDictionary<string, AvatarFile> AvatarFiles { get;} = new Dictionary<string, AvatarFile>();
+        
+        /// <summary>
+        /// Контроллеры анимации аватаров игрока.
+        /// </summary>
+        public List<AnimatorControllerInfo> AnimatorControllers { set; get; }
     }
 }

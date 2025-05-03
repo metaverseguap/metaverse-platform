@@ -18,10 +18,8 @@ namespace AppAvatars.Containers
         public Animator Prefab;
 
         /// <summary>
-        /// <para>Пол аватара.</para>
-        /// 
-        /// <remarks>в зависимости от пола будут проигрываться разные анимации</remarks>
+        /// <para>Тип контроллера анимации аватара.</para>
         /// </summary>
-        public Gender ForGender;
+        public AnimationControllerType AvatarAnimationControllerType;
     }
 }
