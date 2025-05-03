@@ -10,7 +10,8 @@ namespace NetworkCore.MirrorNetworking.Synchronization
     [RequireComponent(typeof(MVNetworkOwnedObject))]
     public sealed class MVNetworkInteractionAccess : NetworkBehaviour, IInteractionAccess
     {
-        [SyncVar] private bool hasControl = false;
+        [SyncVar]
+        private bool hasControl = false;
 
         private GameObject currentController = null;
 
@@ -21,12 +22,21 @@ namespace NetworkCore.MirrorNetworking.Synchronization
             ownership = GetComponent<MVNetworkOwnedObject>();
         }
 
+        /// <summary>
+        /// <inheritdoc cref="IInteractionAccess.IsInteractionAllowed"/>
+        /// </summary>
+        /// <returns><inheritdoc cref="IInteractionAccess.IsInteractionAllowed"/></returns>
         public bool IsInteractionAllowed()
         {
             return (ownership.ObjectHasNoOwner() || ownership.AmIOwner())
                    && !hasControl;
         }
 
+        /// <summary>
+        /// <inheritdoc cref="IInteractionAccess.HasInteractionControl"/>
+        /// </summary>
+        /// <param name="controller"><inheritdoc cref="IInteractionAccess.HasInteractionControl"/></param>
+        /// <returns><inheritdoc cref="IInteractionAccess.HasInteractionControl"/></returns>
         public bool HasInteractionControl(GameObject controller)
         {
             return ownership.AmILastOwner()
@@ -34,6 +44,10 @@ namespace NetworkCore.MirrorNetworking.Synchronization
                    && currentController != null && controller == currentController;
         }
 
+        /// <summary>
+        /// <inheritdoc cref="IInteractionAccess.AcquireControl"/>
+        /// </summary>
+        /// <param name="controllingObject"><inheritdoc cref="IInteractionAccess.AcquireControl"/></param>
         public void AcquireControl(GameObject controllingObject)
         {
             if (controllingObject == null)
@@ -47,6 +61,9 @@ namespace NetworkCore.MirrorNetworking.Synchronization
             CmdSetHasControl(true);
         }
 
+        /// <summary>
+        /// <inheritdoc cref="IInteractionAccess.ReleaseControl"/>
+        /// </summary>
         public void ReleaseControl()
         {
             ownership.CmdStopOwnership();

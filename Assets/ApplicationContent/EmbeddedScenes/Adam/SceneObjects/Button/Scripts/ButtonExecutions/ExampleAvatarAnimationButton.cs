@@ -14,11 +14,18 @@ namespace Adam.SceneObjects.Button.ButtonExecution
         [Tooltip("Анимация воспроизводимая игроком после нажатия на кнопку")] 
         [SerializeField] private List<AnimationClip> _playAnimations;
 
+        /// <summary>
+        /// <inheritdoc cref="IInteractable.Interact()"/>
+        /// </summary>
         public void Interact()
         {
             // Базовая интерактивность
         }
 
+        /// <summary>
+        /// <inheritdoc cref="IInteractable.Interact(GameObject)"/>
+        /// </summary>
+        /// <param name="owner"><inheritdoc cref="IInteractable.Interact(GameObject)"/></param>
         public void Interact(GameObject owner)
         {
             // Вызов базой интерактивности
@@ -27,7 +34,7 @@ namespace Adam.SceneObjects.Button.ButtonExecution
             // Интерактивность специфическая для вызывающего игрока
             if (owner.TryGetComponent(out Animator playerAnimator))
             {
-                StartCoroutine(AnimationUtils.PlayExternalAnimation(playerAnimator, AnimatorConstants.PLAYER_EXTERNAL_ANIMATION_CLIP, _playAnimations));
+                StartCoroutine(AnimationUtils.PlayExternalAnimation(playerAnimator, AnimationUtils.PLAYER_EXTERNAL_ANIMATION_CLIP, _playAnimations));
             }
             else
             {

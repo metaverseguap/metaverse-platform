@@ -3,7 +3,8 @@
 namespace NetworkCore.MirrorNetworking.Synchronization.Transforms
 {
     /// <summary>
-    /// <para>Компонент синхронизирующий положение объекта с сервером.</para>
+    /// <para>Компонент, синхронизирующий положение объекта с сервером.</para>
+    /// Данный компонент синхронизирует объекты без RigidBody
     /// </summary>
     public sealed class MVNetworkTransform : MVBaseNetworkTransform
     {
@@ -52,10 +53,13 @@ namespace NetworkCore.MirrorNetworking.Synchronization.Transforms
                 return;
             }
 
-            if (NeedTransformSync() && ownership.DoesObjectHaveAnotherOwner())
+            if (NeedTransformSync())
             {
-                _target.position = GetLerpServerPosition(_target.position);
-                _target.rotation = GetLerpServerRotation(_target.rotation);
+                if (ownership.DoesObjectHaveAnotherOwner())
+                {
+                    _target.position = GetLerpServerPosition(_target.position);
+                    _target.rotation = GetLerpServerRotation(_target.rotation);
+                }
             }
         }
 

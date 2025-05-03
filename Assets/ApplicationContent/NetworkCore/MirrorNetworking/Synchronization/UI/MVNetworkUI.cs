@@ -6,13 +6,14 @@ using UnityEngine;
 namespace NetworkCore.MirrorNetworking.Synchronization.UI
 {
     /// <summary>
-    /// <para>Компонент синхронизирующий ui текст с сервером.</para>
+    /// <para>Компонент, синхронизирующий ui текст с сервером.</para>
     /// </summary>
     public sealed class MVNetworkUI : NetworkBehaviour
     {
         [SerializeField] private List<TMP_Text> _texts;
 
-        [SyncVar] private string[] texts;
+        [SyncVar]
+        private string[] texts;
 
         /// <summary>
         /// Синхронизируемые тексты.

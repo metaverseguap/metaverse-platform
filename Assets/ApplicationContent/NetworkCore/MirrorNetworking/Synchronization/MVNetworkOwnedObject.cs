@@ -10,10 +10,13 @@ namespace NetworkCore.MirrorNetworking.Synchronization
     {
         [Header("Ownership")]
         [Tooltip("Время, на которое происходит передача владения объектом по запросу")]
+        [Min(0.02f)]
         [SerializeField] private float _ownershipTime = 0.2f;
 
-        [SyncVar] private bool hasOwner = false;
-        [SyncVar] private int ownerId;
+        [SyncVar]
+        private bool hasOwner = false;
+        [SyncVar]
+        private int ownerId;
 
         private float ownershipTimer = 0f;
         private int? myConnectionId = null;

@@ -5,7 +5,7 @@ using UnityEngine.Events;
 namespace NetworkCore.MirrorNetworking.Synchronization.Animations
 {
     /// <summary>
-    /// <para>Компонент отслеживающий состояние параметров аниматора.</para>
+    /// <para>Компонент, отслеживающий состояние параметров аниматора.</para>
     /// </summary>
     [RequireComponent(typeof(Animator))]
     public sealed class AnimatorParameterListener: MonoBehaviour
@@ -35,6 +35,20 @@ namespace NetworkCore.MirrorNetworking.Synchronization.Animations
 
         private void Update()
         {
+            UpdateAnimatorParameterValues();
+        }
+
+        private void InitValues()
+        {
+            parameterValues.Clear();
+            foreach (var param in animator.parameters)
+            {
+                parameterValues[param.name] = GetValue(param);
+            }
+        }
+
+        private void UpdateAnimatorParameterValues()
+        {
             foreach (var param in animator.parameters)
             {
                 string paramName = param.name;
@@ -45,15 +59,6 @@ namespace NetworkCore.MirrorNetworking.Synchronization.Animations
                     parameterValues[paramName] = currentValue;
                     OnParameterChanged?.Invoke(paramName, currentValue);
                 }
-            }
-        }
-
-        private void InitValues()
-        {
-            parameterValues.Clear();
-            foreach (var param in animator.parameters)
-            {
-                parameterValues[param.name] = GetValue(param);
             }
         }
 

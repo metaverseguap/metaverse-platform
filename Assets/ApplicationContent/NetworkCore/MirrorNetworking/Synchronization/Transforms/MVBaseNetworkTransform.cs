@@ -14,13 +14,17 @@ namespace NetworkCore.MirrorNetworking.Synchronization.Transforms
     {
         [Header("Base Transform Synchronization")]
         [Tooltip("Точность сравнения локальной позиции и позиции сервера")]
+        [Min(0.000001f)]
         [SerializeField] private float _positionThreshold = 0.001f;
 
         [Tooltip("Точность сравнения локального поворота и поворота сервера (в градусах)")]
+        [Min(0.0001f)]
         [SerializeField] private float _rotationThreshold = 0.1f;
 
-        [SyncVar] private Vector3 serverPosition;
-        [SyncVar] private Quaternion serverRotation;
+        [SyncVar]
+        private Vector3 serverPosition;
+        [SyncVar]
+        private Quaternion serverRotation;
 
         private Vector3 lastSentPosition;
         private Quaternion lastSentRotation;
@@ -68,6 +72,9 @@ namespace NetworkCore.MirrorNetworking.Synchronization.Transforms
             OnUpdate();
         }
 
+        /// <summary>
+        /// <para><c>Update</c> для использования в подклассах.</para>
+        /// </summary>
         protected virtual void OnUpdate()
         {
             // Ничего в базовом классе

@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace MV.SDK.Utils
+namespace LDR.SUAI_Metaverse.SDK.Utils
 {
     /// <summary>
     /// <para>Набор вспомогательных методов для работы со сценами.</para>

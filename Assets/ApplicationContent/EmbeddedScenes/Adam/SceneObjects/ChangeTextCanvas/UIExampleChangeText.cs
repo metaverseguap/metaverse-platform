@@ -33,11 +33,6 @@ namespace EmbeddedScenes.Adam.SceneObjects.ChangeTextCanvas
         /// <returns>true, если удалось получить контроль над объектом</returns>
         public bool AcquireAccess(GameObject owner)
         {
-            return IsInteractionAllowed(owner);
-        }
-
-        private bool IsInteractionAllowed(GameObject owner)
-        {
             if (!access.IsInteractionAllowed() && !access.HasInteractionControl(owner))
             {
                 return false;

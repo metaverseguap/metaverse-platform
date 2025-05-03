@@ -3,7 +3,7 @@
 namespace LDR.SUAI_Metaverse.SDK.Interactions
 {
     /// <summary>
-    /// <para>Интерфейс компонента проверяющего возможность взаимодействия с интерактивным объектом в данный момент.</para>
+    /// <para>Интерфейс компонента, проверяющего возможность взаимодействия с интерактивным объектом в данный момент.</para>
     /// </summary>
     public interface IInteractionAccess
     {

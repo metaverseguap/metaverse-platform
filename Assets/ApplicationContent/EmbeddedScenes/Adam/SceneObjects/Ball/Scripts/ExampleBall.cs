@@ -11,9 +11,10 @@ namespace Adam.SceneObjects.Ball
     public sealed class ExampleBall : MonoBehaviour
     {
         [Tooltip("Сила пинка по мячу")]
-        [SerializeField] private float bounceForce = 5f;
-        [SerializeField] private float detectionRadius = 0.6f; // радиус поиска игрока вокруг мяча
-        [SerializeField] private LayerMask playerLayer;
+        [SerializeField] private float _bounceForce = 0.5f;
+        [Tooltip("Радиус поиска игрока вокруг мяча")]
+        [SerializeField] private float _detectionRadius = 0.6f;
+        [SerializeField] private LayerMask _playerLayer;
 
         private Rigidbody targetBody;
 
@@ -24,7 +25,7 @@ namespace Adam.SceneObjects.Ball
 
         private void Update()
         {
-            Collider[] hits = Physics.OverlapSphere(transform.position, detectionRadius, playerLayer);
+            Collider[] hits = Physics.OverlapSphere(transform.position, _detectionRadius, _playerLayer);
             foreach (var hit in hits)
             {
                 AbstractPlayer player = hit.GetComponent<AbstractPlayer>();
@@ -32,7 +33,7 @@ namespace Adam.SceneObjects.Ball
                 {
                     Vector3 direction = (transform.position - hit.transform.position).normalized;
 
-                    targetBody.AddForce(direction * bounceForce, ForceMode.Impulse);
+                    targetBody.AddForce(direction * _bounceForce, ForceMode.Impulse);
                 }
             }
         }

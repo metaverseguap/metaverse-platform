@@ -4,7 +4,7 @@ using UnityEngine;
 namespace NetworkCore.MirrorNetworking.Synchronization.Animations
 {
     /// <summary>
-    /// <para>Компонент хранящий в себе все анимации, воспроизводимые в сети.</para>
+    /// <para>Компонент, хранящий в себе все анимации, воспроизводимые в сети.</para>
     /// </summary>
     public static class NetworkAnimationCache
     {

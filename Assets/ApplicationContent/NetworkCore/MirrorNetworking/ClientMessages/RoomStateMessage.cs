@@ -4,7 +4,7 @@ using Mirror;
 namespace NetworkCore.MirrorNetworking.ClientMessages
 {
     /// <summary>
-    /// <para>Сообщение передающее новому клиенту данные о миграции хоста.</para>
+    /// <para>Сообщение, передающее новому клиенту данные о миграции хоста.</para>
     /// </summary>
     public struct RoomStateMessage : NetworkMessage
     {
@@ -14,18 +14,18 @@ namespace NetworkCore.MirrorNetworking.ClientMessages
         public readonly bool Initialized;
 
         /// <summary>
-        /// Количество тиков прошедших с создания комнаты
+        /// Количество тиков прошедших с создания комнаты.
         /// </summary>
-        public readonly DateTime RoomStartTime;
+        public readonly long RoomStartTimeTicks;
 
         /// <summary>
         /// <para>Конструктор.</para>
         /// </summary>
         /// <param name="initialized">инициализировано ли состояние комнаты</param>
-        /// <param name="roomStartTime">количество тиков прошедших с создания комнаты</param>
-        public RoomStateMessage(bool initialized, DateTime roomStartTime)
+        /// <param name="roomStartTimeTicks">количество тиков прошедших с создания комнаты</param>
+        public RoomStateMessage(bool initialized, long roomStartTimeTicks)
         {
-            RoomStartTime = roomStartTime;
+            RoomStartTimeTicks = roomStartTimeTicks;
             Initialized = initialized;
         }
     }

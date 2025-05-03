@@ -5,7 +5,7 @@ using UnityEngine.Events;
 namespace Adam.SceneObjects.Button.ButtonActions
 {
     /// <summary>
-    /// <para>Компоненты вызывающий метод по нажатию на кнопку.</para>
+    /// <para>Компонент, вызывающий метод по нажатию на кнопку.</para>
     /// </summary>
     public sealed class OnClickExecutor : MonoBehaviour, IInteractable
     {
@@ -13,8 +13,14 @@ namespace Adam.SceneObjects.Button.ButtonActions
         [Tooltip("Разрешить взаимодействие через зажатие клавиши")]
         [SerializeField] private bool _holdInteraction;
 
+        /// <summary>
+        /// <inheritdoc cref="IInteractable.AllowHoldInteraction"/>
+        /// </summary>
         public bool AllowHoldInteraction => _holdInteraction;
-        
+
+        /// <summary>
+        /// <inheritdoc cref="IInteractable.Interact()"/>
+        /// </summary>
         public void Interact()
         {
             _onPressed?.Invoke();

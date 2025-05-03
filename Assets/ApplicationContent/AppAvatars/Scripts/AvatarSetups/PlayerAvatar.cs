@@ -36,7 +36,7 @@ namespace AppAvatars.AvatarSetups
         /// <summary>
         /// <para>Создает аватар игрока из выбранного аниматора префаба игрока.</para>
         /// </summary>
-        /// <param name="avatarPrefab">выбранный префаб игрока имеющий аниматор</param>
+        /// <param name="avatarPrefab">выбранный префаб игрока, имеющий аниматор</param>
         public void CreatePlayerFromAvatar(Animator avatarPrefab)
         {
             if (_autoCollectSetupsFromCurrentObject)

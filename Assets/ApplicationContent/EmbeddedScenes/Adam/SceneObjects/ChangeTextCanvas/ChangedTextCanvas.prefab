@@ -14,11 +14,11 @@ GameObject:
   - component: {fileID: 1359802680005333385}
   - component: {fileID: 731334393604451439}
   - component: {fileID: -2709665402213159392}
-  - component: {fileID: 8467685088761502155}
-  - component: {fileID: 3411460109593493091}
-  - component: {fileID: 8234024769896341605}
-  - component: {fileID: 1815066607060456213}
-  - component: {fileID: 4508750133703962788}
+  - component: {fileID: 6629527400920886094}
+  - component: {fileID: 8734315588880713800}
+  - component: {fileID: 3872617559622832389}
+  - component: {fileID: 5014702421519956922}
+  - component: {fileID: 5759058250624201334}
   m_Layer: 5
   m_Name: ChangedTextCanvas
   m_TagString: Untagged
@@ -139,7 +139,7 @@ MonoBehaviour:
   _physicObject: 0
   _canBeOwned: 1
   _canvas: 1
---- !u!114 &8467685088761502155
+--- !u!114 &6629527400920886094
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -151,7 +151,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d48dfe3bbbaf4ba9af5e5e40add28218, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &3411460109593493091
+--- !u!114 &8734315588880713800
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -168,7 +168,7 @@ MonoBehaviour:
   serverOnly: 0
   visibility: 0
   hasSpawned: 0
---- !u!114 &8234024769896341605
+--- !u!114 &3872617559622832389
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -184,7 +184,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _ownershipTime: 0.2
---- !u!114 &1815066607060456213
+--- !u!114 &5014702421519956922
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -199,7 +199,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
---- !u!114 &4508750133703962788
+--- !u!114 &5759058250624201334
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

@@ -11,6 +11,9 @@ namespace Adam.SceneObjects.Button.ButtonExecution
     {
         [SerializeField] private Animator _animator;
 
+        /// <summary>
+        /// <inheritdoc cref="IInteractable.Interact()"/>
+        /// </summary>
         public void Interact()
         {
             // Базовая интерактивность

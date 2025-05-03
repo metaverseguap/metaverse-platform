@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 namespace NetworkCore.MirrorNetworking.Synchronization.Animations
 {
     /// <summary>
-    /// <para>Компонент регистрирующий анимации внутри сцен.</para>
+    /// <para>Компонент, регистрирующий анимации внутри сцен.</para>
     /// </summary>
     public sealed class SceneAnimationRegistration : MonoBehaviour
     {
@@ -96,7 +96,10 @@ namespace NetworkCore.MirrorNetworking.Synchronization.Animations
             foreach (var animator in animators)
             {
                 var controller = animator.runtimeAnimatorController;
-                if (controller == null) continue;
+                if (controller == null)
+                {
+                    continue;
+                }
 
                 foreach (var clip in controller.animationClips)
                 {

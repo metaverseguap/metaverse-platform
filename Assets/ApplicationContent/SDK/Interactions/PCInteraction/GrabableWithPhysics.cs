@@ -8,9 +8,10 @@ namespace LDR.SUAI_Metaverse.SDK.Interactions.PCInteraction
     /// <summary>
     /// <para>Компонент прикрепляющий объект к камере игрока при взаимодействии.</para>
     ///
-    /// Данный компонент предназначен для объектов без RigidBody
+    /// Данный компонент прикрепляется к объекту с RigidBody
     /// </summary>
-    public sealed class GrabableTransform : MonoBehaviour, IInteractable
+    [RequireComponent(typeof(Rigidbody))]
+    public sealed class GrabableWithPhysics : MonoBehaviour, IInteractable
     {
         private const float RELEASE_DELAY = 0.5f;
 
@@ -33,24 +34,16 @@ namespace LDR.SUAI_Metaverse.SDK.Interactions.PCInteraction
 
         private IInteractionAccess access;
 
+        private Rigidbody targetBody;
         private bool isBeingDragged = false;
         private Transform ownerTransform;
+
         private float detachTimer = 0f;
-        private Vector3 targetPosition;
 
+        /// <summary>
+        /// <inheritdoc cref="IInteractable.AllowHoldInteraction"/>
+        /// </summary>
         public bool AllowHoldInteraction => _holdToGrab;
-
-        private void Awake()
-        {
-            if (TryGetComponent(out IInteractionAccess externalAccessComponent))
-            {
-                access = externalAccessComponent;
-            }
-            else
-            {
-                access = gameObject.AddComponent<DefaultInteractionAccess>();
-            }
-        }
 
         private void OnValidate()
         {
@@ -61,17 +54,33 @@ namespace LDR.SUAI_Metaverse.SDK.Interactions.PCInteraction
             }
         }
 
-        private void Update()
+        private void Awake()
+        {
+            targetBody = GetComponent<Rigidbody>();
+            targetBody.interpolation = RigidbodyInterpolation.Interpolate;
+
+            if (TryGetComponent(out IInteractionAccess externalAccessComponent))
+            {
+                access = externalAccessComponent;
+            }
+            else
+            {
+                access = gameObject.AddComponent<DefaultInteractionAccess>();
+            }
+        }
+
+        private void FixedUpdate()
         {
             if (isBeingDragged && ownerTransform != null)
             {
-                targetPosition = ownerTransform.position + ownerTransform.forward * _followDistance + _offset;
+                Vector3 targetPos = ownerTransform.position + ownerTransform.forward * _followDistance + _offset;
+                Vector3 newPos = Vector3.Lerp(targetBody.position, targetPos, Time.fixedDeltaTime * _moveSmoothness);
 
-                transform.position = Vector3.Lerp(transform.position, targetPosition, _moveSmoothness * Time.deltaTime);
+                targetBody.MovePosition(newPos);
 
                 if (_holdToGrab && _eyeContactGrab)
                 {
-                    detachTimer -= Time.deltaTime;
+                    detachTimer -= Time.fixedDeltaTime;
                     if (detachTimer <= 0f)
                     {
                         StopDragging();
@@ -80,11 +89,18 @@ namespace LDR.SUAI_Metaverse.SDK.Interactions.PCInteraction
             }
         }
 
+        /// <summary>
+        /// <inheritdoc cref="IInteractable.Interact()"/>
+        /// </summary>
         public void Interact()
         {
             // Ничего не делаем
         }
 
+        /// <summary>
+        /// <inheritdoc cref="IInteractable.Interact(GameObject)"/>
+        /// </summary>
+        /// <param name="owner"><inheritdoc cref="IInteractable.Interact(GameObject)"/></param>
         public void Interact(GameObject owner)
         {
             if (!IsInteractionAllowed(owner))
@@ -127,6 +143,9 @@ namespace LDR.SUAI_Metaverse.SDK.Interactions.PCInteraction
             return true;
         }
 
+        /// <summary>
+        /// <inheritdoc cref="IInteractable.StopInteraction"/>
+        /// </summary>
         public void StopInteraction()
         {
             if (_holdToGrab && !_eyeContactGrab)
@@ -145,23 +164,34 @@ namespace LDR.SUAI_Metaverse.SDK.Interactions.PCInteraction
                 Camera playerCamera = playerMainObject.GetComponentInChildren<Camera>();
                 this.ownerTransform = playerCamera.transform;
             }
+
+            // Отключаем влияние внешних сил во время перетаскивания
+            targetBody.useGravity = false;
+            targetBody.drag = 10f;
         }
 
         private void StopDragging()
         {
             isBeingDragged = false;
             ownerTransform = null;
+
+            // Включаем физику обратно
+            targetBody.useGravity = true;
+            targetBody.drag = 0f;
+
+            detachTimer = 0f;
+
             access.ReleaseControl();
         }
 
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
-            if (targetPosition != null)
+            if (targetBody != null)
             {
                 Gizmos.color = Color.magenta;
-                Gizmos.DrawSphere(targetPosition, 0.1f);
-                Handles.Label(targetPosition + Vector3.up * 0.3f, $"Local_{gameObject.name}");
+                Gizmos.DrawSphere(targetBody.position, 0.2f);
+                Handles.Label(targetBody.position + Vector3.up * 0.3f, $"Local_{gameObject.name}");
             }
         }
 #endif

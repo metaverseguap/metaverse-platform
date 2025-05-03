@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Player.EmbeddedPlayers.PC
 {
     /// <summary>
-    /// <para>Компонент отвечающий за взаимодействие игрока с интерактивными объектами при помощи клавиатуры и мышки.</para>
+    /// <para>Компонент, отвечающий за взаимодействие игрока с интерактивными объектами при помощи клавиатуры и мышки.</para>
     /// </summary>
     public sealed class InteractorPC : MonoBehaviour
     {
@@ -18,12 +18,11 @@ namespace Player.EmbeddedPlayers.PC
 
         [Header("Setups")]
         [Tooltip("Точка из которой буде запущен луч взаимодействия по оси Z")]
-        [SerializeField] private Transform _direction;
+        [SerializeField] private Transform _interactionRayStartPoint;
 
         [Tooltip("Максимальное расстояние, на котором будет работать взаимодействие с объектом")]
         [Range(0.1f, 10f)]
-        [SerializeField]
-        private float _range = 1f;
+        [SerializeField] private float _range = 1f;
 
         private ISet<ITooltip> lastTooltip = new HashSet<ITooltip>();
         private GameObject lastTooltipObject = null;
@@ -43,7 +42,7 @@ namespace Player.EmbeddedPlayers.PC
 
         private void CastInteractRay()
         {
-            Ray ray = new Ray(_direction.position, _direction.forward);
+            Ray ray = new Ray(_interactionRayStartPoint.position, _interactionRayStartPoint.forward);
 
             bool hasHit = Physics.Raycast(ray, out RaycastHit hitInfo, _range);
 

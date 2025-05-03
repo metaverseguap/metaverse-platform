@@ -78,7 +78,7 @@ namespace NetworkCore.MirrorNetworking
         public event UnityAction<string> AfterServerChangeScene;
         
         /// <summary>
-        /// Событие происходящие после того, как клиент изменил сцену.
+        /// Событие происходящие на клиенте после того, как клиент изменил сцену.
         /// </summary>
         public event UnityAction AfterClientChangeScene;
         
@@ -242,7 +242,7 @@ namespace NetworkCore.MirrorNetworking
 
         /// <summary>
         /// <para><inheritdoc cref="NetworkManager.OnServerSceneChanged"/></para>
-        /// <remarks>метод, вызываемый после того как сервер перешел на новую сцену</remarks>
+        /// <remarks>метод, вызываемый на сервере после того как сервер перешел на новую сцену</remarks>
         /// </summary>
         /// <param name="sceneName">имя загруженной сцены</param>
         public override void OnServerSceneChanged(string sceneName)
@@ -253,7 +253,7 @@ namespace NetworkCore.MirrorNetworking
 
         /// <summary>
         /// <para><inheritdoc cref="NetworkManager.OnClientSceneChanged"/></para>
-        /// <remarks>метод, вызываемый после того как клиент перешел на новую сцену</remarks>
+        /// <remarks>метод, вызываемый на клиенте после того как клиент перешел на новую сцену</remarks>
         /// </summary>
         public override void OnClientSceneChanged()
         {

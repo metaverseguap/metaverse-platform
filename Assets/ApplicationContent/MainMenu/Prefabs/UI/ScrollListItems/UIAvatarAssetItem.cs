@@ -26,7 +26,7 @@ namespace MainMenu.UI.ScrollListItems
         public TMP_InputField DisplayName => _displayName;
 
         /// <summary>
-        /// Пол аватара.
+        /// Тип контроллера анимации.
         /// </summary>
         public TMP_Dropdown AvatarAnimationControllerType => _animationControllerType;
 

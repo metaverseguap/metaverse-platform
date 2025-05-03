@@ -6,7 +6,7 @@ using UnityEngine.UI;
 namespace Adam.Tablet
 {
     /// <summary>
-    /// <para>Компонент получающий имя текущего игрока.</para>
+    /// <para>Компонент, получающий имя текущего игрока.</para>
     /// <remarks>скрипт является примером использования механики и не предназначен для использования в готовом проекте</remarks>
     /// </summary>
     public sealed class UIExamplePlayerNameSender : MonoBehaviour
@@ -14,12 +14,12 @@ namespace Adam.Tablet
         [SerializeField] private UIExampleChangeText _standWithText;
         [SerializeField] private Button _releaseAccessButton;
         [SerializeField] private Button _changeTextButton;
-        [Header("Debug")]
-        [SerializeField] private string _playerName;
+
+        private string playerName;
 
         private void Start()
         {
-            _playerName = NetworkEnvironment.GetUsername();
+            playerName = NetworkEnvironment.GetUsername();
         }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace Adam.Tablet
         /// </summary>
         public void SetPlayerNameToStand()
         {
-            _standWithText.ChangeText(gameObject, _playerName);
+            _standWithText.ChangeText(gameObject, playerName);
         }
     }
 }

@@ -98,7 +98,7 @@ namespace NetworkCore.MirrorNetworking.Player.Spawn
 
         private void SetRoomState(RoomStateMessage message)
         {
-            networkStore.Room.RoomStartTime = message.RoomStartTime;
+            networkStore.Room.RoomStartTime = new DateTime(message.RoomStartTimeTicks, DateTimeKind.Utc);
             networkStore.Room.Initialized = message.Initialized;
             networkStore.NetworkProvider.NotifyRoomConnection();
         }
@@ -106,7 +106,7 @@ namespace NetworkCore.MirrorNetworking.Player.Spawn
         private void OnNewClientConnectedToServer(NetworkConnectionToClient conn)
         {
             // Отправляем текущее состояние комнаты хоста подключившемуся клиенту
-            var roomStateMessage = new RoomStateMessage(networkStore.Room.Initialized, networkStore.Room.RoomStartTime);
+            var roomStateMessage = new RoomStateMessage(networkStore.Room.Initialized, networkStore.Room.RoomStartTime.Ticks);
             conn.Send(roomStateMessage);
         }
         

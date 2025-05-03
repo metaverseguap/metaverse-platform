@@ -9,7 +9,7 @@ using UnityEngine;
 namespace NetworkCore.MirrorNetworking.Synchronization.Animations
 {
     /// <summary>
-    /// <para>Компонент синхронизирующий анимацию с сервером.</para>
+    /// <para>Компонент, синхронизирующий анимацию с сервером.</para>
     /// </summary>
     public sealed class MVNetworkAnimator : NetworkBehaviour
     {

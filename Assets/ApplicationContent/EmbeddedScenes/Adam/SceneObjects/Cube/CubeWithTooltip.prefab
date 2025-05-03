@@ -14,10 +14,10 @@ GameObject:
   - component: {fileID: 3400849189935462107}
   - component: {fileID: 6164637122758147006}
   - component: {fileID: 4850381783757757625}
-  - component: {fileID: 8075959466969114851}
-  - component: {fileID: 110343479818757306}
-  - component: {fileID: 111879759810771054}
-  - component: {fileID: 4358470139093566270}
+  - component: {fileID: 1485851847876812958}
+  - component: {fileID: 5904702669870355975}
+  - component: {fileID: 6333014381571679156}
+  - component: {fileID: 7428288396862012027}
   m_Layer: 0
   m_Name: CubeWithTooltip
   m_TagString: Untagged
@@ -137,7 +137,7 @@ MonoBehaviour:
   _physicObject: 0
   _canBeOwned: 0
   _canvas: 0
---- !u!114 &8075959466969114851
+--- !u!114 &1485851847876812958
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -149,7 +149,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d48dfe3bbbaf4ba9af5e5e40add28218, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &110343479818757306
+--- !u!114 &5904702669870355975
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -166,7 +166,7 @@ MonoBehaviour:
   serverOnly: 0
   visibility: 0
   hasSpawned: 0
---- !u!114 &111879759810771054
+--- !u!114 &6333014381571679156
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -182,7 +182,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _ownershipTime: 0.2
---- !u!114 &4358470139093566270
+--- !u!114 &7428288396862012027
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

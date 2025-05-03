@@ -11,12 +11,52 @@ namespace LDR.SUAI_Metaverse.SDK.Animations
     public static class AnimationUtils
     {
         /// <summary>
-        /// Событие для начала синхронизации анимаций.
+        /// Константа названия клипа внешней анимации в аниматоре игрока.
+        /// </summary>
+        public const string PLAYER_EXTERNAL_ANIMATION_CLIP = "ExternalAnimationPlaceholder";
+
+        /// <summary>
+        /// Константа названия флага отвечающего за воспроизведение внешней анимации в аниматоре игрока.
+        /// </summary>
+        public const string PLAYER_EXTERNAL_ANIMATION_FLAG = "isExternalAnimation";
+        
+        /// <summary>
+        /// <para>Событие для начала синхронизации внешней анимаций.</para>
+        /// Входными параметрами события являются:
+        /// <list type="bullet|number|table">
+        ///     <listheader>
+        ///         <term>Тип</term>
+        ///         <description>Значение</description>
+        ///     </listheader>
+        ///     <item>
+        ///         <term>Animator</term>
+        ///         <description>аниматор, который будет воспроизводить анимации</description>
+        ///     </item>
+        ///     <item>
+        ///         <term>string</term>
+        ///         <description>имя состояния заглушки внешних анимации. Оно должно совпадать с именем клипа, который находится в этом состоянии</description>
+        ///     </item>
+        ///     <item>
+        ///         <term>List of AnimationClip</term>
+        ///         <description>цепочка воспроизводимых анимаций</description>
+        ///     </item>
+        /// </list>
         /// </summary>
         public static UnityEvent<Animator, string, List<AnimationClip>> OnExternalAnimationStarted = new UnityEvent<Animator, string, List<AnimationClip>>();
 
         /// <summary>
-        /// Событие для окончания синхронизации анимаций.
+        /// <para>Событие для окончания синхронизации внешней анимаций.</para>
+        /// Входными параметрами события являются:
+        /// <list type="bullet|number|table">
+        ///     <listheader>
+        ///         <term>Тип</term>
+        ///         <description>Значение</description>
+        ///     </listheader>
+        ///     <item>
+        ///         <term>Animator</term>
+        ///         <description>аниматор, который воспроизводит анимации</description>
+        ///     </item>
+        /// </list>
         /// </summary>
         public static UnityEvent<Animator> OnExternalAnimationEnded = new UnityEvent<Animator>();
 
@@ -29,7 +69,7 @@ namespace LDR.SUAI_Metaverse.SDK.Animations
         /// </para>
         /// <para>
         /// Метод вызывается через корутину <c>StartCoroutine(AnimationUtils.PlayExternalAnimation(animator, externalAnimationPlaceholderName, clip));</c>.
-        /// Если нужно дождаться завершения всех анимаций, то воспользуйтесь <c>yield return AnimationUtils.PlayExternalAnimation(animator, externalAnimationPlaceholderName, clipsChain);</c>
+        /// Если нужно дождаться завершения анимации, то воспользуйтесь <c>yield return AnimationUtils.PlayExternalAnimation(animator, externalAnimationPlaceholderName, clipsChain);</c>
         /// внутри другой корутины
         /// </para>
         /// </summary>

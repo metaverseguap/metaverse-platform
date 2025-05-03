@@ -26,7 +26,7 @@ namespace LDR.SUAI_Metaverse.SDK.NetworkSync
         [SerializeField] private bool _canvas;
 
         /// <summary>
-        /// Добавлять ли на объект NetworkIdentity.
+        /// Добавлять ли на объект сетевую идентификацию.
         /// </summary>
         public bool SyncObject => _syncObject;
 

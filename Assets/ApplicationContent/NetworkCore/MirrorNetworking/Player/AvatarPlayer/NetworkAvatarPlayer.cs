@@ -75,6 +75,7 @@ namespace NetworkCore.MirrorNetworking.Player.AvatarPlayer
             AnimatorParameterListener parameterListener = spawnedAvatar.gameObject.AddComponent<AnimatorParameterListener>();
             MVNetworkAnimator animatorSync = GetComponent<MVNetworkAnimator>();
             animatorSync.ParameterListener = parameterListener;
+            animatorSync.ClientAuthority = true;
 
             NetworkPlayerDisplayName displayNameObject = Instantiate(networkStore.Player.DisplayName, player.transform, false);
             displayNameObject.NetworkPlayer = this;

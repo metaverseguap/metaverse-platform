@@ -73,7 +73,7 @@ public static class NetworkPrefabProcessor
         GameObject instance = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
         bool updated = false;
 
-        updated = SyncIdentity(prefab, networkObject, instance);
+        updated = SyncIdentity(networkObject, path, instance);
 
         updated = SyncAnimation(networkObject, path, instance) || updated;
 
@@ -96,21 +96,21 @@ public static class NetworkPrefabProcessor
         return updated;
     }
 
-    private static bool SyncIdentity(GameObject prefab, NetworkObject networkObject, GameObject instance)
+    private static bool SyncIdentity(NetworkObject networkObject, string path, GameObject instance)
     {
         bool updated = false;
         if (networkObject.SyncObject)
         {
             if (instance.GetComponent<OfflineModeObject>() == null)
             {
-                Debug.Log($"Add OfflineModeObject to {prefab}");
+                Debug.Log($"Add OfflineModeObject to {path}");
                 instance.AddComponent<OfflineModeObject>();
                 updated = true;
             }
 
             if (instance.GetComponent<NetworkIdentity>() == null)
             {
-                Debug.Log($"Add NetworkIdentity to {prefab}");
+                Debug.Log($"Add NetworkIdentity to {path}");
                 instance.AddComponent<NetworkIdentity>();
                 updated = true;
             }
@@ -152,7 +152,11 @@ public static class NetworkPrefabProcessor
 
             Debug.Log($"Add MVNetworkTransform to {path}");
             MVNetworkTransform networkTransform = instance.AddComponent<MVNetworkTransform>();
+            networkTransform.enabled = false;
+            
             networkTransform.Target = networkObject.transform;
+            
+            networkTransform.enabled = true;
             
             updated = true;
         }
@@ -172,7 +176,11 @@ public static class NetworkPrefabProcessor
 
             Debug.Log($"Add MVNetworkRigidBody to {path}");
             MVNetworkRigidBody networkRigidbody = instance.AddComponent<MVNetworkRigidBody>();
+            networkRigidbody.enabled = false;
+            
             networkRigidbody.Target = networkObject.GetComponent<Rigidbody>();
+            
+            networkRigidbody.enabled = true;
 
             updated = true;
         }
@@ -202,6 +210,8 @@ public static class NetworkPrefabProcessor
         {
             Debug.Log($"Add MVNetworkUI to {prefab}");
             MVNetworkUI networkUI = instance.AddComponent<MVNetworkUI>();
+            networkUI.enabled = false;
+            
             Canvas uiParent = networkUI.gameObject.GetComponent<Canvas>();
 
             List<Component> components = new List<Component>();
@@ -222,6 +232,8 @@ public static class NetworkPrefabProcessor
 
                 networkUI.Texts = texts;
             }
+            
+            networkUI.enabled = true;
 
             updated = true;
         }

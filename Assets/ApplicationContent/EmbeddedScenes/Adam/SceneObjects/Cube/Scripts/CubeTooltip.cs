@@ -12,22 +12,22 @@ namespace EmbeddedScenes.Adam.SceneObjects.Cube
         [SerializeField] private TMP_Text _tooltipText;
         [SerializeField] private GameObject _tooltipCube;
         
+        /// <summary>
+        /// <inheritdoc cref="ITooltip.ShowTooltip"/>
+        /// </summary>
         public void ShowTooltip()
         {
-            _tooltipText.gameObject.SetActive(true);
-            if (_tooltipCube != null)
-            {
-                _tooltipCube.gameObject.SetActive(true);
-            }
+            _tooltipText?.gameObject.SetActive(true);
+            _tooltipCube?.gameObject.SetActive(true);
         }
 
+        /// <summary>
+        /// <inheritdoc cref="ITooltip.HideTooltip"/>
+        /// </summary>
         public void HideTooltip()
         {
-            _tooltipText.gameObject.SetActive(false);
-            if (_tooltipCube != null)
-            {
-                _tooltipCube.gameObject.SetActive(false);
-            }
+            _tooltipText?.gameObject.SetActive(false);
+            _tooltipCube?.gameObject.SetActive(false);
         }
     }
 }

@@ -3,7 +3,7 @@
 namespace LDR.SUAI_Metaverse.SDK.NetworkSync.Support
 {
     /// <summary>
-    /// <para>Интерфейс объекта предоставляющего доступ к сетевым функциям.</para>
+    /// <para>Интерфейс объекта, предоставляющего доступ к сетевым функциям.</para>
     /// </summary>
     public interface INetworkEnvironmentProvider
     {

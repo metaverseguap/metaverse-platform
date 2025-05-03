@@ -12,17 +12,30 @@ namespace LDR.SUAI_Metaverse.SDK.Interactions
         private bool hasControl = false;
         private GameObject currentController = null;
 
+        /// <summary>
+        /// <inheritdoc cref="IInteractionAccess.IsInteractionAllowed"/>
+        /// </summary>
+        /// <returns><inheritdoc cref="IInteractionAccess.IsInteractionAllowed"/></returns>
         public bool IsInteractionAllowed()
         {
             return _allowInteraction && !hasControl;
         }
 
+        /// <summary>
+        /// <inheritdoc cref="IInteractionAccess.HasInteractionControl"/>
+        /// </summary>
+        /// <param name="controller"><inheritdoc cref="IInteractionAccess.HasInteractionControl"/></param>
+        /// <returns><inheritdoc cref="IInteractionAccess.HasInteractionControl"/></returns>
         public bool HasInteractionControl(GameObject controller)
         {
             return hasControl
                    && currentController != null && controller == currentController;
         }
 
+        /// <summary>
+        /// <inheritdoc cref="IInteractionAccess.AcquireControl"/>
+        /// </summary>
+        /// <param name="controllingObject"><inheritdoc cref="IInteractionAccess.AcquireControl"/></param>
         public void AcquireControl(GameObject controllingObject)
         {
             if (controllingObject == null)
@@ -34,6 +47,9 @@ namespace LDR.SUAI_Metaverse.SDK.Interactions
             hasControl = true;
         }
 
+        /// <summary>
+        /// <inheritdoc cref="IInteractionAccess.ReleaseControl"/>
+        /// </summary>
         public void ReleaseControl()
         {
             currentController = null;

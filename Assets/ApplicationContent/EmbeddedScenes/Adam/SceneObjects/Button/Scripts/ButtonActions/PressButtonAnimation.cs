@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Adam.SceneObjects.Button.ButtonActions
 {
     /// <summary>
-    /// <para>Анимация кнопки при взаимодействии с кнопкой</para>
+    /// <para>Анимация кнопки при взаимодействии с ней.</para>
     /// </summary>
     public sealed class PressButtonAnimation : MonoBehaviour, IInteractable
     {
@@ -17,10 +17,16 @@ namespace Adam.SceneObjects.Button.ButtonActions
         [Tooltip("Зажимать кнопку при зажатии взаимодействия")]
         [SerializeField] private bool _holdAnimation;
         
-        private Coroutine _releaseCoroutine;
+        private Coroutine releaseCoroutine;
         
+        /// <summary>
+        /// <inheritdoc cref="IInteractable.AllowHoldInteraction"/>
+        /// </summary>
         public bool AllowHoldInteraction => _holdAnimation;
 
+        /// <summary>
+        /// <inheritdoc cref="IInteractable.Interact()"/>
+        /// </summary>
         public void Interact()
         {
             // Базовая интерактивность
@@ -30,12 +36,12 @@ namespace Adam.SceneObjects.Button.ButtonActions
             {
                 _buttonAnimator.SetBool(HOLD_IT_PRESSED, true);
                 
-                if (_releaseCoroutine != null)
+                if (releaseCoroutine != null)
                 {
-                    StopCoroutine(_releaseCoroutine);
+                    StopCoroutine(releaseCoroutine);
                 }
                 
-                _releaseCoroutine = StartCoroutine(ReleaseHoldAfterDelay());
+                releaseCoroutine = StartCoroutine(ReleaseHoldAfterDelay());
             }
         }
 
@@ -44,7 +50,7 @@ namespace Adam.SceneObjects.Button.ButtonActions
             yield return new WaitForSeconds(RELEASE_DELAY);
 
             _buttonAnimator.SetBool(HOLD_IT_PRESSED, false);
-            _releaseCoroutine = null;
+            releaseCoroutine = null;
         }
     }
 }

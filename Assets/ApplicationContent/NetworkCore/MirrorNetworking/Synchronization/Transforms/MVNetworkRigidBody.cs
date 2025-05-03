@@ -3,7 +3,7 @@
 namespace NetworkCore.MirrorNetworking.Synchronization.Transforms
 {
     /// <summary>
-    /// <para>Компонент синхронизирующий положение объекта с сервером.</para>
+    /// <para>Компонент, синхронизирующий положение объекта с сервером.</para>
     /// Данный компонент синхронизирует объекты имеющие RigidBody
     /// </summary>
     [RequireComponent(typeof(Rigidbody))]
@@ -15,7 +15,7 @@ namespace NetworkCore.MirrorNetworking.Synchronization.Transforms
         private bool initialIsKinematic;
 
         /// <summary>
-        /// Синхронизируемый transform.
+        /// Синхронизируемый Rigidbody.
         /// </summary>
         public Rigidbody Target
         {

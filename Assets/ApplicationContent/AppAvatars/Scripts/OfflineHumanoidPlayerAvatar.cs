@@ -6,7 +6,7 @@ using UnityEngine;
 namespace AppAvatars
 {
     /// <summary>
-    /// <para>Компонент устанавливающий аватар игрока через инспектор Unity.</para>
+    /// <para>Компонент, устанавливающий аватар игрока через инспектор Unity.</para>
     ///
     /// <remarks>данный компонент нужен для офлайн дебага</remarks>
     /// </summary>
