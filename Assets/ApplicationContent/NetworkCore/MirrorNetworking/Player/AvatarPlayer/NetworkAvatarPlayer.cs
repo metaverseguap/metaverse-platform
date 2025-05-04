@@ -1,3 +1,4 @@
+using AppAvatars.AvatarSetups;
 using Global.Logger;
 using MainMenu.Containers;
 using Mirror;
@@ -53,10 +54,30 @@ namespace NetworkCore.MirrorNetworking.Player.AvatarPlayer
             NetworkDataStore networkStore = MVNetworkManager.singleton.NetworkStore;
             AvatarStore avatarStore = networkStore.Avatars;
             AvatarFile avatar = avatarStore.AvatarFiles[avatarName];
+            Animator prefab = avatar.Model.GetComponent<Animator>();
 
             AbstractPlayer player = Instantiate(networkStore.Player.CurrentBuildPlayer, transform, false);
+            PlayerAvatar avatarComponent = player.AvatarComponent;
 
-            Animator prefab = avatar.Model.GetComponent<Animator>();
+            AddAnimatorControllerToPrefab(avatar, avatarStore, ref prefab);
+
+            avatarComponent.CreatePlayerFromAvatar(prefab);
+
+            SetPlayerTransformSync(ref player);
+
+            SetAvatarVisibility(ref avatarComponent);
+
+            Animator spawnedAvatar = avatarComponent.SpawnedAvatar;
+
+            SetAvatarAnimationSync(ref spawnedAvatar);
+
+            SpawnNetworkDisplayName(networkStore, player);
+
+            PlayerController = player.PlayerController;
+        }
+
+        private static void AddAnimatorControllerToPrefab(AvatarFile avatar, AvatarStore avatarStore, ref Animator prefab)
+        {
             foreach (var controller in avatarStore.AnimatorControllers)
             {
                 if (controller.AnimationControllerType == avatar.AvatarAnimationControllerType)
@@ -65,22 +86,39 @@ namespace NetworkCore.MirrorNetworking.Player.AvatarPlayer
                     break;
                 }
             }
-     
-            player.AvatarComponent.CreatePlayerFromAvatar(prefab);
+        }
 
+        private void SetPlayerTransformSync(ref AbstractPlayer player)
+        {
             NetworkTransformReliable transformSync = GetComponent<NetworkTransformReliable>();
             transformSync.target = player.transform;
-            
-            Animator spawnedAvatar = player.AvatarComponent.SpawnedAvatar;
-            AnimatorParameterListener parameterListener = spawnedAvatar.gameObject.AddComponent<AnimatorParameterListener>();
+        }
+
+        private void SetAvatarVisibility(ref PlayerAvatar avatarComponent)
+        {
+            bool isCurrentPlayerAvatar = isClient && isLocalPlayer;
+            if (isCurrentPlayerAvatar)
+            {
+                avatarComponent.SetAvatarVisibility(false);
+            }
+            else
+            {
+                avatarComponent.SetAvatarVisibility(true);
+            }
+        }
+
+        private void SetAvatarAnimationSync(ref Animator spawnedAvatar)
+        {
+            AnimatorParameterListener parameterListener =gameObject.AddComponent<AnimatorParameterListener>();
             MVNetworkAnimator animatorSync = GetComponent<MVNetworkAnimator>();
             animatorSync.ParameterListener = parameterListener;
             animatorSync.ClientAuthority = true;
+        }
 
+        private void SpawnNetworkDisplayName(NetworkDataStore networkStore, AbstractPlayer player)
+        {
             NetworkPlayerDisplayName displayNameObject = Instantiate(networkStore.Player.DisplayName, player.transform, false);
             displayNameObject.NetworkPlayer = this;
-
-            PlayerController = player.PlayerController;
         }
     }
 }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Global.Logger;
 using UnityEngine;
 
 namespace AppAvatars.AvatarSetups
@@ -98,6 +99,36 @@ namespace AppAvatars.AvatarSetups
             }
         }
 
+        /// <summary>
+        /// <para>Установить видимость аватара для главной камеры.</para>
+        /// </summary>
+        /// <param name="isVisible">true, если главная камера должна видеть данный аватар</param>
+        public void SetAvatarVisibility(bool isVisible)
+        {
+            if (!isPlayerSpawned)
+            {
+                AppLogger.Error($"Player avatar is not spawned yet.");
+                return;
+            }
+            
+            int layer = LayerMask.NameToLayer("Avatar");
+            if (!isVisible)
+            {
+                layer = LayerMask.NameToLayer("Not rendered");
+            }
+            
+            SetLayerRecursively(spawnedAvatar.gameObject, layer);
+        }
+        
+        private void SetLayerRecursively(GameObject obj, int layer)
+        {
+            obj.layer = layer;
+            foreach (Transform child in obj.transform)
+            {
+                SetLayerRecursively(child.gameObject, layer);
+            }
+        }
+        
         /// <summary>
         /// <para>Уничтожить аватар игрока.</para>
         /// </summary>
