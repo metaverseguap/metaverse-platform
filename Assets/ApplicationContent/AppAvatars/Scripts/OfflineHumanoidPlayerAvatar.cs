@@ -1,3 +1,4 @@
+using AppAvatars.AvatarSetups;
 using Global.Logger;
 using NetworkCore.MirrorNetworking;
 using Player.EmbeddedPlayers;
@@ -34,7 +35,11 @@ namespace AppAvatars
                 
                 _playerAvatar.runtimeAnimatorController = _animatorController;
 
-                player.AvatarComponent.CreatePlayerFromAvatar(_playerAvatar);
+                PlayerAvatar avatarComponent = player.AvatarComponent;
+
+                avatarComponent.CreatePlayerFromAvatar(_playerAvatar);
+
+                avatarComponent.SetAvatarVisibility(false);
             }
         }
     }
