@@ -109,7 +109,7 @@ namespace NetworkCore.MirrorNetworking.Player.AvatarPlayer
 
         private void SetAvatarAnimationSync(ref Animator spawnedAvatar)
         {
-            AnimatorParameterListener parameterListener =gameObject.AddComponent<AnimatorParameterListener>();
+            AnimatorParameterListener parameterListener = spawnedAvatar.gameObject.AddComponent<AnimatorParameterListener>();
             MVNetworkAnimator animatorSync = GetComponent<MVNetworkAnimator>();
             animatorSync.ParameterListener = parameterListener;
             animatorSync.ClientAuthority = true;
