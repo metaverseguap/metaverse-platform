@@ -16,7 +16,7 @@ namespace AppAvatars.Containers
         public AnimatorOverrideController Controller;
 
         /// <summary>
-        /// Пол анимациями которого управляет данный контроллер.
+        /// Тип анимации, которой управляет данный контроллер.
         /// </summary>
         public AnimationControllerType AnimationControllerType;
     }

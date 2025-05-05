@@ -4,6 +4,7 @@ using System.Linq;
 using Global.Logger;
 using LDR.SUAI_Metaverse.SDK.Animations;
 using Mirror;
+using NetworkCore.MirrorNetworking.Containers.Store;
 using UnityEngine;
 
 namespace NetworkCore.MirrorNetworking.Synchronization.Animations
@@ -11,6 +12,7 @@ namespace NetworkCore.MirrorNetworking.Synchronization.Animations
     /// <summary>
     /// <para>Компонент, синхронизирующий анимацию с сервером.</para>
     /// </summary>
+    [DisallowMultipleComponent]
     public sealed class MVNetworkAnimator : NetworkBehaviour
     {
         [SerializeField] private AnimatorParameterListener parameterListener;
@@ -23,6 +25,9 @@ namespace NetworkCore.MirrorNetworking.Synchronization.Animations
         private bool animatingNow = false;
         [SyncVar]
         private bool clientAuthority = false;
+        
+        private Dictionary<string, object> currentVariables = new Dictionary<string, object>();
+        private Tuple<string, List<string>> externalAnimationsIds;
 
         /// <summary>
         /// <see cref="AnimatorParameterListener"/>
@@ -52,6 +57,18 @@ namespace NetworkCore.MirrorNetworking.Synchronization.Animations
             }
         }
 
+        /// <summary>
+        /// Текущие значения переменных аниматора.
+        /// </summary>
+        public Dictionary<string, object> CurrentVariables => currentVariables;
+
+        /// <summary>
+        /// <para>Id внешних анимаций, воспроизводимых в данный момент.</para>
+        /// Ключом является имя плейсхолдера внешних анимаций.
+        /// Значением является список id внешних анимаций, воспроизводимых в данный момент
+        /// </summary>
+        public Tuple<string, List<string>> ExternalAnimationsIds => externalAnimationsIds;
+
         private void Start()
         {
             if (parameterListener != null)
@@ -64,6 +81,31 @@ namespace NetworkCore.MirrorNetworking.Synchronization.Animations
 
             AnimationUtils.OnExternalAnimationStarted.AddListener(PlayExternalAnimation);
             AnimationUtils.OnExternalAnimationEnded.AddListener(EndAnimation);
+
+            if (isServer)
+            {
+                NetworkDataStore store = MVNetworkManager.singleton.NetworkStore;
+                CacheStore caches = store.HostMigration.Caches;
+                if (caches.CurrentSceneCache.SyncAnimationVariableCache.TryGetValue(netIdentity.sceneId, out var cachedVariables))
+                {
+                    foreach (var variable in cachedVariables)
+                    {
+                        SetParameterValue(variable.Key, variable.Value);
+                    }
+                }
+
+                if (caches.CurrentSceneCache.SyncExternalAnimationIdsCache.TryGetValue(netIdentity.sceneId, out var cachedExternalAnimations))
+                {
+                    if (cachedExternalAnimations.Item2.Count > 0)
+                    {
+                        CmdPlayExternalAnimation(cachedExternalAnimations.Item1, cachedExternalAnimations.Item2);
+                    }
+                }
+            }
+            else
+            {
+                CmdSetup();
+            }
         }
 
         private void OnDestroy()
@@ -92,6 +134,11 @@ namespace NetworkCore.MirrorNetworking.Synchronization.Animations
 
         private void SetParameterValue(string paramName, object value)
         {
+            if (animator == null)
+            {
+                return;
+            }
+            
             var param = animator.parameters.FirstOrDefault(p => p.name == paramName);
             if (param == null)
             {
@@ -124,20 +171,84 @@ namespace NetworkCore.MirrorNetworking.Synchronization.Animations
                     break;
             }
         }
+        
+        [Command(requiresAuthority = false)]
+        private void CmdSetup(NetworkConnectionToClient sender = null)
+        {
+            if (sender == null)
+            {
+                return;
+            }
+            
+            foreach (var variable in currentVariables)
+            {
+                SetParameterValueOnlyForTarget(sender, variable);
+            }
+
+            if (externalAnimationsIds != null && externalAnimationsIds.Item2.Count > 0)
+            {
+                TargetPlayExternalAnimation(sender, externalAnimationsIds.Item1, externalAnimationsIds.Item2);
+            }
+        }
+
+        private void SetParameterValueOnlyForTarget(NetworkConnectionToClient sender, KeyValuePair<string, object> variable)
+        {
+            var paramName = variable.Key;
+            var value = variable.Value;
+            var param = animator.parameters.FirstOrDefault(p => p.name == paramName);
+            if (param == null)
+            {
+                AppLogger.Warning($"Animator parameter '{paramName}' not found.");
+                return;
+            }
+                
+            SetValueOnlyForTarget(sender, param, value);
+        }
+
+        private void SetValueOnlyForTarget(NetworkConnectionToClient sender, AnimatorControllerParameter param, object value)
+        {
+            switch (param.type)
+            {
+                case AnimatorControllerParameterType.Bool:
+                    TargetSetAnimatorParameter(sender, param.name, Convert.ToBoolean(value));
+                    break;
+                case AnimatorControllerParameterType.Float:
+                    TargetSetAnimatorParameter(sender, param.name, Convert.ToSingle(value));
+                    break;
+                case AnimatorControllerParameterType.Int:
+                    TargetSetAnimatorParameter(sender, param.name, Convert.ToInt32(value));
+                    break;
+                case AnimatorControllerParameterType.Trigger:
+                    break;
+            }
+        }
 
         [Command(requiresAuthority = false)]
         private void CmdSetAnimatorParameter(string paramName, bool value)
         {
             RpcSetAnimatorParameter(paramName, value);
             animator.SetBool(paramName, value);
+            currentVariables[paramName] = value;
         }
 
         [ClientRpc]
         private void RpcSetAnimatorParameter(string paramName, bool value)
         {
-            if (!isServer)
+            if (!isServer && animator != null)
             {
                 animator.SetBool(paramName, value);
+                currentVariables[paramName] = value;
+            }
+        }
+        
+        // Этот метод будет вызван только на целевом клиенте
+        [TargetRpc]
+        private void TargetSetAnimatorParameter(NetworkConnection target, string paramName, bool value)
+        {
+            if (!isServer && animator != null)
+            {
+                animator.SetBool(paramName, value);
+                currentVariables[paramName] = value;
             }
         }
 
@@ -146,14 +257,27 @@ namespace NetworkCore.MirrorNetworking.Synchronization.Animations
         {
             RpcSetAnimatorParameter(paramName, value);
             animator.SetFloat(paramName, value);
+            currentVariables[paramName] = value;
         }
 
         [ClientRpc]
         private void RpcSetAnimatorParameter(string paramName, float value)
         {
-            if (!isServer)
+            if (!isServer && animator != null)
             {
                 animator.SetFloat(paramName, value);
+                currentVariables[paramName] = value;
+            }
+        }
+        
+        // Этот метод будет вызван только на целевом клиенте
+        [TargetRpc]
+        private void TargetSetAnimatorParameter(NetworkConnection target, string paramName, float value)
+        {
+            if (!isServer && animator != null)
+            {
+                animator.SetFloat(paramName, value);
+                currentVariables[paramName] = value;
             }
         }
 
@@ -162,14 +286,27 @@ namespace NetworkCore.MirrorNetworking.Synchronization.Animations
         {
             RpcSetAnimatorParameter(paramName, value);
             animator.SetInteger(paramName, value);
+            currentVariables[paramName] = value;
         }
 
         [ClientRpc]
         private void RpcSetAnimatorParameter(string paramName, int value)
         {
-            if (!isServer)
+            if (!isServer && animator != null)
             {
                 animator.SetInteger(paramName, value);
+                currentVariables[paramName] = value;
+            }
+        }
+        
+        // Этот метод будет вызван только на целевом клиенте
+        [TargetRpc]
+        private void TargetSetAnimatorParameter(NetworkConnection target, string paramName, int value)
+        {
+            if (!isServer && animator != null)
+            {
+                animator.SetInteger(paramName, value);
+                currentVariables[paramName] = value;
             }
         }
 
@@ -183,7 +320,7 @@ namespace NetworkCore.MirrorNetworking.Synchronization.Animations
         [ClientRpc]
         private void RpcSetAnimatorSetTrigger(string paramName)
         {
-            if (!isServer)
+            if (!isServer && animator != null)
             {
                 animator.SetTrigger(paramName);
             }
@@ -194,6 +331,7 @@ namespace NetworkCore.MirrorNetworking.Synchronization.Animations
             if (usedAnimator == animator)
             {
                 animatingNow = false;
+                externalAnimationsIds = null;
             }
         }
 
@@ -206,12 +344,16 @@ namespace NetworkCore.MirrorNetworking.Synchronization.Animations
 
             animatingNow = true;
 
-            List<string> clipsIds =
-                animationClips
-                    .Select(c => c.name)
-                    .ToList();
+            externalAnimationsIds =
+                new Tuple<string, List<string>>(
+                    externalAnimationPlaceholderName,
+                    animationClips
+                        .Select(c => c.name)
+                        .ToList()
+                );
+                
 
-            CmdPlayExternalAnimation(externalAnimationPlaceholderName, clipsIds);
+            CmdPlayExternalAnimation(externalAnimationsIds.Item1, externalAnimationsIds.Item2);
         }
 
         private void PlayExternalAnimation(string externalAnimationPlaceholderName, List<string> clipsIds)
@@ -228,6 +370,11 @@ namespace NetworkCore.MirrorNetworking.Synchronization.Animations
         [Command(requiresAuthority = false)]
         private void CmdPlayExternalAnimation(string externalAnimationPlaceholderName, List<string> clipsIds)
         {
+            externalAnimationsIds =
+                new Tuple<string, List<string>>(
+                    externalAnimationPlaceholderName,
+                    clipsIds
+                );
             RpcPlayExternalAnimation(externalAnimationPlaceholderName, clipsIds);
             PlayExternalAnimation(externalAnimationPlaceholderName, clipsIds);
         }
@@ -235,8 +382,28 @@ namespace NetworkCore.MirrorNetworking.Synchronization.Animations
         [ClientRpc]
         private void RpcPlayExternalAnimation(string externalAnimationPlaceholderName, List<string> clipsIds)
         {
-            if (!isServer)
+            if (!isServer && animator != null)
             {
+                externalAnimationsIds =
+                    new Tuple<string, List<string>>(
+                        externalAnimationPlaceholderName,
+                        clipsIds
+                    );
+                PlayExternalAnimation(externalAnimationPlaceholderName, clipsIds);
+            }
+        }
+        
+        // Этот метод будет вызван только на целевом клиенте
+        [TargetRpc]
+        private void TargetPlayExternalAnimation(NetworkConnection target, string externalAnimationPlaceholderName, List<string> clipsIds)
+        {
+            if (!isServer && animator != null)
+            {
+                externalAnimationsIds =
+                    new Tuple<string, List<string>>(
+                        externalAnimationPlaceholderName,
+                        clipsIds
+                    );
                 PlayExternalAnimation(externalAnimationPlaceholderName, clipsIds);
             }
         }

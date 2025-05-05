@@ -8666,9 +8666,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1510370057}
   - component: {fileID: 1510370059}
-  - component: {fileID: 1510370061}
+  - component: {fileID: 1510370064}
+  - component: {fileID: 1510370063}
   - component: {fileID: 1510370062}
-  - component: {fileID: 1510370060}
   - component: {fileID: 1510370058}
   - component: {fileID: 1510370055}
   m_Layer: 0
@@ -8795,19 +8795,19 @@ MonoBehaviour:
     AnimationControllerType: 0
   - Controller: {fileID: 22100000, guid: f3a614cbd6afe1a47ad667cbe218fcf2, type: 2}
     AnimationControllerType: 1
---- !u!114 &1510370060
+--- !u!114 &1510370062
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1510370054}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 09697d5ca522cf845b89a46a1889dd66, type: 3}
+  m_Script: {fileID: 11500000, guid: fb6825a4926a43f5b6afb27c0d5379aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1510370061
+--- !u!114 &1510370063
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8819,7 +8819,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e441e2838fd5414d8e272b70a36f1752, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1510370062
+--- !u!114 &1510370064
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8828,7 +8828,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1510370054}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fb6825a4926a43f5b6afb27c0d5379aa, type: 3}
+  m_Script: {fileID: 11500000, guid: cff6fd9edd17435180febce2cb56fa6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1567041129

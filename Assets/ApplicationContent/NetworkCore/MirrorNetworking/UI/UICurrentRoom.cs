@@ -18,7 +18,7 @@ namespace NetworkCore.MirrorNetworking.UI
             if (MVNetworkManager.IsOnline())
             {
                 MVNetworkManager networkManager = MVNetworkManager.singleton;
-                currentRoomName = networkManager.NetworkStore.Scenes.CurrentScene?.DisplayName;
+                currentRoomName = networkManager.NetworkStore.Connection.CurrentScene?.DisplayName;
             }
             
             return new object[] { currentRoomName };

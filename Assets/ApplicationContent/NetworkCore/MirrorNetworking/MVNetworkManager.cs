@@ -153,8 +153,8 @@ namespace NetworkCore.MirrorNetworking
             networkAddress = IPUtils.GetIpAsUrl();
             
             // Регистрируем спавнемые в сцене префабы
-            this.RegisterPrefab(NetworkStore.Player.NetworkPlayer.gameObject);
-            this.RegisterPrefab(NetworkStore.Player.DisplayName.gameObject);
+            this.RegisterPrefab(NetworkStore.Configuration.SpawnablePrefabs.NetworkPlayer.gameObject);
+            this.RegisterPrefab(NetworkStore.Configuration.SpawnablePrefabs.DisplayName.gameObject);
             
             // Подключаем сетевые функции к внешним разработкам
             NetworkEnvironment.NetworkProvider = NetworkStore.NetworkProvider;

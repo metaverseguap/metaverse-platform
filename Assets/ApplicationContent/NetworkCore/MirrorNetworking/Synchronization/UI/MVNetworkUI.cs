@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Mirror;
+using NetworkCore.MirrorNetworking.Containers.Store;
 using TMPro;
 using UnityEngine;
 
@@ -8,6 +9,7 @@ namespace NetworkCore.MirrorNetworking.Synchronization.UI
     /// <summary>
     /// <para>Компонент, синхронизирующий ui текст с сервером.</para>
     /// </summary>
+    [DisallowMultipleComponent]
     public sealed class MVNetworkUI : NetworkBehaviour
     {
         [SerializeField] private List<TMP_Text> _texts;
@@ -18,10 +20,15 @@ namespace NetworkCore.MirrorNetworking.Synchronization.UI
         /// <summary>
         /// Синхронизируемые тексты.
         /// </summary>
-        public List<TMP_Text> Texts
+        public List<TMP_Text> UITexts
         {
             set => _texts = value;
         }
+
+        /// <summary>
+        /// Содержимое UI текстов.
+        /// </summary>
+        public string[] TextsContent => texts;
 
         private void Start()
         {
@@ -39,9 +46,30 @@ namespace NetworkCore.MirrorNetworking.Synchronization.UI
         private void SetupTexts()
         {
             texts = new string[_texts.Count];
+            
+            SetTextsFromCache();
+
             for (int i = 0; i < _texts.Count; i++)
             {
                 texts[i] = _texts[i].text;
+            }
+        }
+
+        private void SetTextsFromCache()
+        {
+            NetworkDataStore store = MVNetworkManager.singleton.NetworkStore;
+            CacheStore caches = store.HostMigration.Caches;
+            if (caches.CurrentSceneCache.SyncUITextsCache.TryGetValue(netIdentity.sceneId, out var cachedTexts))
+            {
+                if (cachedTexts.Length != _texts.Count)
+                {
+                    return;
+                }
+
+                for (int i = 0; i < cachedTexts.Length; i++)
+                {
+                    _texts[i].text = cachedTexts[i];
+                }
             }
         }
 

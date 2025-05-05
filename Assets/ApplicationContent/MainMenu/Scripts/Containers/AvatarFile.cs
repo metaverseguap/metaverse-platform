@@ -1,5 +1,5 @@
 ﻿using AppAvatars.Types;
-using MainMenu.Containers.Interfaces;
+using Global.Containers;
 using UnityEngine;
 
 namespace MainMenu.Containers

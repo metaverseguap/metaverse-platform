@@ -48,8 +48,8 @@ namespace MainMenu.UI.LoadingScene
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
             MVNetworkManager networkManager = MVNetworkManager.singleton;
-            avatarStore = networkManager.NetworkStore.Avatars;
-            sceneStore = networkManager.NetworkStore.Scenes;
+            avatarStore = networkManager.NetworkStore.FileStore.Avatars;
+            sceneStore = networkManager.NetworkStore.FileStore.Scenes;
             serverAPI = networkManager.NetworkStore.FileServer;
 
             // Загрузка ассетов с сервера в асинхронном режиме

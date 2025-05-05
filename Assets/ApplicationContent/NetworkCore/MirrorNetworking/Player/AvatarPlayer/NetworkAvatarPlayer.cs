@@ -1,8 +1,14 @@
+using System.Collections.Generic;
 using AppAvatars.AvatarSetups;
+using AppAvatars.Containers;
+using Cinemachine;
 using Global.Logger;
+using LDR.SUAI_Metaverse.SDK.Utils;
 using MainMenu.Containers;
 using Mirror;
 using NetworkCore.MirrorNetworking.Containers.Store;
+using NetworkCore.MirrorNetworking.Containers.Store.Cache;
+using NetworkCore.MirrorNetworking.Containers.Synchronization;
 using NetworkCore.MirrorNetworking.Player.Base;
 using NetworkCore.MirrorNetworking.Synchronization.Animations;
 using Player.EmbeddedPlayers;
@@ -19,6 +25,9 @@ namespace NetworkCore.MirrorNetworking.Player.AvatarPlayer
         [SyncVar]
         private string avatarName = "";
 
+        [SyncVar]
+        private PlayerCache playerCache;
+
         /// <summary>
         /// <para>Установить имя аватара игрока.</para>
         /// <remarks>данный метод выполняется на сервере.
@@ -29,6 +38,18 @@ namespace NetworkCore.MirrorNetworking.Player.AvatarPlayer
         public void SetAvatarName(string avatarName)
         {
             this.avatarName = avatarName;
+        }
+        
+        /// <summary>
+        /// <para>Установить кеш игрока.</para>
+        /// <remarks>данный метод выполняется на сервере.
+        /// Это нужно, что бы локальная машина не затирала значения переменной других игроков своим локальным значением</remarks>
+        /// </summary>
+        /// <param name="playerCache">кеш игрока</param>
+        [Server]
+        public void SetCache(PlayerCache playerCache)
+        {
+            this.playerCache = playerCache;
         }
 
         /// <summary>
@@ -52,14 +73,15 @@ namespace NetworkCore.MirrorNetworking.Player.AvatarPlayer
             }
 
             NetworkDataStore networkStore = MVNetworkManager.singleton.NetworkStore;
-            AvatarStore avatarStore = networkStore.Avatars;
+            ConfigurationStore configuration = networkStore.Configuration;
+            AvatarStore avatarStore = networkStore.FileStore.Avatars;
             AvatarFile avatar = avatarStore.AvatarFiles[avatarName];
             Animator prefab = avatar.Model.GetComponent<Animator>();
 
-            AbstractPlayer player = Instantiate(networkStore.Player.CurrentBuildPlayer, transform, false);
+            AbstractPlayer player = Instantiate(configuration.SpawnablePrefabs.CurrentBuildPlayer, transform, false);
             PlayerAvatar avatarComponent = player.AvatarComponent;
 
-            AddAnimatorControllerToPrefab(avatar, avatarStore, ref prefab);
+            AddAnimatorControllerToPrefab(avatar, configuration.AvatarConfiguration.AnimatorControllers, ref prefab);
 
             avatarComponent.CreatePlayerFromAvatar(prefab);
 
@@ -76,9 +98,9 @@ namespace NetworkCore.MirrorNetworking.Player.AvatarPlayer
             PlayerController = player.PlayerController;
         }
 
-        private static void AddAnimatorControllerToPrefab(AvatarFile avatar, AvatarStore avatarStore, ref Animator prefab)
+        private static void AddAnimatorControllerToPrefab(AvatarFile avatar, List<AnimatorControllerInfo> animatorControllers, ref Animator prefab)
         {
-            foreach (var controller in avatarStore.AnimatorControllers)
+            foreach (var controller in animatorControllers)
             {
                 if (controller.AnimationControllerType == avatar.AvatarAnimationControllerType)
                 {
@@ -92,6 +114,39 @@ namespace NetworkCore.MirrorNetworking.Player.AvatarPlayer
         {
             NetworkTransformReliable transformSync = GetComponent<NetworkTransformReliable>();
             transformSync.target = player.transform;
+
+            if (playerCache != null && playerCache.IsInitialized)
+            {
+                SetTransformFromCache(ref player);
+            }
+        }
+
+        private void SetTransformFromCache(ref AbstractPlayer player)
+        {
+            player.transform.position = playerCache.PlayerPosition;
+            player.transform.rotation = playerCache.PlayerRotation;
+
+            SetCameraRotationsFromCache(ref player);
+        }
+
+        private void SetCameraRotationsFromCache(ref AbstractPlayer player)
+        {
+            IDictionary<string, Quaternion> cameraRotations = new Dictionary<string, Quaternion>();
+            NamedTransform[] playerCameraRotations = playerCache.PlayerCameraRotations;
+            foreach (var cameraRotation in playerCameraRotations)
+            {
+                cameraRotations.Add(cameraRotation.Name, cameraRotation.Rotation);
+            }
+
+            CinemachineVirtualCamera[] playerCameras = player.GetComponentsInChildren<CinemachineVirtualCamera>(true);
+            foreach (var playerCamera in playerCameras)
+            {
+                string objAbsolutePath = SceneUtils.GetObjectPathFromRoot(playerCamera.transform, transform);
+                if (cameraRotations.TryGetValue(objAbsolutePath, out Quaternion cameraRotation))
+                {
+                    playerCamera.transform.rotation = cameraRotation;
+                }
+            }
         }
 
         private void SetAvatarVisibility(ref PlayerAvatar avatarComponent)
@@ -117,7 +172,7 @@ namespace NetworkCore.MirrorNetworking.Player.AvatarPlayer
 
         private void SpawnNetworkDisplayName(NetworkDataStore networkStore, AbstractPlayer player)
         {
-            NetworkPlayerDisplayName displayNameObject = Instantiate(networkStore.Player.DisplayName, player.transform, false);
+            NetworkPlayerDisplayName displayNameObject = Instantiate(networkStore.Configuration.SpawnablePrefabs.DisplayName, player.transform, false);
             displayNameObject.NetworkPlayer = this;
         }
     }

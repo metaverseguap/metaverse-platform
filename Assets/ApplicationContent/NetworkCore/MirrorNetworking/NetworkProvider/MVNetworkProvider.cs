@@ -38,7 +38,7 @@ namespace NetworkCore.MirrorNetworking.NetworkProvider
         {
             if (MVNetworkManager.IsOnline())
             {
-                return MVNetworkManager.singleton.NetworkStore.Room.Initialized;
+                return MVNetworkManager.singleton.NetworkStore.RoomState.Initialized;
             }
 
             return true;
@@ -51,9 +51,9 @@ namespace NetworkCore.MirrorNetworking.NetworkProvider
         public TimeSpan GetRoomLifetime()
         {
             if (MVNetworkManager.IsOnline()
-                && MVNetworkManager.singleton.NetworkStore.Room.Initialized)
+                && MVNetworkManager.singleton.NetworkStore.RoomState.Initialized)
             {
-                DateTime roomCreationTime = MVNetworkManager.singleton.NetworkStore.Room.RoomStartTime;
+                DateTime roomCreationTime = MVNetworkManager.singleton.NetworkStore.RoomState.RoomStartTime;
                 return DateTime.UtcNow - roomCreationTime;
             }
 

@@ -61,7 +61,7 @@ namespace NetworkCore.MirrorNetworking.UI.ConnectButtons
             NetworkDataStore store = connection.NetworkStore;
             
             AvatarInfo avatarInfo = _avatarMenu.GetSelectedAvatar();
-            store.Player.AvatarName = avatarInfo.Name;
+            store.MyPlayerInfo.AvatarName = avatarInfo.Name;
 
             connection.StartOfflineScene();
         }

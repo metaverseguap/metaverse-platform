@@ -66,8 +66,8 @@ namespace NetworkCore.MirrorNetworking.UI.ConnectButtons
 
             connection.DisconnectFromNetwork();
             
-            string menuScene = connection.NetworkStore.Scenes.MenuSceneName;
-            connection.NetworkStore.Scenes.CurrentScene = null;
+            string menuScene = connection.NetworkStore.Configuration.SceneConfiguration.MenuSceneName;
+            connection.NetworkStore.Connection.CurrentScene = null;
             SceneManager.LoadScene(menuScene, LoadSceneMode.Single);
         }
     }

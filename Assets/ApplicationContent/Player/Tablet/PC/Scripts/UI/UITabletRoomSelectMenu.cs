@@ -115,7 +115,7 @@ namespace Player.Tablet.PC.UI
             IList<SceneInfo> result = new List<SceneInfo>();
 
             Dictionary<string, SceneInfo> cachedScenes = new Dictionary<string, SceneInfo>();
-            foreach (SceneInfo scene in store.Scenes.SceneInfos)
+            foreach (SceneInfo scene in store.FileStore.Scenes.SceneInfos)
             {
                 cachedScenes.Add(scene.Name, scene);
             }
@@ -144,16 +144,18 @@ namespace Player.Tablet.PC.UI
             _hostsList.Clear();
             hosts.Clear();
 
-            hosts = serverAPI.Hosts.GetHostsBySceneName(sceneInfo[_sceneDropdown.value].Name);
-            foreach (var host in hosts)
+            IList<HostInfo> hostsFromServer = serverAPI.Hosts.GetHostsBySceneName(sceneInfo[_sceneDropdown.value].Name);
+
+            foreach (var host in hostsFromServer)
             {
                 if (host.Login == currentUser.Login)
                 {
                     continue;
                 }
-                
-                _hostItemPrefab.Hostname.text = host.DisplayName;
 
+                hosts.Add(host);
+
+                _hostItemPrefab.Hostname.text = host.DisplayName;
                 _hostsList.AddItemWithContent(_hostItemPrefab.gameObject);
             }
         }
