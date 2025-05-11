@@ -4,6 +4,7 @@ using Mirror;
 using NetworkCore.MirrorNetworking.Player.AvatarPlayer;
 using NetworkCore.MirrorNetworking.Player.Base;
 using NetworkCore.MirrorNetworking.Types.Devices;
+using Player.EmbeddedPlayers;
 using UnityEngine;
 
 namespace NetworkCore.MirrorNetworking.Containers.ManagerSetups
@@ -86,5 +87,24 @@ namespace NetworkCore.MirrorNetworking.Containers.ManagerSetups
         /// Контроллеры анимации аватаров игрока.
         /// </summary>
         public List<AnimatorControllerInfo> AvatarAnimationControllers => _avatarAnimationControllers;
+
+        /// <summary>
+        /// Префаб игрока для текущей сборки.
+        /// </summary>
+        public AbstractPlayer CurrentBuildPlayer
+        {
+            get
+            {
+                foreach (var prefab in DevicePrefabs)
+                {
+                    if (prefab.ForDevice == Device)
+                    {
+                        return prefab.Prefab;
+                    }
+                }
+
+                return null;
+            }
+        }
     }
 }

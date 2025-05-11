@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using MainMenu.Containers.Interfaces;
+using Global.Containers;
 
 namespace MainMenu.Containers.Utils
 {

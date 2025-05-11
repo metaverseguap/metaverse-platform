@@ -11,16 +11,35 @@ namespace NetworkCore.MirrorNetworking.Player.Base
     public class NetworkBasePlayer : NetworkBehaviour
     {
         private AbstractPlayerController playerController;
-
-        // Переменная синхронизирована с сервером
+        
+        [SyncVar]
+        private string login = "";
+        
         [SyncVar]
         private string displayName = "Loading...";
+        
+        /// <summary>
+        /// Логин игрока.
+        /// </summary>
+        public string Login => login;
 
         /// <summary>
         /// Отображаемое имя игрока.
         /// </summary>
         public string DisplayName => displayName;
-
+        
+        /// <summary>
+        /// <para>Установить логин игрока.</para>
+        /// <remarks>данный метод выполняется на сервере.
+        /// Это нужно, что бы локальная машина не затирала значения переменной других игроков своим локальным значением</remarks>
+        /// </summary>
+        /// <param name="login">логин игрока</param>
+        [Server]
+        public void SetLogin(string login)
+        {
+            this.login = login;
+        }
+        
         /// <summary>
         /// <para>Установить отображаемое имя игрока.</para>
         /// <remarks>данный метод выполняется на сервере.
@@ -58,9 +77,15 @@ namespace NetworkCore.MirrorNetworking.Player.Base
         /// </summary>
         public void RefreshControllerActivation()
         {
+            bool isCurrentPlayerController = isClient && isLocalPlayer;
+
+            if (isCurrentPlayerController)
+            {
+                MVNetworkManager.singleton.NetworkStore.MyPlayerInfo.Login = login;
+            }
+            
             if (PlayerController != null)
             {
-                bool isCurrentPlayerController = isClient && isLocalPlayer;
                 AbstractPlayerController[] controllers = PlayerController.gameObject.GetComponentsInChildren<AbstractPlayerController>();
                 if (isCurrentPlayerController)
                 {

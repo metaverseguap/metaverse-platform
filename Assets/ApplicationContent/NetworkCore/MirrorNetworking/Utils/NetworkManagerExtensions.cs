@@ -23,6 +23,9 @@ namespace NetworkCore.MirrorNetworking.Utils
         /// <param name="connection"><see cref="MVNetworkManager"/></param>
         public static void DisconnectFromNetwork(this MVNetworkManager connection)
         {
+            connection.NetworkStore.RoomState.Clear();
+            connection.NetworkStore.HostMigration.Clear();
+            
             APIContainer serverAPI = connection.NetworkStore.FileServer;
 
             if (AmIHost())
@@ -76,9 +79,9 @@ namespace NetworkCore.MirrorNetworking.Utils
         public static void ConnectToNetwork(this MVNetworkManager connection)
         {
             NetworkDataStore store = connection.NetworkStore;
-            SceneInfo loadingScene = store.Scenes.CurrentScene;
+            SceneInfo loadingScene = store.Connection.CurrentScene;
 
-            var connectionStatus = store.Player.PlayerStatus;
+            var connectionStatus = store.Connection.PlayerStatus;
             if (connectionStatus == PlayerConnectionStatus.Host
                 || loadingScene.Name == OfflineSceneConstants.SCENE_INFO.Name)
             {
@@ -117,8 +120,8 @@ namespace NetworkCore.MirrorNetworking.Utils
             NetworkDataStore store = connection.NetworkStore;
             APIContainer serverAPI = store.FileServer;
 
-            store.Scenes.CurrentScene = scene;
-            store.Player.PlayerStatus = PlayerConnectionStatus.Host;
+            store.Connection.CurrentScene = scene;
+            store.Connection.PlayerStatus = PlayerConnectionStatus.Host;
 
             string address;
             int port;
@@ -131,8 +134,8 @@ namespace NetworkCore.MirrorNetworking.Utils
                     AppLogger.Error("No available ports for new offline scene host");
                     
                     // Загружаем сцену меню
-                    string menuScene = connection.NetworkStore.Scenes.MenuSceneName;
-                    connection.NetworkStore.Scenes.CurrentScene = null;
+                    string menuScene = connection.NetworkStore.Configuration.SceneConfiguration.MenuSceneName;
+                    connection.NetworkStore.Connection.CurrentScene = null;
                     SceneManager.LoadScene(menuScene, LoadSceneMode.Single);
                     return;
                 }
@@ -147,8 +150,8 @@ namespace NetworkCore.MirrorNetworking.Utils
                     AppLogger.Error("Failed to create host");
 
                     // Загружаем сцену меню
-                    string menuScene = connection.NetworkStore.Scenes.MenuSceneName;
-                    connection.NetworkStore.Scenes.CurrentScene = null;
+                    string menuScene = connection.NetworkStore.Configuration.SceneConfiguration.MenuSceneName;
+                    connection.NetworkStore.Connection.CurrentScene = null;
                     SceneManager.LoadScene(menuScene, LoadSceneMode.Single);
                     return;
                 }
@@ -164,8 +167,46 @@ namespace NetworkCore.MirrorNetworking.Utils
             }
             
             // Загружаем сцену загрузки, из которой будет запущен хост
-            string loadingSceneName = store.Scenes.LoadingSceneName;
+            string loadingSceneName = store.Configuration.SceneConfiguration.LoadingSceneName;
             SceneManager.LoadScene(loadingSceneName, LoadSceneMode.Single);
+        }
+
+        /// <summary>
+        /// <para>Стать хостом указанной сцены без подгрузки сцены с сервера.</para>
+        /// <remarks>данный метод должен вызываться только, если сцена к которой мы подключаемся уже была скачана с сервера</remarks>
+        /// </summary>
+        /// <param name="connection"><see cref="MVNetworkManager"/></param>
+        /// <param name="scene"><see cref="SceneInfo">информация о сцене</see>, хостом которой становится пользователь</param>
+        public static void BecomeHostImmediate(this MVNetworkManager connection, SceneInfo scene)
+        {
+            NetworkDataStore store = connection.NetworkStore;
+            APIContainer serverAPI = store.FileServer;
+
+            store.Connection.CurrentScene = scene;
+            store.Connection.PlayerStatus = PlayerConnectionStatus.Host;
+
+            HostAddressDTO createdHostAddress = serverAPI.Hosts.BecomeAHost(scene.Name);
+            if (createdHostAddress == null)
+            {
+                AppLogger.Error("Failed to create host");
+
+                // Загружаем сцену меню
+                string menuScene = connection.NetworkStore.Configuration.SceneConfiguration.MenuSceneName;
+                connection.NetworkStore.Connection.CurrentScene = null;
+                SceneManager.LoadScene(menuScene, LoadSceneMode.Single);
+                return;
+            }
+
+            string address = createdHostAddress.hostIP;
+            int port = createdHostAddress.port;
+
+            connection.networkAddress = address;
+            if (connection.transport is KcpTransport connectionTransport)
+            {
+                connectionTransport.port = (ushort)port;
+            }
+
+            connection.ConnectToNetwork();
         }
 
         /// <summary>
@@ -178,8 +219,8 @@ namespace NetworkCore.MirrorNetworking.Utils
         public static void BecomeAClient(this MVNetworkManager connection, string hostIP, int port, SceneInfo scene)
         {
             NetworkDataStore store = connection.NetworkStore;
-            store.Player.PlayerStatus = PlayerConnectionStatus.Client;
-            store.Scenes.CurrentScene = scene;
+            store.Connection.PlayerStatus = PlayerConnectionStatus.Client;
+            store.Connection.CurrentScene = scene;
             connection.networkAddress = hostIP;
             if (connection.transport is KcpTransport connectionTransport)
             {
@@ -187,8 +228,54 @@ namespace NetworkCore.MirrorNetworking.Utils
             }
             
             // Загружаем сцену загрузки, из которой будет запущен клиент
-            string loadingSceneName = store.Scenes.LoadingSceneName;
+            string loadingSceneName = store.Configuration.SceneConfiguration.LoadingSceneName;
             SceneManager.LoadScene(loadingSceneName, LoadSceneMode.Single);
+        }
+
+        /// <summary>
+        /// <para>Попытаться подключиться к хосту без подгрузки сцены с сервера.</para>
+        /// <remarks>данный метод должен вызываться только, если сцена к которой мы подключаемся уже была скачана с сервера</remarks>
+        /// </summary>
+        /// <param name="connection"><see cref="MVNetworkManager"/></param>
+        /// <param name="hostLogin">логин хоста</param>
+        /// <param name="scene">сцена, в которой находится хост</param>
+        /// <returns>true, если подключение было успешно</returns>
+        public static bool TryToBecomeAClientImmediate(this MVNetworkManager connection, string hostLogin, SceneInfo scene)
+        {
+            NetworkDataStore store = connection.NetworkStore;
+            APIContainer serverAPI = store.FileServer;
+
+            HostInfo host = serverAPI.Hosts.GetHostByLogin(hostLogin);
+            if (host == null)
+            {
+                AppLogger.Warning($"Failed to get host with login {hostLogin}");
+                return false;
+            }
+
+            BecomeAClientImmediate(connection, host.HostIP, host.Port, scene);
+            return true;
+        }
+
+        /// <summary>
+        /// <para>Подключиться к хосту без подгрузки сцены с сервера.</para>
+        /// <remarks>данный метод должен вызываться только, если сцена к которой мы подключаемся уже была скачана с сервера</remarks>
+        /// </summary>
+        /// <param name="connection"><see cref="MVNetworkManager"/></param>
+        /// <param name="hostIP">uri хоста</param>
+        /// <param name="port">порт хоста</param>
+        /// <param name="scene">сцена, в которой находится хост</param>
+        public static void BecomeAClientImmediate(this MVNetworkManager connection, string hostIP, int port, SceneInfo scene)
+        {
+            NetworkDataStore store = connection.NetworkStore;
+            store.Connection.PlayerStatus = PlayerConnectionStatus.Client;
+            store.Connection.CurrentScene = scene;
+            connection.networkAddress = hostIP;
+            if (connection.transport is KcpTransport connectionTransport)
+            {
+                connectionTransport.port = (ushort)port;
+            }
+
+            connection.ConnectToNetwork();
         }
 
         /// <summary>
@@ -208,7 +295,7 @@ namespace NetworkCore.MirrorNetworking.Utils
         {
             int prefabHash = prefab.gameObject.GetHashCode();
             
-            if (connection.NetworkStore.RegisterPrefabsHash.Add(prefabHash))
+            if (connection.NetworkStore.MirrorRegisteredObjects.RegisterPrefabsHash.Add(prefabHash))
             {
                 connection.spawnPrefabs.Add(prefab.gameObject);
             }

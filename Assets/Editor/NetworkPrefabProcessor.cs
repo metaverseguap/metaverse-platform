@@ -230,7 +230,7 @@ public static class NetworkPrefabProcessor
                     }
                 }
 
-                networkUI.Texts = texts;
+                networkUI.UITexts = texts;
             }
             
             networkUI.enabled = true;

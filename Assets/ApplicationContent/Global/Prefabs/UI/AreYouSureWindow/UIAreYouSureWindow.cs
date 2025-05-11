@@ -20,7 +20,7 @@ namespace Global.UI.AreYouSureWindow
 
         private void Awake()
         {
-            _originalScale = new Vector3(transform.localScale.x, transform.localScale.y, transform.localScale.z);
+            _originalScale = transform.localScale;
             _noButton.onClick.AddListener(OnNoClick);
             transform.DOScale(Vector3.zero, 0.01f);
         }

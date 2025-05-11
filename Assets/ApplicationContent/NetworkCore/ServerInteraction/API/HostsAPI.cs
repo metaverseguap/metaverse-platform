@@ -16,6 +16,7 @@ namespace NetworkCore.ServerInteraction.API
     public sealed class HostsAPI : AbstractServerAPI
     {
         private const string HOSTS_URL = "/api/hosts";
+        private const string HOST_BY_LOGIN_URL = "/api/hosts/info";
         private const string CREATE_HOSTS_URL = "/api/hosts/create";
         private const string DELETE_HOSTS_URL = "/api/hosts/delete";
 
@@ -61,6 +62,43 @@ namespace NetworkCore.ServerInteraction.API
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// <para>Получает информацию о хосте по логину.</para>
+        /// </summary>
+        /// <param name="login">логин хоста</param>
+        /// <returns>информация о хосте или null, если хоста с таким логином не существует</returns>
+        public HostInfo GetHostByLogin(string login)
+        {
+            GetParam loginParam = GetParam.Form("login", login);
+
+            HostResponse response = restAPI.GetRequest<HostResponse>(HOST_BY_LOGIN_URL, loginParam);
+
+            if (response.success)
+            {
+                HostInfoDTO infoRO = response.host;
+
+                if (infoRO == null)
+                {
+                    return null;
+                }
+
+                HostInfo info = new HostInfo();
+                info.Login = infoRO.login;
+                info.DisplayName = infoRO.name;
+                info.HostIP = infoRO.hostIP;
+                info.Port = infoRO.port;
+                info.SceneName = infoRO.sceneName;
+
+                return info;
+            }
+            else
+            {
+                AppLogger.Error($"Host info request ended with error: {ResponseUtils.GetErrorMessagesAsString(response)}");
+            }
+
+            return null;
         }
 
         /// <summary>

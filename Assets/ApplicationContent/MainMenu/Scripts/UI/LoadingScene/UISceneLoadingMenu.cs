@@ -81,7 +81,7 @@ namespace MainMenu.UI.LoadingScene
             SceneInfoDTO scene = asyncDownload.Result;
             if (scene == null)
             {
-                SceneInfo loadingScene = store.Scenes.CurrentScene;
+                SceneInfo loadingScene = store.Connection.CurrentScene;
                 AppLogger.Error($"Failed to download scene {loadingScene.Name} from server");
                 connection.StartOfflineScene();
                 yield break;
@@ -108,7 +108,7 @@ namespace MainMenu.UI.LoadingScene
 
         private bool TryLoadSceneFromCache()
         {
-            SceneInfo loadingScene = store.Scenes.CurrentScene;
+            SceneInfo loadingScene = store.Connection.CurrentScene;
             if (loadingScene.Name == OfflineSceneConstants.SCENE_INFO.Name)
             {
                 connection.ConnectToNetwork();
@@ -128,7 +128,7 @@ namespace MainMenu.UI.LoadingScene
 
         private async Task<SceneInfoDTO> SceneDownloading()
         {
-            SceneInfo loadingScene = store.Scenes.CurrentScene;
+            SceneInfo loadingScene = store.Connection.CurrentScene;
             IList<SceneInfoDTO> localScenes = SceneAssetPackages.GetSceneInfos();
 
             SceneInfoDTO existScene = localScenes.SingleOrDefault(scene => scene.name == loadingScene.Name);
@@ -191,7 +191,7 @@ namespace MainMenu.UI.LoadingScene
 
         private void ConnectToSceneByPath(AssetBundle assetBundle)
         {
-            SceneInfo loadingScene = store.Scenes.CurrentScene;
+            SceneInfo loadingScene = store.Connection.CurrentScene;
             string[] paths = assetBundle.GetAllScenePaths();
 
             if (paths.Length == 0)
@@ -208,14 +208,14 @@ namespace MainMenu.UI.LoadingScene
 
         private void CacheScenePath(string[] paths)
         {
-            SceneInfo loadingScene = store.Scenes.CurrentScene;
+            SceneInfo loadingScene = store.Connection.CurrentScene;
             
             string newScenePath = paths[0];
             SceneInfo newSceneCache = loadingScene.WithCachedPath(newScenePath);
             
-            store.Scenes.CurrentScene = newSceneCache;
+            store.Connection.CurrentScene = newSceneCache;
             
-            IList<SceneInfo> scenesCache = store.Scenes.SceneInfos;
+            IList<SceneInfo> scenesCache = store.FileStore.Scenes.SceneInfos;
             foreach (SceneInfo scene in scenesCache)
             {
                 if (scene.Name == newSceneCache.Name)
@@ -224,12 +224,12 @@ namespace MainMenu.UI.LoadingScene
                     break;
                 }
             }
-            store.Scenes.SceneInfos = scenesCache;
+            store.FileStore.Scenes.SceneInfos = scenesCache;
         }
 
         private IEnumerator LoadBundleToCache(SceneInfoDTO scene)
         {
-            SceneInfo loadingScene = store.Scenes.CurrentScene;
+            SceneInfo loadingScene = store.Connection.CurrentScene;
             string bundlePath = Path.Combine(SceneAssetPackages.ASSETS_DIRECTORY, scene.name);
             AssetBundleCreateRequest createRequest = AssetBundle.LoadFromFileAsync(bundlePath);
 

@@ -44,7 +44,7 @@ namespace MainMenu.UI.AvatarSelectMenu
         {
             if (avatarStore == null)
             {
-                return MVNetworkManager.singleton.NetworkStore.Avatars;
+                return MVNetworkManager.singleton.NetworkStore.FileStore.Avatars;
             }
 
             return avatarStore;

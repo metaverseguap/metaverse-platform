@@ -25,6 +25,8 @@ namespace NetworkCore.MirrorNetworking.Synchronization.Transforms
         private Vector3 serverPosition;
         [SyncVar]
         private Quaternion serverRotation;
+        [SyncVar]
+        private bool isServerInit = false;
 
         private Vector3 lastSentPosition;
         private Quaternion lastSentRotation;
@@ -128,6 +130,11 @@ namespace NetworkCore.MirrorNetworking.Synchronization.Transforms
         /// <returns>true, если локальные координаты объекта отличаются от серверных</returns>
         protected bool NeedTransformSync()
         {
+            if (!isServerInit)
+            {
+                return false;
+            }
+            
             bool positionChanged = Vector3.Distance(lastUpdatePosition, serverPosition) > _positionThreshold;
             bool rotationChanged = Quaternion.Angle(lastUpdateRotation, serverRotation) > _rotationThreshold;
 
@@ -172,6 +179,24 @@ namespace NetworkCore.MirrorNetworking.Synchronization.Transforms
                 lastUpdatePosition = position;
                 lastUpdateRotation = rotation;
             }
+        }
+
+        /// <summary>
+        /// <para>Установить серверное положение объекта.</para>
+        /// <remarks>данный метод будет работать только на сервере</remarks>
+        /// </summary>
+        /// <param name="position">положение объекта</param>
+        /// <param name="rotation">поворот объекта</param>
+        protected void SetServerTransform(Vector3 position, Quaternion rotation)
+        {
+            if (!isServer)
+            {
+                return;
+            }
+            
+            serverPosition = position;
+            serverRotation = rotation;
+            isServerInit = true;
         }
 
 #if UNITY_EDITOR

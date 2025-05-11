@@ -1,9 +1,7 @@
-﻿using System.Collections.Generic;
-using NetworkCore.MirrorNetworking.Containers.ManagerSetups;
+﻿using NetworkCore.MirrorNetworking.Containers.ManagerSetups;
 using NetworkCore.MirrorNetworking.NetworkProvider;
-using NetworkCore.MirrorNetworking.Player.Base;
-using NetworkCore.MirrorNetworking.Types.HostMigration;
 using NetworkCore.ServerInteraction.API;
+using Player.EmbeddedPlayers;
 
 namespace NetworkCore.MirrorNetworking.Containers.Store
 {
@@ -18,52 +16,45 @@ namespace NetworkCore.MirrorNetworking.Containers.Store
         public MVNetworkProvider NetworkProvider { get; } = new MVNetworkProvider();
 
         /// <summary>
-        /// Хранилище данных об игроке.
-        /// </summary>
-        public PlayerStore Player { get; } = new PlayerStore();
-        
-        /// <summary>
-        /// <para>Список игроков в комнате.</para>
-        ///
-        /// Ключем является connection id игрока
-        /// </summary>
-        public IDictionary<int, NetworkBasePlayer> GamePlayers { get; } = new Dictionary<int, NetworkBasePlayer>();
-        
-        /// <summary>
-        /// <para>Хеш-коды зарегистрированных префабов.</para>
-        ///
-        /// Mirror не позволяет просто спавнить любые объекты в сцене.
-        /// Объекты должны быть зарегистрированы в <c>NetworkManager.spawnPrefabs</c>.
-        /// В данном сете хранятся хеш-коды зарегистрированных префабов,
-        /// для быстрого поиска зарегистрированных префабов
-        /// </summary>
-        public ISet<int> RegisterPrefabsHash { get; } = new HashSet<int>();
-        
-        /// <summary>
-        /// Контейнер состояния игрока при миграции хоста.
-        /// </summary>
-        public HostMigrationState MigrationState { get; } = new HostMigrationState();
-
-        /// <summary>
         /// Доступ к файловому серверу.
         /// </summary>
-        public APIContainer FileServer { get; private set; }
+        public APIContainer FileServer { get; }
 
         /// <summary>
-        /// Хранилище аватаров.
+        /// Хранилище игровых настроек, не изменяющихся в процессе игры.
         /// </summary>
-        public AvatarStore Avatars { get; } = new AvatarStore();
-        
-        /// <summary>
-        /// Хранилище сцен.
-        /// </summary>
-        public SceneStore Scenes { get; } = new SceneStore();
+        public ConfigurationStore Configuration { get; }
 
         /// <summary>
-        /// Данные состояния текущей комнаты.
+        /// Хранилище файлов файлового сервера.
         /// </summary>
-        public RoomState Room { get; } = new RoomState();
-        
+        public FileStore FileStore { get; } = new FileStore();
+
+        /// <summary>
+        /// Хранилище данных о регистрируемых в Mirror объектах.
+        /// </summary>
+        public MirrorRegisteredObjectsStore MirrorRegisteredObjects { get; } = new MirrorRegisteredObjectsStore();
+
+        /// <summary>
+        /// Хранилище данных об игроке.
+        /// </summary>
+        public PlayerStore MyPlayerInfo { get; } = new PlayerStore();
+
+        /// <summary>
+        /// Хранилище данных, необходимых для подключения игрока к сетевой сцене.
+        /// </summary>
+        public ConnectionStore Connection { get; } = new ConnectionStore();
+
+        /// <summary>
+        /// Хранилище состояния текущей комнаты.
+        /// </summary>
+        public RoomStateStore RoomState { get; } = new RoomStateStore();
+
+        /// <summary>
+        /// Хранилище данных, необходимых для миграции хоста.
+        /// </summary>
+        public HostMigrationStore HostMigration { get; } = new HostMigrationStore();
+
         /// <summary>
         /// <para>Конструктор.</para>
         /// </summary>
@@ -71,19 +62,28 @@ namespace NetworkCore.MirrorNetworking.Containers.Store
         public NetworkDataStore(NetworkManagerSetups setups)
         {
             FileServer = new APIContainer(setups.ServerUrl);
-            Player.NetworkPlayer = setups.NetworkPlayerPrefab;
-            Player.DisplayName = setups.DisplayNamePrefab;
-            Scenes.MenuSceneName = setups.MenuScene;
-            Scenes.LoadingSceneName = setups.LoadingScene;
-            Avatars.AnimatorControllers = setups.AvatarAnimationControllers;
-            foreach (var prefab in setups.DevicePrefabs)
-            {
-                if (prefab.ForDevice == setups.Device)
-                {
-                    Player.CurrentBuildPlayer = prefab.Prefab;
-                    break;
-                }
-            }
+
+            Configuration =
+                ConfigurationStore.Builder
+                    .WithSceneConfiguration(
+                        SceneConfigurationStore.Builder
+                            .WithMenuSceneName(setups.MenuScene)
+                            .WithLoadingSceneName(setups.LoadingScene)
+                            .Build()
+                    )
+                    .WithSpawnablePrefabs(
+                        SpawnablePrefabsStore.Builder
+                            .WithNetworkPlayer(setups.NetworkPlayerPrefab)
+                            .WithDisplayName(setups.DisplayNamePrefab)
+                            .WithCurrentBuildPlayer(setups.CurrentBuildPlayer)
+                            .Build()
+                    )
+                    .WithAvatarConfiguration(
+                        AvatarConfigurationStore.Builder
+                            .WithAnimatorControllers(setups.AvatarAnimationControllers)
+                            .Build()
+                    )
+                    .Build();
         }
     }
 }

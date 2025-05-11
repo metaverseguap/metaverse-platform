@@ -1,10 +1,9 @@
-﻿using System;
-using Mirror;
+﻿using Mirror;
 
 namespace NetworkCore.MirrorNetworking.ClientMessages
 {
     /// <summary>
-    /// <para>Сообщение, передающее новому клиенту данные о миграции хоста.</para>
+    /// <para>Сообщение, передающее новому клиенту данные о состоянии комнаты.</para>
     /// </summary>
     public struct RoomStateMessage : NetworkMessage
     {
@@ -19,13 +18,20 @@ namespace NetworkCore.MirrorNetworking.ClientMessages
         public readonly long RoomStartTimeTicks;
 
         /// <summary>
+        /// Массив NetId списка игроков.
+        /// </summary>
+        public readonly uint[] GamePlayersNetIds;
+
+        /// <summary>
         /// <para>Конструктор.</para>
         /// </summary>
         /// <param name="initialized">инициализировано ли состояние комнаты</param>
         /// <param name="roomStartTimeTicks">количество тиков прошедших с создания комнаты</param>
-        public RoomStateMessage(bool initialized, long roomStartTimeTicks)
+        /// <param name="gamePlayersNetIds">массив NetId списка игроков</param>
+        public RoomStateMessage(bool initialized, long roomStartTimeTicks, uint[] gamePlayersNetIds)
         {
             RoomStartTimeTicks = roomStartTimeTicks;
+            GamePlayersNetIds = gamePlayersNetIds;
             Initialized = initialized;
         }
     }

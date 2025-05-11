@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using NetworkCore.MirrorNetworking.Containers.Store;
+using UnityEngine;
 
 namespace NetworkCore.MirrorNetworking.Synchronization.Transforms
 {
@@ -6,6 +7,7 @@ namespace NetworkCore.MirrorNetworking.Synchronization.Transforms
     /// <para>Компонент, синхронизирующий положение объекта с сервером.</para>
     /// Данный компонент синхронизирует объекты имеющие RigidBody
     /// </summary>
+    [DisallowMultipleComponent]
     [RequireComponent(typeof(Rigidbody))]
     public sealed class MVNetworkRigidBody : MVBaseNetworkTransform
     {
@@ -41,7 +43,19 @@ namespace NetworkCore.MirrorNetworking.Synchronization.Transforms
             if (isServer)
             {
                 initialIsKinematic = _target.isKinematic;
-                UpdateTransform(_target.transform.position, _target.transform.rotation);
+                SetTransformFromCache();
+                SetServerTransform(_target.transform.position, _target.transform.rotation);
+            }
+        }
+        
+        private void SetTransformFromCache()
+        {
+            NetworkDataStore store = MVNetworkManager.singleton.NetworkStore;
+            CacheStore caches = store.HostMigration.Caches;
+            if (caches.CurrentSceneCache.SyncTransformsCache.TryGetValue(netIdentity.sceneId, out var hostObjectTransform))
+            {
+                _target.transform.position = hostObjectTransform.Position;
+                _target.transform.rotation = hostObjectTransform.Rotation;
             }
         }
 

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using NetworkCore.MirrorNetworking.Containers.Store;
+using UnityEngine;
 
 namespace NetworkCore.MirrorNetworking.Synchronization.Transforms
 {
@@ -6,6 +7,7 @@ namespace NetworkCore.MirrorNetworking.Synchronization.Transforms
     /// <para>Компонент, синхронизирующий положение объекта с сервером.</para>
     /// Данный компонент синхронизирует объекты без RigidBody
     /// </summary>
+    [DisallowMultipleComponent]
     public sealed class MVNetworkTransform : MVBaseNetworkTransform
     {
         [Header("Object settings")]
@@ -36,7 +38,19 @@ namespace NetworkCore.MirrorNetworking.Synchronization.Transforms
 
             if (isServer)
             {
-                UpdateTransform(_target.transform.position, _target.transform.rotation);
+                SetTransformFromCache();
+                SetServerTransform(_target.transform.position, _target.transform.rotation);
+            }
+        }
+
+        private void SetTransformFromCache()
+        {
+            NetworkDataStore store = MVNetworkManager.singleton.NetworkStore;
+            CacheStore caches = store.HostMigration.Caches;
+            if (caches.CurrentSceneCache.SyncTransformsCache.TryGetValue(netIdentity.sceneId, out var hostObjectTransform))
+            {
+                _target.transform.position = hostObjectTransform.Position;
+                _target.transform.rotation = hostObjectTransform.Rotation;
             }
         }
 

@@ -1,4 +1,4 @@
-﻿using MainMenu.Containers.Interfaces;
+﻿using Global.Containers;
 using NetworkCore.MirrorNetworking.Types.Devices;
 using UnityEngine;
 
