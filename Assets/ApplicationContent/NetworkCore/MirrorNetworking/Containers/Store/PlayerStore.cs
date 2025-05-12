@@ -14,5 +14,14 @@
         /// Имя аватара игрока текущего пользователя.
         /// </summary>
         public string AvatarName { get; set; }
+
+        /// <summary>
+        /// <para>Очистить контейнер.</para>
+        /// </summary>
+        public void Clear()
+        {
+            Login = null;
+            AvatarName = null;
+        }
     }
 }

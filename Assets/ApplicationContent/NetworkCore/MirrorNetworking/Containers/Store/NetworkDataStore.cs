@@ -1,7 +1,6 @@
 ﻿using NetworkCore.MirrorNetworking.Containers.ManagerSetups;
 using NetworkCore.MirrorNetworking.NetworkProvider;
 using NetworkCore.ServerInteraction.API;
-using Player.EmbeddedPlayers;
 
 namespace NetworkCore.MirrorNetworking.Containers.Store
 {
@@ -61,7 +60,7 @@ namespace NetworkCore.MirrorNetworking.Containers.Store
         /// <param name="setups"><see cref="NetworkManagerSetups"/></param>
         public NetworkDataStore(NetworkManagerSetups setups)
         {
-            FileServer = new APIContainer(setups.ServerUrl);
+            FileServer = new APIContainer(setups);
 
             Configuration =
                 ConfigurationStore.Builder

@@ -20,6 +20,8 @@ namespace NetworkCore.MirrorNetworking.Containers.ManagerSetups
 
         [Header("File server settings")] 
         [SerializeField] private string _serverUrl;
+        [Tooltip("Период обновления статуса пользователя на файловом сервере (в секундах)")]
+        [SerializeField] private int _statusUpdateIntervalSeconds = 4;
 
         [Header("Application Settings")] 
         [Tooltip("Сцена, в которой игрок появляется после выбора аватара - она же Offline Scene")] 
@@ -47,6 +49,11 @@ namespace NetworkCore.MirrorNetworking.Containers.ManagerSetups
         /// Url файлового сервера.
         /// </summary>
         public string ServerUrl => _serverUrl;
+
+        /// <summary>
+        /// Период обновления статуса пользователя на файловом сервере (в секундах).
+        /// </summary>
+        public int StatusUpdateInterval => _statusUpdateIntervalSeconds;
 
         /// <summary>
         /// Сцена по умолчанию.

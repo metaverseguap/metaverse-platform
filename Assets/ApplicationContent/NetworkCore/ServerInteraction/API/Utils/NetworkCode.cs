@@ -9,5 +9,6 @@
         public const string UNAUTHORIZED = "401";
         public const string NOT_FOUND = "404";
         public const string INTERNAL_SERVER_ERROR = "500";
+        public const string TIMEOUT_OCCURRED = "524";
     }
 }

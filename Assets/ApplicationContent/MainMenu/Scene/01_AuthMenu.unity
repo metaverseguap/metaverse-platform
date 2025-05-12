@@ -8666,6 +8666,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1510370057}
   - component: {fileID: 1510370059}
+  - component: {fileID: 1510370065}
   - component: {fileID: 1510370064}
   - component: {fileID: 1510370063}
   - component: {fileID: 1510370062}
@@ -8781,6 +8782,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _device: 0
   _serverUrl: http://26.31.64.100:8101
+  _statusUpdateIntervalSeconds: 3
   _defaultScene: Assets/ApplicationContent/OfflineScene/Void.unity
   _menuScene: Assets/ApplicationContent/MainMenu/Scene/01_AuthMenu.unity
   _loadingScene: Assets/ApplicationContent/MainMenu/Scene/05_IntermediateLoadingScene.unity
@@ -8829,6 +8831,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cff6fd9edd17435180febce2cb56fa6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1510370065
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1510370054}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bea3b08e3c3847044bc1ecd6e2372d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1567041129

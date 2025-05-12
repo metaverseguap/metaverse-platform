@@ -22,6 +22,7 @@ namespace NetworkCore.ServerInteraction.API.Utils
     public sealed class RestAPI
     {
         private readonly HttpClient client = new HttpClient();
+        private TimeSpan asyncTimeout;
 
         /// <summary>
         /// <para>Конструктор.</para>
@@ -31,6 +32,25 @@ namespace NetworkCore.ServerInteraction.API.Utils
         {
             client.BaseAddress = new Uri(baseUrl);
             client.Timeout = TimeSpan.FromSeconds(10);
+            asyncTimeout = TimeSpan.FromSeconds(1);
+        }
+        
+        /// <summary>
+        /// Время ожидания выполнения асинхронного запроса на сервер.
+        /// </summary>
+        public TimeSpan AsyncTimeout
+        {
+            get => asyncTimeout;
+            set => asyncTimeout = value;
+        }
+        
+        /// <summary>
+        /// Время ожидания выполнения запроса на сервер.
+        /// </summary>
+        public TimeSpan Timeout
+        {
+            get => client.Timeout;
+            set => client.Timeout = value;
         }
 
         /// <summary>
@@ -345,5 +365,65 @@ namespace NetworkCore.ServerInteraction.API.Utils
 
             return result;
         }
+        
+        /// <summary>
+        /// <para>Выполнить асинхронный запрос, прерываемый по таймеру.</para>
+        /// Выполнить указанный асинхронный запрос.
+        /// Если время выполнение запроса превысит указанное,
+        /// то выполнение запроса прервется и результат выполнения будет равен <see cref="ResponseDetails"/>,
+        /// содержащий сообщение об ошибке timeout-а
+        /// </summary>
+        /// <param name="request">асинхронный запрос. <c>(token)=>request.Invoke(token)</c></param>
+        /// <typeparam name="R">тип к которому будет преобразован ответ на запрос. Данный тип должен наследоваться от <see cref="ResponseDetails"/> и иметь конструктор по умолчанию</typeparam>
+        /// <returns>результат выполнения запроса или default, если превышено время ожидания выполнения запроса</returns>
+        public async Task<R> ExecuteAsyncRequest<R>(
+            Func<CancellationToken, Task<R>> request)
+            where R : ResponseDetails, new()
+        {
+            return await ExecuteAsyncRequest(asyncTimeout, request);
+        } 
+        
+        /// <summary>
+        /// <para>Выполнить асинхронный запрос, прерываемый по таймеру.</para>
+        /// Выполнить указанный асинхронный запрос.
+        /// Если время выполнение запроса превысит указанное,
+        /// то выполнение запроса прервется и результат выполнения будет равен <see cref="ResponseDetails"/>,
+        /// содержащий сообщение об ошибке timeout-а
+        /// </summary>
+        /// <param name="timeout">время ожидания выполнения запроса</param>
+        /// <param name="request">асинхронный запрос. <c>(token)=>request.Invoke(token)</c></param>
+        /// <typeparam name="R">тип к которому будет преобразован ответ на запрос. Данный тип должен наследоваться от <see cref="ResponseDetails"/> и иметь конструктор по умолчанию</typeparam>
+        /// <returns>результат выполнения запроса или default, если превышено время ожидания выполнения запроса</returns>
+        public async Task<R> ExecuteAsyncRequest<R>(
+            TimeSpan timeout,
+            Func<CancellationToken, Task<R>> request)
+            where R : ResponseDetails, new()
+        {
+            using CancellationTokenSource requestToken = new CancellationTokenSource();
+            using CancellationTokenSource timeoutToken = new CancellationTokenSource();
+
+            Task<R> operationTask = request.Invoke(requestToken.Token);
+            Task timeoutTask = Task.Delay(timeout, timeoutToken.Token);
+
+            Task completed = await Task.WhenAny(operationTask, timeoutTask);
+            
+            timeoutToken.Cancel();
+            requestToken.Cancel();
+            
+            if (completed == operationTask && operationTask.IsCompletedSuccessfully)
+            {
+                return operationTask.Result;
+            }
+            else
+            {
+                ErrorDetails errorMessage = new ErrorDetails();
+                errorMessage.exceptionMessage = "The timeout occurred while waiting for a response from the server";
+                errorMessage.code = NetworkCode.TIMEOUT_OCCURRED;
+                R result = new R();
+                result.error = new List<ErrorDetails> { errorMessage };
+
+                return result;
+            }
+        } 
     }
 }

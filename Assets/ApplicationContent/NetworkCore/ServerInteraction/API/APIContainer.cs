@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using NetworkCore.MirrorNetworking.Containers.ManagerSetups;
 using NetworkCore.Utils;
 
 namespace NetworkCore.ServerInteraction.API
@@ -78,9 +79,10 @@ namespace NetworkCore.ServerInteraction.API
         /// <summary>
         /// <para>Конструктор.</para>
         /// </summary>
-        /// <param name="serverUri">uri файлового сервера</param>
-        public APIContainer(string serverUri)
+        /// <param name="setups"><see cref="NetworkManagerSetups"/></param>
+        public APIContainer(NetworkManagerSetups setups)
         {
+            string serverUri = setups.ServerUrl;
             serverAddress = serverUri;
             
             this.Auth = new AuthAPI(serverUri, this);
@@ -89,7 +91,7 @@ namespace NetworkCore.ServerInteraction.API
             this.RegistrationKey = new RegistrationKeyAPI(serverUri);
             this.Scene = new SceneAPI(serverUri);
             this.Avatar = new AvatarAPI(serverUri);
-            this.User = new UserAPI(serverUri);
+            this.User = new UserAPI(serverUri, setups.StatusUpdateInterval);
             this.Hosts = new HostsAPI(serverUri);
             this.ServerStatus = new StatusAPI(serverUri);
             
