@@ -1,5 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using NetworkCore.ServerInteraction.Type.Response;
 
 namespace NetworkCore.ServerInteraction.API
@@ -22,11 +21,12 @@ namespace NetworkCore.ServerInteraction.API
         /// <summary>
         /// <para>Проверяет доступен ли файловый сервер.</para>
         /// </summary>
-        /// <param name="token">CancellationToken для отмены выполнения запроса из другого потока</param>
         /// <returns>true, если файловый сервер доступен</returns>
-        public async Task<bool> IsServerOnline(CancellationToken token)
+        public async Task<bool> IsServerOnline()
         {
-            ResponseDetails result = await restAPI.AsyncGetRequest<ResponseDetails>(STATUS_URL, token, false);
+            ResponseDetails result = await restAPI.ExecuteAsyncRequest(
+                (token) => restAPI.AsyncGetRequest<ResponseDetails>(STATUS_URL, token, false)
+            );
 
             return result.success;
         }

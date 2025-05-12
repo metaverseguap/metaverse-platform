@@ -46,22 +46,12 @@ namespace MainMenu.UI.AuthMenu
                 }
 
                 // Создаем токены для отмены выполнения параллельных потоков
-                CancellationTokenSource requestToken = new CancellationTokenSource();
-                CancellationTokenSource delayToken = new CancellationTokenSource();
-                Task<bool> ping = serverAPI.ServerStatus.IsServerOnline(requestToken.Token);
-                Task timeoutTask = Task.Delay(TimeSpan.FromSeconds(_updateIntervalSec), delayToken.Token);
-                
-                // Ожидаем завершения одной из задач
-                while (!ping.IsCompleted && !timeoutTask.IsCompleted)
-                {
-                    yield return null; 
-                }
+                Task<bool> ping = serverAPI.ServerStatus.IsServerOnline();
 
-                bool isOnline = ping.IsCompleted ? ping.Result : false;
-                
-                requestToken.Cancel();
-                delayToken.Cancel();
-                
+                yield return new WaitUntil(() => ping.IsCompleted);
+
+                bool isOnline = ping.Result;
+
                 _statusLabel.color = isOnline ? Color.green : Color.red;
                 _statusLabel.text = isOnline
                     ? LocalizationUtils.GetStringFromTable("MenuLocaleTable", "MainMenu.label.online")

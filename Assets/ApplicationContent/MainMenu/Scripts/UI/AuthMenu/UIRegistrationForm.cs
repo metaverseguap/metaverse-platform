@@ -27,7 +27,15 @@ namespace MainMenu.UI.AuthMenu
         {
             serverAPI = MVNetworkManager.singleton.NetworkStore.FileServer;
         }
-        
+
+        private void OnEnable()
+        {
+            if (MVNetworkManager.singleton != null)
+            {
+                MVNetworkManager.singleton.NetworkStore.MyPlayerInfo.Clear(); 
+            }
+        }
+
         /// <summary>
         /// <para>Отправляет форму на файловый сервер с запросом регистрации.</para>
         /// </summary>

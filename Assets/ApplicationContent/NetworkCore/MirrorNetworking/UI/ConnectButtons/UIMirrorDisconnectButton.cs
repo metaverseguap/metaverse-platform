@@ -68,6 +68,7 @@ namespace NetworkCore.MirrorNetworking.UI.ConnectButtons
             
             string menuScene = connection.NetworkStore.Configuration.SceneConfiguration.MenuSceneName;
             connection.NetworkStore.Connection.CurrentScene = null;
+            connection.NetworkStore.MyPlayerInfo.Clear();
             SceneManager.LoadScene(menuScene, LoadSceneMode.Single);
         }
     }

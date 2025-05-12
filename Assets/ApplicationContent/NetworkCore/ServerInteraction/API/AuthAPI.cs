@@ -1,4 +1,5 @@
 ﻿using MainMenu.Containers;
+using NetworkCore.MirrorNetworking;
 using NetworkCore.ServerInteraction.API.Utils;
 using NetworkCore.ServerInteraction.Type.Auth.Request;
 using NetworkCore.ServerInteraction.Type.Auth.Response;
@@ -49,7 +50,8 @@ namespace NetworkCore.ServerInteraction.API
             }
             
             apiContainer.SetAuthToken($"Bearer {response.token}");
-            
+            MVNetworkManager.singleton.NetworkStore.MyPlayerInfo.Login = login;
+
             exceptionMessage = "";
             return true;
         }
