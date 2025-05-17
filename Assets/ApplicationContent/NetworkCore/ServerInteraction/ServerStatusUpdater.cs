@@ -103,7 +103,7 @@ namespace NetworkCore.ServerInteraction
                 return MVNetworkManager.singleton.NetworkStore;
             }
 
-            return null;
+            return networkStore;
         }
 
         private APIContainer EnsureServerAPI()
@@ -113,7 +113,7 @@ namespace NetworkCore.ServerInteraction
                 return MVNetworkManager.singleton.NetworkStore.FileServer;
             }
 
-            return null;
+            return serverAPI;
         }
     }
 }

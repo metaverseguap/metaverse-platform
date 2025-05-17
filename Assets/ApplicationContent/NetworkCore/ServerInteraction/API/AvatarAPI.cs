@@ -59,6 +59,7 @@ namespace NetworkCore.ServerInteraction.API
                         info.AvatarAnimationControllerType = avatarAnimationControllerType;
                     }
                     info.Image = DataConverter.SpriteFromRowData(infoRO.imageData);
+                    info.UpdateDate = infoRO.updateDate;
 
                     result.Add(info);
                 }

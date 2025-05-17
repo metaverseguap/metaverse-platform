@@ -13,6 +13,7 @@ using NetworkCore.MirrorNetworking.Types.Devices;
 using NetworkCore.ServerInteraction.API.Utils;
 using NetworkCore.ServerInteraction.Type.Request;
 using NetworkCore.ServerInteraction.Type.Response;
+using NetworkCore.ServerInteraction.Type.Scene;
 using NetworkCore.ServerInteraction.Type.Scene.Response;
 
 namespace NetworkCore.ServerInteraction.API
@@ -23,6 +24,7 @@ namespace NetworkCore.ServerInteraction.API
     public sealed class SceneAPI : AbstractServerAPI
     {
         private const string ALL_SCENE_INFO_URL = "/api/scenes/all-info";
+        private const string SCENE_INFO_URL = "/api/scenes/info";
         private const string UPLOAD_SCENE_URL = "/api/scenes/upload-scene";
         private const string DELETE_SCENES_URL = "/api/scenes/delete-by-names";
         private const string SCENE_FILE_URL = "/api/scenes/file";
@@ -54,11 +56,12 @@ namespace NetworkCore.ServerInteraction.API
                     SceneInfo info = new SceneInfo();
                     info.Name = infoRO.name;
                     info.DisplayName = infoRO.displayName;
+                    info.SortIndex = infoRO.sortIndex;
+                    info.UpdateDate = infoRO.updateDate;
                     if (Enum.TryParse(infoRO.device, out Device device))
                     {
                         info.Device = device;
                     }
-                    info.SortIndex = infoRO.sortIndex;
                     info.Image = DataConverter.SpriteFromRowData(infoRO.imageData);
                     
                     result.Add(info);
@@ -72,6 +75,39 @@ namespace NetworkCore.ServerInteraction.API
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// <para>Получить информацию о сцене по ее имени.</para>
+        /// </summary>
+        /// <param name="sceneName">имя сцены</param>
+        /// <returns>информация о сцене или null, если сцены с таким именем не существует</returns>
+        public SceneInfo GetSceneInfo(string sceneName)
+        {
+            SceneInfoResponse response = restAPI.GetRequest<SceneInfoResponse>($"{SCENE_INFO_URL}/{sceneName}");
+
+            if (response.success)
+            {
+                SceneInfoDTO infoRO = response.sceneInfo;
+                SceneInfo info = new SceneInfo();
+                info.Name = infoRO.name;
+                info.DisplayName = infoRO.displayName;
+                info.SortIndex = infoRO.sortIndex;
+                info.UpdateDate = infoRO.updateDate;
+                if (Enum.TryParse(infoRO.device, out Device device))
+                {
+                    info.Device = device;
+                }
+                info.Image = DataConverter.SpriteFromRowData(infoRO.imageData);
+
+                return info;
+            }
+            else
+            {
+                AppLogger.Error($"Scene info request ended with error: {ResponseUtils.GetErrorMessagesAsString(response)}");
+            }
+
+            return null;
         }
 
         /// <summary>

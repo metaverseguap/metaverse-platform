@@ -1,4 +1,5 @@
-﻿using AppAvatars.Types;
+﻿using System;
+using AppAvatars.Types;
 using Global.Containers;
 using UnityEngine;
 
@@ -28,5 +29,10 @@ namespace MainMenu.Containers
         /// Изображение аватара.
         /// </summary>
         public Sprite Image { get; set; }
+        
+        /// <summary>
+        /// Дата обновления файла.
+        /// </summary>
+        public DateTime UpdateDate { get; set; }
     }
 }

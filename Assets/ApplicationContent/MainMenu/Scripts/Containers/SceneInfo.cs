@@ -1,4 +1,5 @@
-﻿using Global.Containers;
+﻿using System;
+using Global.Containers;
 using NetworkCore.MirrorNetworking.Types.Devices;
 using UnityEngine;
 
@@ -26,7 +27,7 @@ namespace MainMenu.Containers
         public string CachedPath { get; set; }
         
         /// <summary>
-        /// <para>Конвейерный метод задания поля <see cref="CachedPath"/></para>
+        /// <para>Конвейерный метод задания поля <see cref="CachedPath"/>.</para>
         /// </summary>
         /// <param name="path">путь до файла сцены в приложении</param>
         /// <returns>self</returns>
@@ -50,6 +51,22 @@ namespace MainMenu.Containers
         /// Индекс сортировки сцены.
         /// </summary>
         public int SortIndex { get; set; }
+        
+        /// <summary>
+        /// Дата обновления файла.
+        /// </summary>
+        public DateTime UpdateDate { get; set; }
+        
+        /// <summary>
+        /// <para>Конвейерный метод задания поля <see cref="UpdateDate"/>.</para>
+        /// </summary>
+        /// <param name="updateDate">дата обновления файла</param>
+        /// <returns>self</returns>
+        public SceneInfo WithUpdateDate(DateTime updateDate)
+        {
+            this.UpdateDate = updateDate;
+            return this;  
+        }
 
         /// <summary>
         /// <inheritdoc cref="ICloneableContainer.Clone"/>
@@ -64,6 +81,7 @@ namespace MainMenu.Containers
             clone.Device = Device;
             clone.Image = Image;
             clone.SortIndex = SortIndex;
+            clone.UpdateDate = UpdateDate;
 
             return clone;
         }

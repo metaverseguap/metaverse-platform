@@ -41,7 +41,7 @@ namespace Global.AssetPackages
         }
         
         /// <summary>
-        /// <para>Получить локальные аватары, соответсвующие аватарам сервера.</para>
+        /// <para>Получить локальные аватары, соответствующие аватарам сервера.</para>
         ///
         /// Если локальный аватар присутствует в списке аватаров сервера, то его не нужно повторно скачивать.
         /// Если локальный аватар отсутствует в списке аватаров сервера, то он будет удален с локальной машины
@@ -52,22 +52,30 @@ namespace Global.AssetPackages
         /// <returns>список локальных аватаров, имеющихся на сервере</returns>
         public static IList<AvatarInfo> GetMatchingLocalAvatars(IList<AvatarInfo> serverAvatarsInfos)
         {
-            ISet<string> remoteAvatarNames = new HashSet<string>();
+            IDictionary<string, AvatarInfo> remoteAvatars = new Dictionary<string, AvatarInfo>();
             foreach (AvatarInfo avatarInfo in serverAvatarsInfos)
             {
-                remoteAvatarNames.Add(avatarInfo.Name);
+                remoteAvatars[avatarInfo.Name] = avatarInfo;
             }
 
             IList<AvatarInfoDTO> localAvatarsInfos = GetAvatarInfos();
           
             for (int i = localAvatarsInfos.Count - 1; i >= 0; i--)
             {
-                if (!remoteAvatarNames.Contains(localAvatarsInfos[i].name))
+                AvatarInfoDTO localAvatar = localAvatarsInfos[i];
+                if (!remoteAvatars.ContainsKey(localAvatar.name))
                 {
-                    AppLogger.Log($"Deleting avatar {localAvatarsInfos[i].name} because it doesn't exist on server");
-                    string avatarFilePath = Path.Combine(ASSETS_DIRECTORY, localAvatarsInfos[i].name);
-                    FileUtils.RemoveFile(avatarFilePath);
-                    FileUtils.RemoveFile(avatarFilePath + ".meta");
+                    AppLogger.Log($"Deleting avatar {localAvatar.name} because it doesn't exist on server");
+                    RemoveLocalAvatarFile(localAvatar.name);
+                    localAvatarsInfos.RemoveAt(i);
+                    continue;
+                }
+
+                AvatarInfo remoteAvatar = remoteAvatars[localAvatar.name];
+                if (remoteAvatar.UpdateDate != localAvatar.updateDate)
+                {
+                    AppLogger.Log($"Deleting avatar {localAvatar.name} because it is outdated");
+                    RemoveLocalAvatarFile(localAvatar.name);
                     localAvatarsInfos.RemoveAt(i);
                 }
             }
@@ -75,6 +83,13 @@ namespace Global.AssetPackages
             return localAvatarsInfos
                 .Select(ToAvatarInfo)
                 .ToList();
+        }
+
+        private static void RemoveLocalAvatarFile(string avatarName)
+        {
+            string avatarFilePath = Path.Combine(ASSETS_DIRECTORY, avatarName);
+            FileUtils.RemoveFile(avatarFilePath);
+            FileUtils.RemoveFile(avatarFilePath + ".meta");
         }
 
         private static AvatarInfo ToAvatarInfo(AvatarInfoDTO dto)
@@ -87,6 +102,7 @@ namespace Global.AssetPackages
                 avatarInfo.AvatarAnimationControllerType = controllerType;
             }
             avatarInfo.Image = DataConverter.SpriteFromRowData(dto.imageData);
+            avatarInfo.UpdateDate = dto.updateDate;
                     
             return avatarInfo;
         }

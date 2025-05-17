@@ -25,14 +25,13 @@ namespace MainMenu.UI.LoadingScene
     /// <para>Скрипт загружающий информацию о аватарах и сценах с файлового сервера.</para>
     /// Скрипт так же загружает файлы аватаров.
     /// </summary>
-    public sealed class UIInfoLoadingMenu : MonoBehaviour
+    public sealed class UIAvatarLoadingMenu : MonoBehaviour
     {
         [SerializeField] private TMP_Text _loadingText;
         [SerializeField] [Scene] private string _selectAvatarScene;
 
         private APIContainer serverAPI;
         private AvatarStore avatarStore;
-        private SceneStore sceneStore;
 
         private void Awake()
         {
@@ -49,7 +48,6 @@ namespace MainMenu.UI.LoadingScene
         {
             MVNetworkManager networkManager = MVNetworkManager.singleton;
             avatarStore = networkManager.NetworkStore.FileStore.Avatars;
-            sceneStore = networkManager.NetworkStore.FileStore.Scenes;
             serverAPI = networkManager.NetworkStore.FileServer;
 
             // Загрузка ассетов с сервера в асинхронном режиме
@@ -71,8 +69,6 @@ namespace MainMenu.UI.LoadingScene
 
             loadingText = LocalizationUtils.GetStringFromTable("MenuLocaleTable", "MainMenu.label.loading.scenes");
             yield return ExecuteThenAwaitFrame(() => _loadingText.text = loadingText);
-
-            SceneInfoDownloading();
 
             // Ждем один кадр
             yield return null;
@@ -118,6 +114,7 @@ namespace MainMenu.UI.LoadingScene
             dto.displayName = avatarInfo.DisplayName;
             dto.animationControllerType = avatarInfo.AvatarAnimationControllerType.ToString();
             dto.imageData = DataConverter.SpriteToRowData(avatarInfo.Image);
+            dto.updateDate = avatarInfo.UpdateDate;
 
             return dto;
         }
@@ -165,21 +162,6 @@ namespace MainMenu.UI.LoadingScene
 
                     AppLogger.Log($"Asset {newAvatar.Name} was loaded");
                 }
-            }
-        }
-
-        private void SceneInfoDownloading()
-        {
-            if (sceneStore.SceneInfos.Count == 0)
-            {
-                IList<SceneInfo> serverScenesInfos = serverAPI.Scene.GetAllSceneInfo();
-                IList<SceneInfo> localScenesInfos = SceneAssetPackages.GetMatchingLocalScenes(serverScenesInfos);
-                serverScenesInfos = ContainerUtils.RemoveMatchingElements(serverScenesInfos, localScenesInfos);
-
-                sceneStore.SceneInfos =
-                    localScenesInfos
-                        .Concat(serverScenesInfos)
-                        .ToList();
             }
         }
     }

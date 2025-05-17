@@ -55,29 +55,44 @@ namespace Global.AssetPackages
         /// <returns>список локальных сцен, имеющихся на сервере</returns>
         public static IList<SceneInfo> GetMatchingLocalScenes(IList<SceneInfo> serverScenesInfos)
         {
-            ISet<string> remoteSceneNames = new HashSet<string>();
+            IDictionary<string, SceneInfo> remoteScenes = new Dictionary<string, SceneInfo>();
             foreach (SceneInfo sceneInfo in serverScenesInfos)
             {
-                remoteSceneNames.Add(sceneInfo.Name);
+                remoteScenes[sceneInfo.Name] = sceneInfo;
             }
 
-            IList<SceneInfoDTO> localScenesInfos = GetSceneInfos();
+            IList<SceneInfoDTO> localScenes = GetSceneInfos();
 
-            for (int i = localScenesInfos.Count - 1; i >= 0; i--)
+            for (int i = localScenes.Count - 1; i >= 0; i--)
             {
-                if (!remoteSceneNames.Contains(localScenesInfos[i].name))
+                SceneInfoDTO localScene = localScenes[i];
+                if (!remoteScenes.ContainsKey(localScene.name))
                 {
-                    AppLogger.Log($"Deleting scene {localScenesInfos[i].name} because it doesn't exist on server");
-                    string sceneFilePath = Path.Combine(ASSETS_DIRECTORY, localScenesInfos[i].name);
-                    FileUtils.RemoveFile(sceneFilePath);
-                    FileUtils.RemoveFile(sceneFilePath + ".meta");
-                    localScenesInfos.RemoveAt(i);
+                    AppLogger.Log($"Deleting scene {localScene.name} because it doesn't exist on server");
+                    RemoveSceneFile(localScene.name);
+                    localScenes.RemoveAt(i);
+                    continue;
+                }
+                
+                SceneInfo remoteAvatar = remoteScenes[localScene.name];
+                if (remoteAvatar.UpdateDate != localScene.updateDate)
+                {
+                    AppLogger.Log($"Deleting scene {localScene.name} because it is outdated");
+                    RemoveSceneFile(localScene.name);
+                    localScenes.RemoveAt(i);
                 }
             }
 
-            return localScenesInfos
+            return localScenes
                 .Select(ToSceneInfo)
                 .ToList();
+        }
+
+        private static void RemoveSceneFile(string sceneName)
+        {
+            string sceneFilePath = Path.Combine(ASSETS_DIRECTORY, sceneName);
+            FileUtils.RemoveFile(sceneFilePath);
+            FileUtils.RemoveFile(sceneFilePath + ".meta");
         }
 
         private static SceneInfo ToSceneInfo(SceneInfoDTO dto)
@@ -91,6 +106,7 @@ namespace Global.AssetPackages
             }
             sceneInfo.SortIndex = dto.sortIndex;
             sceneInfo.Image = DataConverter.SpriteFromRowData(dto.imageData);
+            sceneInfo.UpdateDate = dto.updateDate;
                 
             return sceneInfo;
         }
