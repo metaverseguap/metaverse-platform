@@ -1,4 +1,6 @@
-﻿namespace NetworkCore.ServerInteraction.Type.Avatar
+﻿using System;
+
+namespace NetworkCore.ServerInteraction.Type.Avatar
 {
     /// <summary>
     /// <para>Объект передачи данных информации об аватаре.</para>
@@ -31,5 +33,10 @@
         /// Изображение аватара.
         /// </summary>
         public byte[] imageData { get; set; }
+
+        /// <summary>
+        /// Дата обновления файла.
+        /// </summary>
+        public DateTime updateDate { get; set; }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace NetworkCore.ServerInteraction.Type.Scene
+﻿using System;
+
+namespace NetworkCore.ServerInteraction.Type.Scene
 {
     /// <summary>
     /// <para>Объект передачи данных информации о сцене.</para>
@@ -36,5 +38,10 @@
         /// Изображение сцены.
         /// </summary>
         public byte[] imageData { get; set; }
+        
+        /// <summary>
+        /// Дата обновления файла.
+        /// </summary>
+        public DateTime updateDate { get; set; }
     }
 }

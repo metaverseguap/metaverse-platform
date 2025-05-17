@@ -66,39 +66,75 @@ namespace MainMenu.UI.LoadingScene
             // Ждем один кадр, что бы сцена загрузилась
             yield return null;
             
-            // 1. Загрузка сцены из кеша
-            if (TryLoadSceneFromCache())
+            // 1. Подключение к офлайн сцене
+            if (OfflineSceneConnection())
             {
                 yield break;
             }
+            
+            SceneInfoDTO downloadedScene = null;
+            SceneInfo loadingSceneInfo = store.Connection.CurrentScene;
+            
+            SceneInfo serverScene = serverApi.Scene.GetSceneInfo(loadingSceneInfo.Name);
+            SceneInfoDTO localScene = GetLocalSceneInfo(loadingSceneInfo);
+            if (localScene != null && serverScene.UpdateDate == localScene.updateDate)
+            {
+                // 2.1.1. Загрузка сцены из кеша
+                if (TryLoadSceneFromCache())
+                {
+                    yield break;
+                }
 
-            // 2. Загрузка файла сцены с сервера
-            string loadingText = LocalizationUtils.GetStringFromTable("MenuLocaleTable", "MainMenu.label.loading.scenes");
-            yield return ExecuteThenAwaitFrame(() => _loadingText.text = loadingText);
-            
-            Task<SceneInfoDTO> asyncDownload = SceneDownloading();
-            yield return new WaitUntil(() => asyncDownload.IsCompleted);
-            SceneInfoDTO scene = asyncDownload.Result;
-            if (scene == null)
-            {
-                SceneInfo loadingScene = store.Connection.CurrentScene;
-                AppLogger.Error($"Failed to download scene {loadingScene.Name} from server");
-                connection.StartOfflineScene();
-                yield break;
-            }
+                // 2.1.2. Загрузка файла сцены с сервера
+                string loadingText = LocalizationUtils.GetStringFromTable("MenuLocaleTable", "MainMenu.label.loading.scenes");
+                yield return ExecuteThenAwaitFrame(() => _loadingText.text = loadingText);
 
-            // 3. Загрузка Bundle
-            if (TryConnectByBundleCache(scene))
+                Task<SceneInfoDTO> asyncDownload = SceneDownloading();
+                yield return new WaitUntil(() => asyncDownload.IsCompleted);
+                downloadedScene = asyncDownload.Result;
+                
+                if (downloadedScene == null)
+                {
+                    SceneInfo loadingScene = store.Connection.CurrentScene;
+                    AppLogger.Error($"Failed to download scene {loadingScene.Name} from server");
+                    connection.StartOfflineScene();
+                    yield break;
+                }
+                
+                // 2.1.3. Загрузка Bundle
+                if (TryConnectByBundleCache(downloadedScene))
+                {
+                    yield break;
+                }
+            }
+            else
             {
-                yield break;
+                // 2.2.1. Сбрасываем кеш
+                ClearSceneCache(loadingSceneInfo, serverScene.UpdateDate);
+
+                // 2.2.2. Загрузка файла сцены с сервера
+                string loadingText = LocalizationUtils.GetStringFromTable("MenuLocaleTable", "MainMenu.label.loading.scenes");
+                yield return ExecuteThenAwaitFrame(() => _loadingText.text = loadingText);
+
+                Task<SceneInfoDTO> asyncReDownload = SceneReDownloading();
+                yield return new WaitUntil(() => asyncReDownload.IsCompleted);
+                downloadedScene = asyncReDownload.Result;
+                
+                if (downloadedScene == null)
+                {
+                    SceneInfo loadingScene = store.Connection.CurrentScene;
+                    AppLogger.Error($"Failed to download scene {loadingScene.Name} from server");
+                    connection.StartOfflineScene();
+                    yield break;
+                }
             }
             
-            yield return StartCoroutine(LoadBundleToCache(scene));
+            yield return StartCoroutine(LoadBundleToCache(downloadedScene));
             
-            AssetBundle assetBundle = AssetBundleCache.GetBundle(scene.name);
+            AssetBundle assetBundle = AssetBundleCache.GetBundle(downloadedScene.name);
             if (assetBundle == null)
             {
-                AppLogger.Error($"Failed to get scene bundle {scene.name} from cache");
+                AppLogger.Error($"Failed to get scene bundle {downloadedScene.name} from cache");
                 connection.StartOfflineScene();
                 yield break;
             }
@@ -106,7 +142,7 @@ namespace MainMenu.UI.LoadingScene
             ConnectToSceneByPath(assetBundle);
         }
 
-        private bool TryLoadSceneFromCache()
+        private bool OfflineSceneConnection()
         {
             SceneInfo loadingScene = store.Connection.CurrentScene;
             if (loadingScene.Name == OfflineSceneConstants.SCENE_INFO.Name)
@@ -114,6 +150,19 @@ namespace MainMenu.UI.LoadingScene
                 connection.ConnectToNetwork();
                 return true;
             }
+            
+            return false;
+        }
+        
+        private static SceneInfoDTO GetLocalSceneInfo(SceneInfo loadingSceneInfo)
+        {
+            IList<SceneInfoDTO> localScenes = SceneAssetPackages.GetSceneInfos();
+            return localScenes.SingleOrDefault(scene => scene.name == loadingSceneInfo.Name);
+        }
+        
+        private bool TryLoadSceneFromCache()
+        {
+            SceneInfo loadingScene = store.Connection.CurrentScene;
 
             // Path устанавливается при создании Bundle
             // если он сохранен в store, значит Bundle уже загружался
@@ -141,6 +190,23 @@ namespace MainMenu.UI.LoadingScene
             return existScene;
         }
 
+        private async Task<SceneInfoDTO> SceneReDownloading()
+        {
+            SceneInfo loadingScene = store.Connection.CurrentScene;
+            IList<SceneInfoDTO> localScenes = SceneAssetPackages.GetSceneInfos();
+
+            for (int i = localScenes.Count - 1; i >= 0; i--)
+            {
+                if (localScenes[i].name == loadingScene.Name)
+                {
+                    localScenes.RemoveAt(i);
+                    break;
+                }
+            }
+
+            return await DownloadSceneFile(loadingScene, localScenes);
+        }
+
         private async Task<SceneInfoDTO> DownloadSceneFile(SceneInfo loadingScene, IList<SceneInfoDTO> localScenes)
         {
             bool success = await serverApi.Scene.GetSceneFile(loadingScene);
@@ -160,12 +226,13 @@ namespace MainMenu.UI.LoadingScene
             newScene.displayName = loadingScene.DisplayName;
             newScene.device = loadingScene.Device.ToString();
             newScene.imageData = DataConverter.SpriteToRowData(loadingScene.Image);
+            newScene.updateDate = loadingScene.UpdateDate;
 
             IList<SceneInfoDTO> allScenes = new List<SceneInfoDTO>();
 
             foreach (SceneInfoDTO scene in localScenes)
             {
-                if (scene.name != loadingScene.Name)
+                if (scene.name != newScene.name)
                 {
                     allScenes.Add(scene);
                 }
@@ -188,6 +255,27 @@ namespace MainMenu.UI.LoadingScene
 
             return false;
         }
+        
+        private void ClearSceneCache(SceneInfo loadingSceneInfo, DateTime updateDate)
+        {
+            SceneInfo newSceneCache = 
+                loadingSceneInfo
+                    .WithCachedPath(null)
+                    .WithUpdateDate(updateDate);
+
+            UpdateSceneCache(newSceneCache);
+            RemoveAssetBundle(store.Connection.CurrentScene.Name);
+        }
+        
+        private static void RemoveAssetBundle(string bundleName)
+        {
+            AssetBundle cachedBundle = AssetBundleCache.GetBundle(bundleName);
+            if (cachedBundle != null)
+            {
+                cachedBundle.Unload(true);
+                AssetBundleCache.RemoveBundle(bundleName); 
+            }
+        }
 
         private void ConnectToSceneByPath(AssetBundle assetBundle)
         {
@@ -209,12 +297,17 @@ namespace MainMenu.UI.LoadingScene
         private void CacheScenePath(string[] paths)
         {
             SceneInfo loadingScene = store.Connection.CurrentScene;
-            
+
             string newScenePath = paths[0];
             SceneInfo newSceneCache = loadingScene.WithCachedPath(newScenePath);
-            
+
+            UpdateSceneCache(newSceneCache);
+        }
+
+        private void UpdateSceneCache(SceneInfo newSceneCache)
+        {
             store.Connection.CurrentScene = newSceneCache;
-            
+
             IList<SceneInfo> scenesCache = store.FileStore.Scenes.SceneInfos;
             foreach (SceneInfo scene in scenesCache)
             {
@@ -224,6 +317,7 @@ namespace MainMenu.UI.LoadingScene
                     break;
                 }
             }
+
             store.FileStore.Scenes.SceneInfos = scenesCache;
         }
 
