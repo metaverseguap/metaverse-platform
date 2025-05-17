@@ -1,4 +1,6 @@
+using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Global.Logger;
 using Global.UI;
 using Global.UI.ScrollList;
@@ -25,6 +27,7 @@ namespace Player.Tablet.PC.UI
 
         [Header("Scroll List")]
         [SerializeField] private UIScrollList _hostsList;
+
         [SerializeField] private UIHostItem _hostItemPrefab;
 
         [Header("Buttons")] 
@@ -38,15 +41,31 @@ namespace Player.Tablet.PC.UI
         private IList<HostInfo> hosts = new List<HostInfo>();
         private UserInfo currentUser;
 
+        private Coroutine refreshCoroutine;
+        private bool enableMenuRefresh = false;
+
         private void OnEnable()
         {
             EnsureNetwork();
             currentUser = EnsureUserInfo(serverAPI);
-            RefreshMenu();
+            enableMenuRefresh = true;
+            if (refreshCoroutine == null)
+            {
+                refreshCoroutine = StartCoroutine(RefreshMenuLoop());
+            }
+
+            _hostsList.OnItemChangeValue += ActivateConnectButton;
         }
 
-        private void OnDestroy()
+        private void OnDisable()
         {
+            enableMenuRefresh = false;
+            if (refreshCoroutine != null)
+            {
+                StopCoroutine(refreshCoroutine);
+                refreshCoroutine = null;
+            }
+
             _hostsList.OnItemChangeValue -= ActivateConnectButton;
         }
 
@@ -81,23 +100,51 @@ namespace Player.Tablet.PC.UI
             return serverAPI.User.GetMyUser();
         }
 
-        private void RefreshMenu()
+        private IEnumerator RefreshMenuLoop()
         {
-            if (serverAPI == null)
+            while (store == null || serverAPI == null)
             {
-                return;
+                EnsureNetwork();
+                yield return null;
             }
-            
-            RefreshSceneInfo();
-            RefreshHostsList();
-            RefreshButtons();
+
+            ClearMenu();
+
+            int updateInterval = serverAPI.Hosts.HostRefreshInterval;
+
+            while (enableMenuRefresh)
+            {
+                yield return RefreshSceneInfo();
+                yield return RefreshHostsList();
+                RefreshButtons();
+
+                yield return new WaitForSeconds(updateInterval);
+            }
         }
 
-        private void RefreshSceneInfo()
+        private void ClearMenu()
         {
             _sceneDropdown.ClearOptions();
             sceneInfo.Clear();
-            sceneInfo = GetSceneInfo();
+            _hostsList.Clear();
+            hosts.Clear();
+            RefreshButtons();
+        }
+
+        private IEnumerator RefreshSceneInfo()
+        {
+            Task<IList<SceneInfo>> request = GetSceneInfo();
+            yield return new WaitUntil(() => request.IsCompleted);
+            IList<SceneInfo> newScenes = request.Result;
+
+            if (!NeedRefresh(newScenes))
+            {
+                yield break;
+            }
+
+            _sceneDropdown.ClearOptions();
+            sceneInfo.Clear();
+            sceneInfo = newScenes;
 
             foreach (SceneInfo info in sceneInfo)
             {
@@ -110,7 +157,25 @@ namespace Player.Tablet.PC.UI
             _sceneDropdown.Reset();
         }
 
-        private IList<SceneInfo> GetSceneInfo()
+        private bool NeedRefresh(IList<SceneInfo> newScenes)
+        {
+            if (newScenes.Count != sceneInfo.Count)
+            {
+                return true;
+            }
+
+            for (int i = 0; i < newScenes.Count; i++)
+            {
+                if (newScenes[i].Name != sceneInfo[i].Name)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private async Task<IList<SceneInfo>> GetSceneInfo()
         {
             IList<SceneInfo> result = new List<SceneInfo>();
 
@@ -120,8 +185,15 @@ namespace Player.Tablet.PC.UI
                 cachedScenes.Add(scene.Name, scene);
             }
 
-            IList<SceneInfo> remoteScenes = serverAPI.Scene.GetAllSceneInfo();
-            foreach (SceneInfo scene in remoteScenes)
+            var needRefresh = await NeedRefresh(cachedScenes);
+
+            if (!needRefresh)
+            {
+                return store.FileStore.Scenes.SceneInfos;
+            }
+
+            IList<SceneInfo> request = await serverAPI.Scene.GetAllSceneInfoAsync();
+            foreach (SceneInfo scene in request)
             {
                 if (cachedScenes.ContainsKey(scene.Name))
                 {
@@ -131,22 +203,55 @@ namespace Player.Tablet.PC.UI
                 result.Add(scene);
             }
 
+            store.FileStore.Scenes.SceneInfos = result;
+
             return result;
         }
 
-        private void RefreshHostsList()
+        private async Task<bool> NeedRefresh(Dictionary<string, SceneInfo> cachedScenes)
+        {
+            IList<SceneUpdateInfo> updateInfos = await serverAPI.Scene.GetAllSceneUpdatesInfoAsync();
+
+            if (cachedScenes.Count != updateInfos.Count)
+            {
+                return true;
+            }
+
+            foreach (SceneUpdateInfo updateInfo in updateInfos)
+            {
+                if (!cachedScenes.ContainsKey(updateInfo.Name))
+                {
+                    return true;
+                }
+
+                if (cachedScenes[updateInfo.Name].UpdateDate != updateInfo.UpdateDate)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private IEnumerator RefreshHostsList()
         {
             if (sceneInfo.Count == 0 || sceneInfo.Count != _sceneDropdown.options.Count)
             {
-                return;
+                yield break;
+            }
+
+            Task<IList<HostInfo>> request = serverAPI.Hosts.GetHostsBySceneNameAsync(sceneInfo[_sceneDropdown.value].Name);
+            yield return new WaitUntil(() => request.IsCompleted);
+            IList<HostInfo> newHosts = request.Result;
+
+            if (!NeedRefresh(newHosts))
+            {
+                yield break;
             }
 
             _hostsList.Clear();
             hosts.Clear();
-
-            IList<HostInfo> hostsFromServer = serverAPI.Hosts.GetHostsBySceneName(sceneInfo[_sceneDropdown.value].Name);
-
-            foreach (var host in hostsFromServer)
+            foreach (var host in newHosts)
             {
                 if (host.Login == currentUser.Login)
                 {
@@ -160,14 +265,30 @@ namespace Player.Tablet.PC.UI
             }
         }
 
+        private bool NeedRefresh(IList<HostInfo> newHosts)
+        {
+            if (newHosts.Count != hosts.Count)
+            {
+                return true;
+            }
+
+            for (int i = 0; i < newHosts.Count; i++)
+            {
+                if (newHosts[i].Login != hosts[i].Login)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         private void RefreshButtons()
         {
             _becomeAHostButton.interactable =
                 sceneInfo.Count > 0
                 && sceneInfo.Count == _sceneDropdown.options.Count
                 && MVNetworkManager.IsOnline();
-
-            _hostsList.OnItemChangeValue += ActivateConnectButton;
         }
 
         private void ActivateConnectButton()

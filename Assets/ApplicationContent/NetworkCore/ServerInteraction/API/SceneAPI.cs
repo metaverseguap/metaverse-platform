@@ -23,6 +23,7 @@ namespace NetworkCore.ServerInteraction.API
     /// </summary>
     public sealed class SceneAPI : AbstractServerAPI
     {
+        private const string ALL_SCENE_UPDATES_INFO_URL = "/api/scenes/all-updates";
         private const string ALL_SCENE_INFO_URL = "/api/scenes/all-info";
         private const string SCENE_INFO_URL = "/api/scenes/info";
         private const string UPLOAD_SCENE_URL = "/api/scenes/upload-scene";
@@ -72,6 +73,110 @@ namespace NetworkCore.ServerInteraction.API
             else
             {
                 AppLogger.Error($"Scene info request ended with error: {ResponseUtils.GetErrorMessagesAsString(response)}");
+            }
+
+            return result;
+        }
+        
+        /// <summary>
+        /// <para>Асинхронная версия <see cref="GetAllSceneInfo"/>.</para>
+        /// </summary>
+        /// <returns><inheritdoc cref="GetAllSceneInfo"/></returns>
+        public async Task<IList<SceneInfo>> GetAllSceneInfoAsync()
+        {
+            IList<SceneInfo> result = new List<SceneInfo>();
+            
+            SceneInfosResponse response = await restAPI.ExecuteAsyncRequest(
+                (token) => restAPI.AsyncGetRequest<SceneInfosResponse>(ALL_SCENE_INFO_URL, token, false)
+            );
+
+            if (response.success)
+            {
+                foreach (var infoRO in response.infoList)
+                {
+                    SceneInfo info = new SceneInfo();
+                    info.Name = infoRO.name;
+                    info.DisplayName = infoRO.displayName;
+                    info.SortIndex = infoRO.sortIndex;
+                    info.UpdateDate = infoRO.updateDate;
+                    if (Enum.TryParse(infoRO.device, out Device device))
+                    {
+                        info.Device = device;
+                    }
+                    info.Image = DataConverter.SpriteFromRowData(infoRO.imageData);
+                    
+                    result.Add(info);
+                }
+
+                return result;
+            }
+            else
+            {
+                AppLogger.Error($"Scene info request ended with error: {ResponseUtils.GetErrorMessagesAsString(response)}");
+            }
+
+            return result;
+        }
+        
+        /// <summary>
+        /// <para>Получает информацию о датах обновления сцен хранящихся на файловом сервере.</para>
+        /// </summary>
+        /// <returns>информация о датах обновления сцен хранящихся на файловом сервере</returns>
+        public IList<SceneUpdateInfo> GetAllSceneUpdatesInfo()
+        {
+            IList<SceneUpdateInfo> result = new List<SceneUpdateInfo>();
+
+            SceneUpdateInfosResponse response = restAPI.GetRequest<SceneUpdateInfosResponse>(ALL_SCENE_UPDATES_INFO_URL);
+
+            if (response.success)
+            {
+                foreach (var infoRO in response.updateInfos)
+                {
+                    SceneUpdateInfo info = new SceneUpdateInfo();
+                    info.Name = infoRO.name;
+                    info.UpdateDate = infoRO.updateDate;
+                    
+                    result.Add(info);
+                }
+
+                return result;
+            }
+            else
+            {
+                AppLogger.Error($"Scene update info request ended with error: {ResponseUtils.GetErrorMessagesAsString(response)}");
+            }
+
+            return result;
+        }
+        
+        /// <summary>
+        /// <para>Асинхронный вариант метода <see cref="GetAllSceneUpdatesInfo"/>.</para>
+        /// </summary>
+        /// <returns><inheritdoc cref="GetAllSceneUpdatesInfo"/></returns>
+        public async Task<IList<SceneUpdateInfo>> GetAllSceneUpdatesInfoAsync()
+        {
+            IList<SceneUpdateInfo> result = new List<SceneUpdateInfo>();
+
+            SceneUpdateInfosResponse response = await restAPI.ExecuteAsyncRequest(
+                (token) => restAPI.AsyncGetRequest<SceneUpdateInfosResponse>(ALL_SCENE_UPDATES_INFO_URL, token, false)
+            );
+
+            if (response.success)
+            {
+                foreach (var infoRO in response.updateInfos)
+                {
+                    SceneUpdateInfo info = new SceneUpdateInfo();
+                    info.Name = infoRO.name;
+                    info.UpdateDate = infoRO.updateDate;
+                    
+                    result.Add(info);
+                }
+
+                return result;
+            }
+            else
+            {
+                AppLogger.Error($"Scene update info request ended with error: {ResponseUtils.GetErrorMessagesAsString(response)}");
             }
 
             return result;

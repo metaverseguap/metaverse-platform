@@ -16,7 +16,14 @@ namespace Global.UI
         public static void Reset(this TMP_Dropdown dropdown)
         {
             dropdown.value = 0;
-            dropdown.captionText.text = dropdown.options[dropdown.value].text;
+            if (dropdown.options == null || dropdown.options.Count == 0)
+            {
+                dropdown.captionText.text = "";
+            }
+            else
+            {
+                dropdown.captionText.text = dropdown.options[dropdown.value].text;
+            }
         }
 
         /// <summary>
@@ -28,6 +35,11 @@ namespace Global.UI
         /// <param name="value">значение выпадающего списка</param>
         public static void ForceSetValue(this TMP_Dropdown dropdown, int value)
         {
+            if (value > dropdown.options.Count - 1 || value < 0)
+            {
+                return;
+            }
+            
             dropdown.value = value;
             dropdown.captionText.text = dropdown.options[dropdown.value].text;
         }
