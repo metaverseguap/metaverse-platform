@@ -89,8 +89,10 @@ namespace NetworkCore.ServerInteraction.API
 
         /// <summary>
         /// <para>Обновить свой статус на сервере.</para>
+        ///
+        /// Данный метод работает в асинхронном режиме
         /// </summary>
-        public async Task UpdateMyServerStatus()
+        public async Task UpdateMyServerStatusAsync()
         {
             ResponseDetails response = await restAPI.ExecuteAsyncRequest(
                 (token) => restAPI.AsyncGetRequest<ResponseDetails>(UPDATE_USER_STATUS_URL, token, false)

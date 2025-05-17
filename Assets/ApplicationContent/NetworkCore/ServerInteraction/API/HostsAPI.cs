@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Global.Logger;
 using MainMenu.Containers;
 using NetworkCore.ServerInteraction.API.Utils;
@@ -19,14 +20,23 @@ namespace NetworkCore.ServerInteraction.API
         private const string HOST_BY_LOGIN_URL = "/api/hosts/info";
         private const string CREATE_HOSTS_URL = "/api/hosts/create";
         private const string DELETE_HOSTS_URL = "/api/hosts/delete";
+        
+        private readonly int hostRefreshInterval;
 
         /// <summary>
         /// <para>Конструктор.</para>
         /// </summary>
         /// <param name="serverUri">uri файлового сервера</param>
-        public HostsAPI(string serverUri) : base(serverUri)
+        /// <param name="hostRefreshInterval">интервал запроса обновления хостов</param>
+        public HostsAPI(string serverUri, int hostRefreshInterval) : base(serverUri)
         {
+            this.hostRefreshInterval = hostRefreshInterval;
         }
+        
+        /// <summary>
+        /// Интервал запроса обновления хостов (в секундах).
+        /// </summary>
+        public int HostRefreshInterval => hostRefreshInterval;
 
         /// <summary>
         /// <para>Получает информацию о хостах указанной сцены.</para>
@@ -39,6 +49,46 @@ namespace NetworkCore.ServerInteraction.API
             GetParam sceneNameParam = GetParam.Form("sceneName", sceneName);
 
             SinglesceneHostsResponse response = restAPI.GetRequest<SinglesceneHostsResponse>(HOSTS_URL, sceneNameParam);
+
+            if (response.success)
+            {
+                foreach (var infoRO in response.hosts)
+                {
+                    HostInfo info = new HostInfo();
+                    info.Login = infoRO.login;
+                    info.DisplayName = infoRO.name;
+                    info.HostIP = infoRO.hostIP;
+                    info.Port = infoRO.port;
+                    info.SceneName = infoRO.sceneName;
+
+                    result.Add(info);
+                }
+
+                return result;
+            }
+            else
+            {
+                AppLogger.Error($"Host info request ended with error: {ResponseUtils.GetErrorMessagesAsString(response)}");
+            }
+
+            return result;
+        }
+        
+        /// <summary>
+        /// <para>Получает информацию о хостах указанной сцены.</para>
+        ///
+        /// Данный метод работает в асинхронном режиме
+        /// </summary>
+        /// <param name="sceneName">имя сцены</param>
+        /// <returns>информация о всех хостах указанной сцены</returns>
+        public async Task<IList<HostInfo>> GetHostsBySceneNameAsync(string sceneName)
+        {
+            IList<HostInfo> result = new List<HostInfo>();
+            GetParam sceneNameParam = GetParam.Form("sceneName", sceneName);
+
+            SinglesceneHostsResponse response = await restAPI.ExecuteAsyncRequest(
+                (token) => restAPI.AsyncGetRequest<SinglesceneHostsResponse>(HOSTS_URL, token, false, sceneNameParam)
+            );
 
             if (response.success)
             {

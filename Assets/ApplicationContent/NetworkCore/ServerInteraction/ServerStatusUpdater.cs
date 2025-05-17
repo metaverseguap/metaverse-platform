@@ -89,7 +89,7 @@ namespace NetworkCore.ServerInteraction
                 string login = networkStore.MyPlayerInfo.Login;
                 if (!string.IsNullOrEmpty(login))
                 {
-                    Task request = serverAPI.User.UpdateMyServerStatus();
+                    Task request = serverAPI.User.UpdateMyServerStatusAsync();
 
                     yield return new WaitUntil(() => request.IsCompleted);
                 }

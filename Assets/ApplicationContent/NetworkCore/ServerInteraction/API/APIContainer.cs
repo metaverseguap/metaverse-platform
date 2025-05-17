@@ -92,7 +92,7 @@ namespace NetworkCore.ServerInteraction.API
             this.Scene = new SceneAPI(serverUri);
             this.Avatar = new AvatarAPI(serverUri);
             this.User = new UserAPI(serverUri, setups.StatusUpdateInterval);
-            this.Hosts = new HostsAPI(serverUri);
+            this.Hosts = new HostsAPI(serverUri, setups.StatusUpdateInterval);
             this.ServerStatus = new StatusAPI(serverUri);
             
             apiList = new List<AbstractServerAPI>()
