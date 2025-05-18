@@ -18,7 +18,7 @@ namespace NetworkCore.ServerInteraction.API
         /// <param name="serverUri">uri файлового сервера</param>
         protected AbstractServerAPI(string serverUri)
         {
-            this.restAPI = new RestAPI(serverUri);
+            this.restAPI = RestAPI.singleton(serverUri);
         }
         
         /// <summary>
