@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -8,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Global.Files;
 using Global.Logger;
+using NetworkCore.ServerInteraction.Type.Auth.Response;
 using NetworkCore.ServerInteraction.Type.Request;
 using NetworkCore.ServerInteraction.Type.Response;
 using NetworkCore.ServerInteraction.Type.Response.Details;
@@ -21,14 +23,42 @@ namespace NetworkCore.ServerInteraction.API.Utils
     /// </summary>
     public sealed class RestAPI
     {
-        private readonly HttpClient client = new HttpClient();
+        #region Singleton
+
+        private static RestAPI instance = null;
+
+        /// <summary>
+        /// <para>singleton конструктор.</para>
+        /// </summary>
+        /// <param name="baseUrl">основной url сервера. Он будет подставляться в начало конкретных запросов</param>
+        /// <returns>instance</returns>
+        public static RestAPI singleton(string baseUrl)
+        {
+            if (instance == null)
+            {
+                instance = new RestAPI(baseUrl);
+            }
+
+            return instance;
+        }
+
+        #endregion
+        
+        private const string REFRESH_TOKEN_URL = "/api/auth/refresh";
+        
+        private readonly HttpClient client = new HttpClient(new HttpClientHandler
+        {
+            UseCookies = true
+        });
+        
         private TimeSpan asyncTimeout;
 
         /// <summary>
         /// <para>Конструктор.</para>
+        /// Конструктор приватный. Используйте метод <see cref="RestAPI.singleton"/>
         /// </summary>
-        /// <param name="baseUrl">основной url сервера. Он будет подставлятся в начало конкретных запросов</param>
-        public RestAPI(string baseUrl)
+        /// <param name="baseUrl">основной url сервера. Он будет подставляться в начало конкретных запросов</param>
+        private RestAPI(string baseUrl)
         {
             client.BaseAddress = new Uri(baseUrl);
             client.Timeout = TimeSpan.FromSeconds(10);
@@ -81,6 +111,12 @@ namespace NetworkCore.ServerInteraction.API.Utils
         public R GetRequest<R>(string url, params GetParam[] parameters)
             where R : ResponseDetails, new()
         {
+            return GetRequest<R>(url, true, parameters);
+        }
+
+        private R GetRequest<R>(string url, bool refreshToken, GetParam[] parameters)
+            where R : ResponseDetails, new()
+        {
             var urlWithParams = URLWithParams(url, parameters);
 
             try
@@ -92,13 +128,20 @@ namespace NetworkCore.ServerInteraction.API.Utils
                     string strResult = response.Content.ReadAsStringAsync().Result;
                     return JsonConvert.DeserializeObject<R>(strResult);
                 }
-                else
-                {
-                    string message = $"GET request failed. Code: {response.StatusCode}";
-                    AppLogger.Error(message);
 
-                    return ErrorResponse<R>(message);
+                if (response.StatusCode == HttpStatusCode.Unauthorized && refreshToken)
+                {
+                    AppLogger.Log("Access token expired. Trying to refresh...");
+                    bool isTokenSuccessfullyRefreshed = TryRefreshAccessToken();
+                    if (isTokenSuccessfullyRefreshed)
+                    {
+                        return GetRequest<R>(urlWithParams, false, parameters);
+                    }
                 }
+
+                string message = $"GET request failed. Code: {response.StatusCode}";
+                AppLogger.Error(message);
+                return ErrorResponse<R>(message);
             }
             catch (Exception exception)
             {
@@ -137,6 +180,12 @@ namespace NetworkCore.ServerInteraction.API.Utils
         public async Task<R> AsyncGetRequest<R>(string url, CancellationToken token, bool log, params GetParam[] parameters)
             where R : ResponseDetails, new()
         {
+            return await AsyncGetRequest<R>(url, token, log, true, parameters);
+        }
+        
+        private async Task<R> AsyncGetRequest<R>(string url, CancellationToken token, bool log, bool refreshToken, GetParam[] parameters)
+            where R : ResponseDetails, new()
+        {
             var urlWithParams = URLWithParams(url, parameters);
 
             try
@@ -148,16 +197,23 @@ namespace NetworkCore.ServerInteraction.API.Utils
                     string strResult = await response.Content.ReadAsStringAsync();
                     return JsonConvert.DeserializeObject<R>(strResult);
                 }
-                else
-                {
-                    string message = $"GET request failed. Code: {response.StatusCode}";
-                    if (log)
-                    {
-                        AppLogger.Error(message);
-                    }
 
-                    return ErrorResponse<R>(message);
+                if (response.StatusCode == HttpStatusCode.Unauthorized && refreshToken)
+                {
+                    AppLogger.Log("Access token expired. Trying to refresh...");
+                    bool isTokenSuccessfullyRefreshed = await AsyncTryRefreshAccessToken();
+                    if (isTokenSuccessfullyRefreshed)
+                    {
+                        return await AsyncGetRequest<R>(urlWithParams, token, log, false, parameters);
+                    }
                 }
+
+                string message = $"GET request failed. Code: {response.StatusCode}";
+                if (log)
+                {
+                    AppLogger.Error(message);
+                }
+                return ErrorResponse<R>(message);
             }
             catch (Exception exception)
             {
@@ -194,6 +250,12 @@ namespace NetworkCore.ServerInteraction.API.Utils
 
             try
             {
+                bool isAccessTokenCorrect = await AsyncTryRefreshAccessToken();
+                if (!isAccessTokenCorrect)
+                {
+                    return false;
+                }
+                
                 // Отправляем запрос и получаем поток данных
                 using (HttpResponseMessage response = await client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead))
                 {
@@ -255,6 +317,12 @@ namespace NetworkCore.ServerInteraction.API.Utils
         public R PostRequest<T, R>(string url, T body)
             where R : ResponseDetails, new()
         {
+            return PostRequest<T, R>(url, true, body);
+        }
+
+        private R PostRequest<T, R>(string url, bool refreshToken, T body)
+            where R : ResponseDetails, new()
+        {
             var json = JsonConvert.SerializeObject(body);
             var strContent = new StringContent(json, Encoding.UTF8, "application/json");
             try
@@ -266,18 +334,88 @@ namespace NetworkCore.ServerInteraction.API.Utils
                     string strResult = response.Content.ReadAsStringAsync().Result;
                     return JsonConvert.DeserializeObject<R>(strResult);
                 }
-                else
-                {
-                    string message = $"POST request failed. Code: {response.StatusCode}";
-                    AppLogger.Error(message);
 
-                    return ErrorResponse<R>(message);
+                if (response.StatusCode == HttpStatusCode.Unauthorized && refreshToken)
+                {
+                    AppLogger.Log("Access token expired. Trying to refresh...");
+                    bool isTokenSuccessfullyRefreshed = TryRefreshAccessToken();
+                    if (isTokenSuccessfullyRefreshed)
+                    {
+                        return PostRequest<T, R>(url, false, body);
+                    }
                 }
+
+                string message = $"POST request failed. Code: {response.StatusCode}";
+                AppLogger.Error(message);
+
+                return ErrorResponse<R>(message);
             }
             catch (Exception exception)
             {
                 string message = $"Error when trying to execute POST request: {exception.Message}";
                 AppLogger.Error(message);
+
+                return ErrorResponse<R>(message);
+            }
+        }
+        
+        /// <summary>
+        /// <para>Осуществляет асинхронный POST запрос на сервер.</para>
+        /// Данный метод используется, когда приложение должно продолжать свою работу параллельно выполнению запроса на сервер
+        /// </summary>
+        /// <param name="url">url запроса</param>
+        /// <param name="token">CancellationToken для отмены выполнения запроса из другого потока</param>
+        /// <param name="log">нужно ли логгировать ошибки</param>
+        /// <param name="body">тело запроса</param>
+        /// <typeparam name="T">тип тела запроса</typeparam>
+        /// <typeparam name="R">тип к которому будет преобразован ответ на запрос. Данный тип должен наследоваться от <see cref="ResponseDetails"/> и иметь конструктор по умолчанию</typeparam>
+        /// <returns>ответ на запрос обернутый в тип R или <see cref="ResponseDetails"/> с сообщением об ошибке</returns>
+        public async Task<R> AsyncPostRequest<T, R>(string url, CancellationToken token, bool log, T body)
+            where R : ResponseDetails, new()
+        {
+            return await AsyncPostRequest<T, R>(url, token, log, true, body);
+        }
+        
+        private async Task<R> AsyncPostRequest<T, R>(string url, CancellationToken token, bool log, bool refreshToken, T body)
+            where R : ResponseDetails, new()
+        {
+            var json = JsonConvert.SerializeObject(body);
+            var strContent = new StringContent(json, Encoding.UTF8, "application/json");
+            try
+            {
+                var response = await client.PostAsync(url, strContent, token);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string strResult = await response.Content.ReadAsStringAsync();
+                    return JsonConvert.DeserializeObject<R>(strResult);
+                }
+
+                if (response.StatusCode == HttpStatusCode.Unauthorized && refreshToken)
+                {
+                    AppLogger.Log("Access token expired. Trying to refresh...");
+                    bool isTokenSuccessfullyRefreshed = await AsyncTryRefreshAccessToken();
+                    if (isTokenSuccessfullyRefreshed)
+                    {
+                        return await AsyncPostRequest<T, R>(url, token, log, false, body);
+                    }
+                }
+
+                string message = $"POST request failed. Code: {response.StatusCode}";
+                if (log)
+                {
+                    AppLogger.Error(message);
+                }
+
+                return ErrorResponse<R>(message);
+            }
+            catch (Exception exception)
+            {
+                string message = $"Error when trying to execute POST request: {exception.Message}";
+                if (log)
+                {
+                    AppLogger.Error(message);
+                }
 
                 return ErrorResponse<R>(message);
             }
@@ -293,22 +431,36 @@ namespace NetworkCore.ServerInteraction.API.Utils
         public R PostMultipartRequest<R>(string url, MultipartFormDataContent body)
             where R : ResponseDetails, new()
         {
+            return PostMultipartRequest<R>(url, true, body);
+        }
+
+        private R PostMultipartRequest<R>(string url, bool refreshToken, MultipartFormDataContent body)
+            where R : ResponseDetails, new()
+        {
             try
             {
                 var response = client.PostAsync(url, body).Result;
-           
+                
                 if (response.IsSuccessStatusCode)
                 {
                     string strResult = response.Content.ReadAsStringAsync().Result;
                     return JsonConvert.DeserializeObject<R>(strResult);
                 }
-                else
-                {
-                    string message = $"POST Multipart request failed. Code: {response.StatusCode}";
-                    AppLogger.Error(message);
 
-                    return ErrorResponse<R>(message);
+                if (response.StatusCode == HttpStatusCode.Unauthorized && refreshToken)
+                {
+                    AppLogger.Log("Access token expired. Trying to refresh...");
+                    bool isTokenSuccessfullyRefreshed = TryRefreshAccessToken();
+                    if (isTokenSuccessfullyRefreshed)
+                    {
+                        return PostMultipartRequest<R>(url, false, body);
+                    }
                 }
+
+                string message = $"POST Multipart request failed. Code: {response.StatusCode}";
+                AppLogger.Error(message);
+
+                return ErrorResponse<R>(message);
             }
             catch (Exception exception)
             {
@@ -328,6 +480,12 @@ namespace NetworkCore.ServerInteraction.API.Utils
         public R DeleteRequest<R>(string url)
             where R : ResponseDetails, new()
         {
+            return DeleteRequest<R>(url, true);
+        }
+
+        private R DeleteRequest<R>(string url, bool refreshToken)
+            where R : ResponseDetails, new()
+        {
             try
             {
                 var response = client.DeleteAsync(url).Result;
@@ -337,13 +495,21 @@ namespace NetworkCore.ServerInteraction.API.Utils
                     string strResult = response.Content.ReadAsStringAsync().Result;
                     return JsonConvert.DeserializeObject<R>(strResult);
                 }
-                else
-                {
-                    string message = $"DELETE request failed. Code: {response.StatusCode}";
-                    AppLogger.Error(message);
 
-                    return ErrorResponse<R>(message);
+                if (response.StatusCode == HttpStatusCode.Unauthorized && refreshToken)
+                {
+                    AppLogger.Log("Access token expired. Trying to refresh...");
+                    bool isTokenSuccessfullyRefreshed = TryRefreshAccessToken();
+                    if (isTokenSuccessfullyRefreshed)
+                    {
+                        return DeleteRequest<R>(url, false);
+                    }
                 }
+
+                string message = $"DELETE request failed. Code: {response.StatusCode}";
+                AppLogger.Error(message);
+
+                return ErrorResponse<R>(message);
             }
             catch (Exception exception)
             {
@@ -424,6 +590,38 @@ namespace NetworkCore.ServerInteraction.API.Utils
 
                 return result;
             }
-        } 
+        }
+
+        private bool TryRefreshAccessToken()
+        {
+            AuthResponse response = PostRequest<object, AuthResponse>(REFRESH_TOKEN_URL, false, null);
+
+            if (response.success)
+            {
+                SetAuthorization($"Bearer {response.token}");
+                AppLogger.Log("Access token refreshed successfully.");
+                return true;
+            }
+
+            AppLogger.Error($"Refresh token request ended with error: {ResponseUtils.GetErrorMessagesAsString(response)}");
+            return false;
+        }
+        
+        private async Task<bool> AsyncTryRefreshAccessToken()
+        {
+            AuthResponse response = await ExecuteAsyncRequest(
+                (token) => AsyncPostRequest<object, AuthResponse>(REFRESH_TOKEN_URL, token, false, false, null)
+            );
+
+            if (response.success)
+            {
+                SetAuthorization($"Bearer {response.token}");
+                AppLogger.Log("Access token refreshed successfully.");
+                return true;
+            }
+
+            AppLogger.Error($"Refresh token request ended with error: {ResponseUtils.GetErrorMessagesAsString(response)}");
+            return false;
+        }
     }
 }
