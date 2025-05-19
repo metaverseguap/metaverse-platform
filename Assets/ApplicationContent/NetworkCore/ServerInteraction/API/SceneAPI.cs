@@ -9,7 +9,7 @@ using Global.Converters;
 using Global.Files;
 using Global.Logger;
 using MainMenu.Containers;
-using NetworkCore.MirrorNetworking.Types.Devices;
+using LDR.SUAI_Metaverse.SDK.Types.Devices;
 using NetworkCore.ServerInteraction.API.Utils;
 using NetworkCore.ServerInteraction.Type.Request;
 using NetworkCore.ServerInteraction.Type.Response;

@@ -1,6 +1,6 @@
 ﻿using System;
-using NetworkCore.MirrorNetworking.Types.Devices;
-using Player.EmbeddedPlayers;
+using LDR.SUAI_Metaverse.SDK.Player;
+using LDR.SUAI_Metaverse.SDK.Types.Devices;
 
 namespace NetworkCore.MirrorNetworking.Containers.ManagerSetups
 {

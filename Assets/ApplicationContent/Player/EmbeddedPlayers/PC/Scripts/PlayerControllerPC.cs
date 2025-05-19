@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Cinemachine;
+using LDR.SUAI_Metaverse.SDK.Player;
 using UnityEngine;
 
 namespace Player.EmbeddedPlayers.PC
@@ -44,6 +45,7 @@ namespace Player.EmbeddedPlayers.PC
         private void Start()
         {
             characterController = GetComponent<CharacterController>();
+            characterController.Move(transform.position);
             Cursor.visible = false;
             
             playerCameras.Add(_playerCamera);

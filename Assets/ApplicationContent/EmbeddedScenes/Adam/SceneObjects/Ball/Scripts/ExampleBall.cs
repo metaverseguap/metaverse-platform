@@ -1,4 +1,4 @@
-using Player.EmbeddedPlayers;
+using LDR.SUAI_Metaverse.SDK.Player;
 using UnityEngine;
 
 namespace Adam.SceneObjects.Ball

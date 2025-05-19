@@ -1,13 +1,13 @@
-using AppAvatars.AvatarSetups;
 using Global.Logger;
+using LDR.SUAI_Metaverse.SDK.Avatar.AvatarSetups;
+using LDR.SUAI_Metaverse.SDK.Player;
 using NetworkCore.MirrorNetworking;
-using Player.EmbeddedPlayers;
 using UnityEngine;
 
 namespace AppAvatars
 {
     /// <summary>
-    /// <para>Компонент, устанавливающий аватар игрока через инспектор Unity.</para>
+    /// <para>Компонент, устанавливающий аватар игрока в офлайн режиме.</para>
     ///
     /// <remarks>данный компонент нужен для офлайн дебага</remarks>
     /// </summary>

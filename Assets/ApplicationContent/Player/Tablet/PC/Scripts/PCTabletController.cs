@@ -1,5 +1,5 @@
 using Cinemachine;
-using Player.EmbeddedPlayers;
+using LDR.SUAI_Metaverse.SDK.Player;
 using UnityEngine;
 
 namespace Player.Tablet.PC
