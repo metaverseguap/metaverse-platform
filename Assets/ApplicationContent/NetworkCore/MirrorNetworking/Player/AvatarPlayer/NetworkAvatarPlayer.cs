@@ -1,8 +1,9 @@
 using System.Collections.Generic;
-using AppAvatars.AvatarSetups;
 using AppAvatars.Containers;
 using Cinemachine;
 using Global.Logger;
+using LDR.SUAI_Metaverse.SDK.Avatar.AvatarSetups;
+using LDR.SUAI_Metaverse.SDK.Player;
 using LDR.SUAI_Metaverse.SDK.Utils;
 using MainMenu.Containers;
 using Mirror;
@@ -11,7 +12,6 @@ using NetworkCore.MirrorNetworking.Containers.Store.Cache;
 using NetworkCore.MirrorNetworking.Containers.Synchronization;
 using NetworkCore.MirrorNetworking.Player.Base;
 using NetworkCore.MirrorNetworking.Synchronization.Animations;
-using Player.EmbeddedPlayers;
 using UnityEngine;
 
 namespace NetworkCore.MirrorNetworking.Player.AvatarPlayer

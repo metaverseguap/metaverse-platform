@@ -11,7 +11,7 @@ using Localization;
 using MainMenu.Containers;
 using MainMenu.UI.ScrollListItems;
 using NetworkCore.MirrorNetworking;
-using NetworkCore.MirrorNetworking.Types.Devices;
+using LDR.SUAI_Metaverse.SDK.Types.Devices;
 using NetworkCore.ServerInteraction.API;
 using TMPro;
 using UnityEngine;

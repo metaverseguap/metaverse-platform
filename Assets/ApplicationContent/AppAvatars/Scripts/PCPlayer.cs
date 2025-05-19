@@ -1,5 +1,5 @@
-using NetworkCore.MirrorNetworking.Types.Devices;
-using Player.EmbeddedPlayers;
+using LDR.SUAI_Metaverse.SDK.Player;
+using LDR.SUAI_Metaverse.SDK.Types.Devices;
 
 namespace AppAvatars
 {

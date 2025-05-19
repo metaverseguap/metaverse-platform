@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Global.Logger;
+using LDR.SUAI_Metaverse.SDK.SceneLogic.SpawnPoint;
 using Mirror;
 using NetworkCore.MirrorNetworking.ClientMessages;
 using NetworkCore.MirrorNetworking.Containers.ClientMessages;
@@ -11,7 +12,9 @@ using NetworkCore.MirrorNetworking.Player.AvatarPlayer;
 using NetworkCore.MirrorNetworking.Player.Base;
 using NetworkCore.MirrorNetworking.Synchronization;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UserSystem.Types;
+using Random = UnityEngine.Random;
 
 namespace NetworkCore.MirrorNetworking.Player.Spawn
 {
@@ -56,6 +59,8 @@ namespace NetworkCore.MirrorNetworking.Player.Spawn
 
         private MVNetworkManager networkManager;
 
+        private SceneSpawner sceneSpawner = null;
+        
         private void Start()
         {
             networkManager = MVNetworkManager.singleton;
@@ -65,6 +70,17 @@ namespace NetworkCore.MirrorNetworking.Player.Spawn
             networkManager.AfterNewClientConnectedToServer += OnNewClientConnectedToServer;
             networkManager.BeforeServerLostPlayer += OnServerLostPlayer;
             networkManager.BeforeServerStop += OnServerStop;
+            
+            SceneManager.sceneLoaded += OnSceneLoaded;
+        }
+
+        private void OnSceneLoaded(Scene scene, LoadSceneMode loadingMode)
+        {
+            if (loadingMode == LoadSceneMode.Single)
+            {
+                sceneSpawner = SceneSpawner.singleton;
+                sceneSpawner.IsOfflineSpawnActive = false;
+            }
         }
 
         private void OnDestroy()
@@ -77,6 +93,8 @@ namespace NetworkCore.MirrorNetworking.Player.Spawn
                 networkManager.BeforeServerLostPlayer -= OnServerLostPlayer;
                 networkManager.BeforeServerStop -= OnServerStop;
             }
+            
+            SceneManager.sceneLoaded -= OnSceneLoaded;
         }
 
         private void OnHostStarted()
@@ -239,6 +257,15 @@ namespace NetworkCore.MirrorNetworking.Player.Spawn
                 }
             }
 
+            SpawnPoint[] spawnPoints = sceneSpawner.SpawnPoints();
+            if (!playerCache.IsInitialized && spawnPoints.Length > 0)
+            {
+                playerCache.IsInitialized = true;
+                Transform spawnPoint = GetSpawnPointTransform(spawnPoints);
+                playerCache.PlayerPosition = spawnPoint.position;
+                playerCache.PlayerRotation = spawnPoint.rotation;
+            }
+
             networkPlayer.SetLogin(login);
             networkPlayer.SetDisplayName(displayName);
             if (networkPlayer is NetworkAvatarPlayer avatarPlayer)
@@ -250,6 +277,12 @@ namespace NetworkCore.MirrorNetworking.Player.Spawn
             NetworkServer.Spawn(networkPlayer.gameObject);
 
             return networkPlayer;
+        }
+
+        private static Transform GetSpawnPointTransform(SpawnPoint[] spawnPoints)
+        {
+            SpawnPoint spawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];
+            return spawnPoint.transform;
         }
 
         private static void AddClientToServer(NetworkConnectionToClient conn, NetworkBasePlayer networkPlayer)

@@ -1,5 +1,5 @@
-﻿using Mirror;
-using Player.EmbeddedPlayers;
+﻿using LDR.SUAI_Metaverse.SDK.Player;
+using Mirror;
 using UnityEngine;
 
 namespace NetworkCore.MirrorNetworking.Player.Base

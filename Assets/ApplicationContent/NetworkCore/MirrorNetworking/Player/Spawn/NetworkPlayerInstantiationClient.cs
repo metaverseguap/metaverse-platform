@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Cinemachine;
+using LDR.SUAI_Metaverse.SDK.SceneLogic.SpawnPoint;
 using LDR.SUAI_Metaverse.SDK.Utils;
 using Mirror;
 using NetworkCore.MirrorNetworking.ClientMessages;
@@ -15,6 +16,7 @@ using NetworkCore.MirrorNetworking.Synchronization.Transforms;
 using NetworkCore.MirrorNetworking.Synchronization.UI;
 using NetworkCore.MirrorNetworking.Utils;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UserSystem.Types;
 
 namespace NetworkCore.MirrorNetworking.Player.Spawn
@@ -68,6 +70,17 @@ namespace NetworkCore.MirrorNetworking.Player.Spawn
             networkManager.AfterClientConnected += OnClientConnected;
             networkManager.AfterStartClient += OnClientStarted;
             networkManager.BeforeClientDisconnected += OnClientDisconnected;
+            
+            SceneManager.sceneLoaded += OnSceneLoaded;
+        }
+
+        private void OnSceneLoaded(Scene scene, LoadSceneMode loadingMode)
+        {
+            if (loadingMode == LoadSceneMode.Single)
+            {
+                SceneSpawner sceneSpawner = SceneSpawner.singleton;
+                sceneSpawner.IsOfflineSpawnActive = false;
+            }
         }
 
         private void OnDestroy()
@@ -78,6 +91,8 @@ namespace NetworkCore.MirrorNetworking.Player.Spawn
                 networkManager.AfterStartClient -= OnClientStarted;
                 networkManager.BeforeClientDisconnected -= OnClientDisconnected;
             }
+            
+            SceneManager.sceneLoaded -= OnSceneLoaded;
         }
 
         private void OnClientConnected()

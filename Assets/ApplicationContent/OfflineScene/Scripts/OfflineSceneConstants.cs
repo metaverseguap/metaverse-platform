@@ -1,5 +1,5 @@
 ﻿using MainMenu.Containers;
-using NetworkCore.MirrorNetworking.Types.Devices;
+using LDR.SUAI_Metaverse.SDK.Types.Devices;
 
 namespace OfflineScene
 {
