@@ -1,4 +1,5 @@
 using LDR.SUAI_Metaverse.SDK.Interactions;
+using LDR.SUAI_Metaverse.SDK.NetworkSync;
 using TMPro;
 using UnityEngine;
 
@@ -16,14 +17,7 @@ namespace EmbeddedScenes.Adam.SceneObjects.ChangeTextCanvas
         
         private void Awake()
         {
-            if (TryGetComponent(out IInteractionAccess externalAccessComponent))
-            {
-                access = externalAccessComponent;
-            }
-            else
-            {
-                access =  gameObject.AddComponent<DefaultInteractionAccess>();
-            }
+            access = NetworkEnvironment.GetInteractionAccessor(gameObject);
         }
 
         /// <summary>

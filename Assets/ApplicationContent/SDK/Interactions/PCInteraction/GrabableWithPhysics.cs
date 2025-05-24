@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using LDR.SUAI_Metaverse.SDK.NetworkSync;
+using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -59,14 +60,7 @@ namespace LDR.SUAI_Metaverse.SDK.Interactions.PCInteraction
             targetBody = GetComponent<Rigidbody>();
             targetBody.interpolation = RigidbodyInterpolation.Interpolate;
 
-            if (TryGetComponent(out IInteractionAccess externalAccessComponent))
-            {
-                access = externalAccessComponent;
-            }
-            else
-            {
-                access = gameObject.AddComponent<DefaultInteractionAccess>();
-            }
+            access = NetworkEnvironment.GetInteractionAccessor(gameObject);
         }
 
         private void FixedUpdate()

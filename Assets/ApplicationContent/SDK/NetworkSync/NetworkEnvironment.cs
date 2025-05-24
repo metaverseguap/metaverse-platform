@@ -1,5 +1,7 @@
 using System;
+using LDR.SUAI_Metaverse.SDK.Interactions;
 using LDR.SUAI_Metaverse.SDK.NetworkSync.Support;
+using UnityEngine;
 
 namespace LDR.SUAI_Metaverse.SDK.NetworkSync
 {
@@ -65,6 +67,21 @@ namespace LDR.SUAI_Metaverse.SDK.NetworkSync
         public static TimeSpan GetRoomLifetime()
         {
             return NetworkProvider.GetRoomLifetime();
+        }
+
+        /// <summary>
+        /// <para>Получить <see cref="IInteractionAccess"/> указанного объекта.</para>
+        /// </summary>
+        /// <param name="gameObject">объект</param>
+        /// <returns><see cref="IInteractionAccess"/> данного объекта</returns>
+        public static IInteractionAccess GetInteractionAccessor(GameObject gameObject)
+        {
+            if (gameObject.TryGetComponent(out IInteractionAccess externalAccessComponent))
+            {
+                return externalAccessComponent;
+            }
+
+            return gameObject.AddComponent<DefaultInteractionAccess>();
         }
     }
 }
