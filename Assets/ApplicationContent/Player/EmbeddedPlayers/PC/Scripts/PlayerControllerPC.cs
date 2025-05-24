@@ -32,7 +32,6 @@ namespace Player.EmbeddedPlayers.PC
         public CinemachineVirtualCamera PlayerCamera { get; private set; }
 
         private const float FREE_FALL_CONST = -9.87f;
-        // TODO: Заменить CharacterController на собственную систему контроля 
         private CharacterController characterController;
         private bool isPlayerLanded;
         private Vector3 playerVelocity = Vector3.zero;
@@ -44,14 +43,24 @@ namespace Player.EmbeddedPlayers.PC
 
         private void Start()
         {
-            characterController = GetComponent<CharacterController>();
-            characterController.Move(transform.position);
+            characterController = EnsureController();
+
             Cursor.visible = false;
             
             playerCameras.Add(_playerCamera);
             playerCameras.AddRange(GetComponentsInChildren<CinemachineVirtualCamera>());
         }
-        
+
+        private CharacterController EnsureController()
+        {
+            CharacterController controller = GetComponent<CharacterController>();
+            // Вкл/Выкл контроллер, что бы Unity перезаписал его transform
+            controller.enabled = false;
+            controller.enabled = true;
+
+            return controller;
+        }
+
         /// <summary>
         /// <inheritdoc cref="AbstractPlayerController.DeactivatePermanently"/>
         /// </summary>

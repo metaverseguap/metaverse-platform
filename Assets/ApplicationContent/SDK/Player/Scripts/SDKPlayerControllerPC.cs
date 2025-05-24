@@ -26,9 +26,19 @@ namespace LDR.SUAI_Metaverse.SDK.Player
 
         private void Start()
         {
-            characterController = GetComponent<CharacterController>();
-            characterController.Move(transform.position);
+            characterController = EnsureController();
+
             Cursor.visible = false;
+        }
+
+        private CharacterController EnsureController()
+        {
+            CharacterController controller = GetComponent<CharacterController>();
+            // Вкл/Выкл контроллер, что бы Unity перезаписал его transform
+            controller.enabled = false;
+            controller.enabled = true;
+
+            return controller;
         }
         
         /// <summary>
