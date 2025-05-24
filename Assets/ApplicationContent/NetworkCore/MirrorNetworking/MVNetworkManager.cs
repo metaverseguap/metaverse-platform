@@ -1,4 +1,4 @@
-using LDR.SUAI_Metaverse.SDK.NetworkSync;
+using LDR.SUAI_Metaverse.SDK.Core.NetworkSync;
 using Mirror;
 using NetworkCore.MirrorNetworking.Containers.ManagerSetups;
 using NetworkCore.MirrorNetworking.Containers.Store;

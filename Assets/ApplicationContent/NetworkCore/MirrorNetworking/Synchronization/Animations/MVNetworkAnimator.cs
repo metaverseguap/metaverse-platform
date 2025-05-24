@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Global.Logger;
-using LDR.SUAI_Metaverse.SDK.Animations;
+using LDR.SUAI_Metaverse.SDK.Core.Animations;
 using Mirror;
 using NetworkCore.MirrorNetworking.Containers.Store;
 using UnityEngine;

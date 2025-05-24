@@ -1,5 +1,5 @@
 ﻿using System;
-using LDR.SUAI_Metaverse.SDK.Player;
+using LDR.SUAI_Metaverse.SDK.Core.Player;
 using NetworkCore.MirrorNetworking.Player.Base;
 
 namespace NetworkCore.MirrorNetworking.Containers.Store

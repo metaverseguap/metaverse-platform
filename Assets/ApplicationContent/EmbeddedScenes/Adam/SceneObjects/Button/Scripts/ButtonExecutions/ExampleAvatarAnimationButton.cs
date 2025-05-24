@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using LDR.SUAI_Metaverse.SDK.Animations;
-using LDR.SUAI_Metaverse.SDK.Interactions;
+using LDR.SUAI_Metaverse.SDK.Core.Animations;
+using LDR.SUAI_Metaverse.SDK.Core.Interactions;
 using UnityEngine;
 
 namespace Adam.SceneObjects.Button.ButtonExecution
@@ -34,7 +34,7 @@ namespace Adam.SceneObjects.Button.ButtonExecution
             // Интерактивность специфическая для вызывающего игрока
             if (owner.TryGetComponent(out Animator playerAnimator))
             {
-                StartCoroutine(AnimationUtils.PlayExternalAnimation(playerAnimator, AnimationUtils.PLAYER_EXTERNAL_ANIMATION_CLIP, _playAnimations));
+                StartCoroutine(AnimationUtils.PlayExternalAnimation(playerAnimator, _playAnimations));
             }
             else
             {

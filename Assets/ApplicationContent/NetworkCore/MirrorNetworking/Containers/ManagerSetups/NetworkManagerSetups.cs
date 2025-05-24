@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using AppAvatars.Containers;
-using LDR.SUAI_Metaverse.SDK.Player;
+using LDR.SUAI_Metaverse.SDK.Core.Player;
+using LDR.SUAI_Metaverse.SDK.Core.Types.Devices;
 using Mirror;
 using NetworkCore.MirrorNetworking.Player.AvatarPlayer;
 using NetworkCore.MirrorNetworking.Player.Base;
-using LDR.SUAI_Metaverse.SDK.Types.Devices;
 using UnityEngine;
 
 namespace NetworkCore.MirrorNetworking.Containers.ManagerSetups

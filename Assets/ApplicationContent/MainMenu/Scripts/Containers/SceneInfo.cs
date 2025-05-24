@@ -1,6 +1,6 @@
 ﻿using System;
 using Global.Containers;
-using LDR.SUAI_Metaverse.SDK.Types.Devices;
+using LDR.SUAI_Metaverse.SDK.Core.Types.Devices;
 using UnityEngine;
 
 namespace MainMenu.Containers

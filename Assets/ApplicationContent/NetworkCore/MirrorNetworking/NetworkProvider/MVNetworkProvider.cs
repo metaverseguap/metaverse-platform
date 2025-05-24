@@ -1,6 +1,6 @@
 ﻿using System;
-using LDR.SUAI_Metaverse.SDK.NetworkSync.Support;
-using LDR.SUAI_Metaverse.SDK.Utils;
+using LDR.SUAI_Metaverse.SDK.Core.NetworkSync.Support;
+using LDR.SUAI_Metaverse.SDK.Core.Utils;
 
 namespace NetworkCore.MirrorNetworking.NetworkProvider
 {

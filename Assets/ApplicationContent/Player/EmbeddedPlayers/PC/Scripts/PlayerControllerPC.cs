@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using Cinemachine;
-using LDR.SUAI_Metaverse.SDK.Player;
+using LDR.SUAI_Metaverse.SDK.Core.Player;
 using UnityEngine;
 
 namespace Player.EmbeddedPlayers.PC
@@ -32,6 +32,7 @@ namespace Player.EmbeddedPlayers.PC
         public CinemachineVirtualCamera PlayerCamera { get; private set; }
 
         private const float FREE_FALL_CONST = -9.87f;
+        // TODO: Заменить CharacterController на собственную систему контроля 
         private CharacterController characterController;
         private bool isPlayerLanded;
         private Vector3 playerVelocity = Vector3.zero;

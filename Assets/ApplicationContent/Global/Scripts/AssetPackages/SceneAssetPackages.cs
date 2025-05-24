@@ -5,8 +5,8 @@ using System.Linq;
 using Global.Converters;
 using Global.Files;
 using Global.Logger;
+using LDR.SUAI_Metaverse.SDK.Core.Types.Devices;
 using MainMenu.Containers;
-using LDR.SUAI_Metaverse.SDK.Types.Devices;
 using NetworkCore.ServerInteraction.Type.Scene;
 using UnityEngine;
 

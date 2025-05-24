@@ -1,5 +1,5 @@
 using System;
-using LDR.SUAI_Metaverse.SDK.NetworkSync;
+using LDR.SUAI_Metaverse.SDK.Core.NetworkSync;
 using TMPro;
 using UnityEngine;
 
