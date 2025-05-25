@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 563657382684787112}
   - component: {fileID: 7986448919372775742}
   - component: {fileID: 5307093665177394435}
-  m_Layer: 6
+  m_Layer: 9
   m_Name: PCPlayer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -238,7 +238,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 247
+    m_Bits: 823
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0

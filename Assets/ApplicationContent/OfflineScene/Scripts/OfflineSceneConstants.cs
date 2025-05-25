@@ -1,5 +1,5 @@
-﻿using MainMenu.Containers;
-using LDR.SUAI_Metaverse.SDK.Types.Devices;
+﻿using LDR.SUAI_Metaverse.SDK.Core.Types.Devices;
+using MainMenu.Containers;
 
 namespace OfflineScene
 {

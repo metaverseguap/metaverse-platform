@@ -1,5 +1,5 @@
 using EmbeddedScenes.Adam.SceneObjects.ChangeTextCanvas;
-using LDR.SUAI_Metaverse.SDK.NetworkSync;
+using LDR.SUAI_Metaverse.SDK.Core.NetworkSync;
 using UnityEngine;
 using UnityEngine.UI;
 

@@ -1,5 +1,5 @@
-using LDR.SUAI_Metaverse.SDK.Player;
-using LDR.SUAI_Metaverse.SDK.Types.Devices;
+using LDR.SUAI_Metaverse.SDK.Core.Player;
+using LDR.SUAI_Metaverse.SDK.Core.Types.Devices;
 
 namespace AppAvatars
 {

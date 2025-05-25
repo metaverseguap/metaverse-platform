@@ -1,4 +1,4 @@
-﻿using LDR.SUAI_Metaverse.SDK.Player;
+﻿using LDR.SUAI_Metaverse.SDK.Core.Player;
 using Mirror;
 using UnityEngine;
 

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Global.Logger;
-using LDR.SUAI_Metaverse.SDK.SceneLogic.SpawnPoint;
+using LDR.SUAI_Metaverse.SDK.Core.SceneLogic.SpawnPoint;
 using Mirror;
 using NetworkCore.MirrorNetworking.ClientMessages;
 using NetworkCore.MirrorNetworking.Containers.ClientMessages;

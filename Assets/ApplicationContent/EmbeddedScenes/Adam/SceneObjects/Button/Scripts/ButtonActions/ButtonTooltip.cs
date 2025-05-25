@@ -1,4 +1,4 @@
-﻿using LDR.SUAI_Metaverse.SDK.Interactions;
+﻿using LDR.SUAI_Metaverse.SDK.Core.Interactions;
 using TMPro;
 using UnityEngine;
 

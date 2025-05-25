@@ -3,7 +3,7 @@ using System.IO;
 using Global.AssetPackages;
 using Global.Bundles;
 using Global.Files;
-using LDR.SUAI_Metaverse.SDK.NetworkSync;
+using LDR.SUAI_Metaverse.SDK.Components.NetworkSync;
 using Mirror;
 using NetworkCore.MirrorNetworking.Offline;
 using NetworkCore.MirrorNetworking.Synchronization;

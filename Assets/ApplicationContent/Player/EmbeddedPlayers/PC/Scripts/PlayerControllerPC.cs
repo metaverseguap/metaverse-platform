@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using Cinemachine;
-using LDR.SUAI_Metaverse.SDK.Player;
+using LDR.SUAI_Metaverse.SDK.Core.Player;
 using UnityEngine;
 
 namespace Player.EmbeddedPlayers.PC
@@ -44,14 +44,24 @@ namespace Player.EmbeddedPlayers.PC
 
         private void Start()
         {
-            characterController = GetComponent<CharacterController>();
-            characterController.Move(transform.position);
+            characterController = EnsureController();
+
             Cursor.visible = false;
             
             playerCameras.Add(_playerCamera);
             playerCameras.AddRange(GetComponentsInChildren<CinemachineVirtualCamera>());
         }
-        
+
+        private CharacterController EnsureController()
+        {
+            CharacterController controller = GetComponent<CharacterController>();
+            // Вкл/Выкл контроллер, что бы Unity перезаписал его transform
+            controller.enabled = false;
+            controller.enabled = true;
+
+            return controller;
+        }
+
         /// <summary>
         /// <inheritdoc cref="AbstractPlayerController.DeactivatePermanently"/>
         /// </summary>

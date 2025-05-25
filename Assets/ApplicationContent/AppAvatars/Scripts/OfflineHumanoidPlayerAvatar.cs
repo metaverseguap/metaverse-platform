@@ -1,6 +1,6 @@
 using Global.Logger;
-using LDR.SUAI_Metaverse.SDK.Avatar.AvatarSetups;
-using LDR.SUAI_Metaverse.SDK.Player;
+using LDR.SUAI_Metaverse.SDK.Core.Avatar.AvatarSetups;
+using LDR.SUAI_Metaverse.SDK.Core.Player;
 using NetworkCore.MirrorNetworking;
 using UnityEngine;
 

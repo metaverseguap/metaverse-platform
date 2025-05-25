@@ -2,8 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using Cinemachine;
-using LDR.SUAI_Metaverse.SDK.SceneLogic.SpawnPoint;
-using LDR.SUAI_Metaverse.SDK.Utils;
+using LDR.SUAI_Metaverse.SDK.Core.SceneLogic.SpawnPoint;
+using LDR.SUAI_Metaverse.SDK.Core.Utils;
 using Mirror;
 using NetworkCore.MirrorNetworking.ClientMessages;
 using NetworkCore.MirrorNetworking.Containers.ClientMessages;
