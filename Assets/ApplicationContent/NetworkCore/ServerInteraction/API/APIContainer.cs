@@ -85,7 +85,7 @@ namespace NetworkCore.ServerInteraction.API
             string serverUri = setups.ServerUrl;
             serverAddress = serverUri;
             
-            this.Auth = new AuthAPI(serverUri, this);
+            this.Auth = new AuthAPI(serverUri);
             this.Role = new RoleAPI(serverUri);
             this.LoginKey = new LoginKeyAPI(serverUri);
             this.RegistrationKey = new RegistrationKeyAPI(serverUri);
@@ -108,18 +108,6 @@ namespace NetworkCore.ServerInteraction.API
             foreach (var api in apiList)
             {
                 api.SetServerUrl(newServerAddress);
-            }
-        }
-
-        /// <summary>
-        /// <para>Устанавливает jwt всем хранимым api.</para>
-        /// </summary>
-        /// <param name="token">JSON Web Token</param>
-        public void SetAuthToken(string token)
-        {
-            foreach (var api in apiList)
-            {
-                api.SetAuthorization(token);
             }
         }
     }

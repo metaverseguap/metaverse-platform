@@ -22,14 +22,6 @@ namespace NetworkCore.ServerInteraction.API
         }
         
         /// <summary>
-        /// <inheritdoc cref="RestAPI.SetAuthorization"/>
-        /// </summary>
-        public void SetAuthorization(string token)
-        {
-            restAPI.SetAuthorization(token);
-        }
-        
-        /// <summary>
         /// <para>Задать url сервера.</para>
         /// </summary>
         /// <param name="serverUrl">основной url сервера. Он будет подставляться в начало конкретных запросов</param>

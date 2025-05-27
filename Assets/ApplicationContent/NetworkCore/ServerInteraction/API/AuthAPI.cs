@@ -13,17 +13,13 @@ namespace NetworkCore.ServerInteraction.API
     {
         private const string LOGIN_URL = "/api/auth/login";
         private const string REGISTRATION_URL = "/api/auth/registration";
-        
-        private readonly APIContainer apiContainer;
 
         /// <summary>
         /// <para>Конструктор.</para>
         /// </summary>
         /// <param name="serverUri">uri файлового сервера</param>
-        /// <param name="apiContainer"><see cref="APIContainer"/></param>
-        public AuthAPI(string serverUri, APIContainer apiContainer) : base(serverUri)
+        public AuthAPI(string serverUri) : base(serverUri)
         {
-            this.apiContainer = apiContainer;
         }
 
         /// <summary>
@@ -49,7 +45,7 @@ namespace NetworkCore.ServerInteraction.API
                 return false;
             }
             
-            apiContainer.SetAuthToken($"Bearer {response.token}");
+            restAPI.SetAuthorization($"Bearer {response.token}");
             MVNetworkManager.singleton.NetworkStore.MyPlayerInfo.Login = login;
 
             exceptionMessage = "";
@@ -79,7 +75,7 @@ namespace NetworkCore.ServerInteraction.API
                 return false;
             }
             
-            apiContainer.SetAuthToken($"Bearer {response.token}");
+            restAPI.SetAuthorization($"Bearer {response.token}");
             
             exceptionMessage = "";
             return true;
