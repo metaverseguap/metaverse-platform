@@ -43,8 +43,11 @@ namespace LDR.SUAI_Metaverse.SDK.Core.Player
         private void CastInteractRay()
         {
             Ray ray = new Ray(_interactionRayStartPoint.position, _interactionRayStartPoint.forward);
-
-            bool hasHit = Physics.Raycast(ray, out RaycastHit hitInfo, _range);
+            
+            int playerLayer = LayerMask.NameToLayer("Player");
+            int mask = ~(1 << playerLayer);
+            
+            bool hasHit = Physics.Raycast(ray, out RaycastHit hitInfo,  _range, mask, QueryTriggerInteraction.Ignore);
 
             DrawDebugRay(hasHit, hitInfo, ray);
 
